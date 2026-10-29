@@ -61,3 +61,71 @@ a {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Pagina's in lagen (zie AppLayout): de vorige ligt onder de huidige, voor het terugvegen. */
+.app__lagen {
+  position: relative;
+  overflow: hidden;
+}
+
+.laag {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--achtergrond);
+  will-change: transform;
+}
+
+.laag--boven {
+  z-index: 1;
+}
+
+.laag--onder,
+.laag--weg {
+  visibility: hidden;
+}
+
+/* Tijdens vegen of inschuiven is de pagina eronder te zien, en heeft de bovenste een schaduw aan de linkerkant. */
+.app__lagen--vegen .laag--onder,
+.app__lagen--schuift .laag--onder {
+  visibility: visible;
+}
+
+.app__lagen--vegen .laag--boven,
+.app__lagen--schuift .laag--boven {
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.18);
+}
+
+.laag--nieuw {
+  animation: laag-inschuiven 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.app__lagen--schuift .laag--onder {
+  animation: laag-opzij 240ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes laag-inschuiven {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes laag-opzij {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-28%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laag--nieuw,
+  .app__lagen--schuift .laag--onder {
+    animation: none;
+  }
+}

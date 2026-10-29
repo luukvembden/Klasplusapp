@@ -68,6 +68,8 @@ export function Instellingen() {
       <button type="button" className="uitloggen" onClick={uitloggen}>
         Uitloggen
       </button>
+
+      <p className="instellingen__copyright">© 2026 Luuk van Embden</p>
     </div>
   );
 }

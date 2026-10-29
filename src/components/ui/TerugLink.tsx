@@ -1,17 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
-import { useVeeg } from '../../hooks/useVeeg';
+import { useLagen } from '../AppLayout';
 import './ui.css';
 
 /**
  * Terugknop. Kwam je via de app hier, dan ga je echt terug (en blijft bijvoorbeeld de gekozen
- * dag in de agenda staan); anders naar `naar`. Van links naar rechts vegen doet hetzelfde.
+ * dag in de agenda staan), met de pagina die naar rechts wegschuift; anders naar `naar`.
+ * Van links naar rechts vegen doet hetzelfde (zie AppLayout).
  */
 export function TerugLink({ naar, label }: { naar: string; label: string }) {
   const navigate = useNavigate();
+  const lagen = useLagen();
   const kanTerug = (window.history.state?.idx ?? 0) > 0;
-  const terug = () => (kanTerug ? navigate(-1) : navigate(naar, { replace: true }));
-  useVeeg({ naarRechts: terug });
 
   return (
     <Link
@@ -20,7 +20,7 @@ export function TerugLink({ naar, label }: { naar: string; label: string }) {
       onClick={(e) => {
         if (!kanTerug) return;
         e.preventDefault();
-        navigate(-1);
+        if (!lagen?.terug()) navigate(-1);
       }}
     >
       <ChevronLeft size={22} strokeWidth={2.2} aria-hidden="true" />
