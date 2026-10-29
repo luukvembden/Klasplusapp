@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { api, type Afspraak, type Label } from '../api';
 import { HuiswerkRij } from '../components/huiswerk/HuiswerkRij';
 import { WeekStrook } from '../components/huiswerk/WeekStrook';
@@ -6,6 +6,7 @@ import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { Sectie } from '../components/ui/Sectie';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
+import { useVeeg } from '../hooks/useVeeg';
 import { dagTitel, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/agenda/agenda.css';
 import '../components/huiswerk/huiswerk.css';
@@ -34,6 +35,10 @@ export function Huiswerk() {
     laatsteWeek = maandagVan(d);
     zetWeek(laatsteWeek);
   };
+
+  // Over de lijst vegen: naar links is de volgende week, naar rechts de vorige.
+  const lijst = useRef<HTMLDivElement>(null);
+  useVeeg({ naarLinks: () => kies(plusDagen(week, 7)), naarRechts: () => kies(plusDagen(week, -7)) }, lijst);
 
   const geladen = useLaden(() => api.afspraken(week, plusDagen(week, 7)), [week.getTime()]);
   const taken = (geladen.data?.data ?? []).filter(heeftTaak).sort((a, b) => a.start.localeCompare(b.start));
@@ -64,7 +69,7 @@ export function Huiswerk() {
       </header>
       <WeekStrook week={week} onKies={kies} />
 
-      <div className="huiswerk__lijst" aria-busy={geladen.laden}>
+      <div className="huiswerk__lijst" ref={lijst} aria-busy={geladen.laden}>
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
           <div className="pagina">
             {geladen.fout && <p className="melding">{geladen.fout}</p>}
