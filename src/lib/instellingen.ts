@@ -4,18 +4,12 @@ import { useSyncExternalStore } from 'react';
 
 export type Thema = 'licht' | 'donker' | 'systeem';
 
-export interface Meldingen {
-  nieuwCijfer: boolean;
-  roosterwijziging: boolean;
-}
-
 /** Klassiek: "AK – KNNW – H5.AK4 (S252)" met de tijd eronder. Modern: vaknaam, en "tijd · lokaal · docent". */
 export type AgendaWeergave = 'klassiek' | 'modern';
 
 export interface Instellingen {
   thema: Thema;
   agenda: AgendaWeergave;
-  meldingen: Meldingen;
 }
 
 const SLEUTEL = 'schoolkompas.instellingen';
@@ -23,7 +17,6 @@ const SLEUTEL = 'schoolkompas.instellingen';
 const standaard: Instellingen = {
   thema: 'systeem',
   agenda: 'klassiek',
-  meldingen: { nieuwCijfer: true, roosterwijziging: true },
 };
 
 function lees(): Instellingen {
@@ -31,7 +24,7 @@ function lees(): Instellingen {
     const opgeslagen = localStorage.getItem(SLEUTEL);
     if (opgeslagen) {
       const waarde = JSON.parse(opgeslagen) as Partial<Instellingen>;
-      return { ...standaard, ...waarde, meldingen: { ...standaard.meldingen, ...waarde.meldingen } };
+      return { ...standaard, ...waarde };
     }
   } catch {
     // Geen opslag of kapotte waarde: val terug op de standaard.

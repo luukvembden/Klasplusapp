@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { version } from '../../package.json';
 import { api } from '../api';
-import { MeldingenKaart } from '../components/instellingen/MeldingenKaart';
 import { ProfielKaart } from '../components/instellingen/ProfielKaart';
 import { AgendaWeergaveKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
@@ -36,10 +35,6 @@ export function Instellingen() {
           await profiel.vernieuw();
         }}
       />
-
-      <Sectie titel="Meldingen">
-        <MeldingenKaart />
-      </Sectie>
 
       <Sectie titel="Weergave">
         <ThemaKiezer />
