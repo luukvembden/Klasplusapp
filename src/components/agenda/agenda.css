@@ -46,7 +46,7 @@
   padding-top: 4px;
 }
 
-/* Alleen zichtbaar op een andere dag dan vandaag. */
+/* Alleen zichtbaar op een andere dag dan vandaag. Ook gebruikt voor "Gemiddeldes" bij Cijfers. */
 .agendakop__vandaag {
   height: 40px;
   padding: 0 14px;
@@ -344,3 +344,17 @@
 
 /* Onderregel */
 
+
+/* Als link (Gemiddeldes): zelfde uiterlijk als de knop, tekst in het midden. */
+.agendakop__knoplink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Als link (Gemiddeldes): zelfde uiterlijk als de knop, tekst in het midden. */
+.agendakop__knoplink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}

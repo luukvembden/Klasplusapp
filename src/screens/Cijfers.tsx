@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
 import { CijferRij } from '../components/cijfers/CijferRij';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { Sectie } from '../components/ui/Sectie';
@@ -9,7 +8,7 @@ import { meestRecent } from '../lib/cijfers';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
 
-const AANTAL_RECENT = 8;
+const AANTAL_RECENT = 20;
 
 export function Cijfers() {
   const { cijfers, profiel, resultaat, fout, vernieuw } = useCijfers();
@@ -23,12 +22,18 @@ export function Cijfers() {
           <h1 className="agendakop__titel">Cijfers</h1>
           <span className="agendakop__sub">{onder || ' '}</span>
         </div>
+        {/* Zelfde knop als "Vandaag" in de Agenda. */}
+        <div className="agendakop__knoppen">
+          <Link to="/cijfers/gemiddeldes" className="agendakop__vandaag agendakop__knoplink">
+            Gemiddeldes
+          </Link>
+        </div>
       </header>
 
       <div className="scherm__lijst">
         <VegenOmTeVernieuwen onVernieuw={vernieuw}>
           <div className="pagina pagina--onder-kop">
-            <Sectie titel="Meest recent">
+            <Sectie titel="Recent">
               <section className="kaart" aria-busy={!cijfers}>
                 {fout && <p className="melding">{fout}</p>}
                 {cijfers && cijfers.length === 0 && <p className="melding">Nog geen cijfers.</p>}
@@ -36,10 +41,6 @@ export function Cijfers() {
               </section>
             </Sectie>
 
-            <Link to="/cijfers/gemiddeldes" className="knop-primair cijfers__knop">
-              Bekijk gemiddeldes per vak
-              <ChevronRight size={20} strokeWidth={2.2} aria-hidden="true" />
-            </Link>
           </div>
         </VegenOmTeVernieuwen>
       </div>

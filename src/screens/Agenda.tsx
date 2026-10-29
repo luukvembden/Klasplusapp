@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { api } from '../api';
@@ -8,6 +8,7 @@ import { LesRij } from '../components/agenda/LesRij';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
+import { useVeeg } from '../hooks/useVeeg';
 import { beginVanDag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/agenda/agenda.css';
@@ -28,6 +29,10 @@ export function Agenda() {
   };
   const maandag = maandagVan(dag);
 
+  // Over de lessen vegen: naar links is de volgende dag, naar rechts de vorige.
+  const midden = useRef<HTMLDivElement>(null);
+  useVeeg({ naarLinks: () => setDag(plusDagen(dag, 1)), naarRechts: () => setDag(plusDagen(dag, -1)) }, midden);
+
   // De hele week in één keer ophalen, zodat wisselen tussen dagen direct gaat.
   const week = useLaden(() => api.afspraken(maandag, plusDagen(maandag, 7)), [maandag.getTime()]);
 
@@ -44,7 +49,7 @@ export function Agenda() {
       <AgendaKop dag={dag} onKies={setDag} onVandaag={() => setDag(beginVanDag(new Date()))} />
       <DagStrook dag={dag} onKies={setDag} />
 
-      <div className="agenda__midden">
+      <div className="agenda__midden" ref={midden}>
         <div className="agenda__lijst" aria-busy={week.laden}>
           <VegenOmTeVernieuwen onVernieuw={week.vernieuw}>
             {week.fout && <p className="melding">{week.fout}</p>}

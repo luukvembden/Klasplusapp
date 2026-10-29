@@ -157,6 +157,14 @@ export const demoCijfers: Cijfer[] = [
   cijfer(vakken.sk, 'Hoofdstuk 1', '2026-10-06', 2, 5.8),
   cijfer(vakken.fa, 'Woordjes', '2026-09-29', 1, 7.9),
   cijfer(vakken.fa, 'Luistertoets', '2026-10-20', 1, 6.4),
+  cijfer(vakken.ne, 'Leesdossier', '2026-09-16', 1, 7.7),
+  cijfer(vakken.wb, 'Hoofdstuk 1', '2026-09-18', 2, 5.6),
+  cijfer(vakken.bi, 'Hoofdstuk 2', '2026-09-22', 2, 6.9),
+  cijfer(vakken.sk, 'Practicum zouten', '2026-09-24', 1, 7.1),
+  cijfer(vakken.gs, 'Oudheid', '2026-09-17', 2, 6.2),
+  cijfer(vakken.en, 'Schrijfopdracht', '2026-09-11', 1, 6.8),
+  cijfer(vakken.fa, 'Grammatica', '2026-09-15', 1, 5.4),
+  cijfer(vakken.bi, 'Hoofdstuk 1', '2026-09-09', 2, 7.6),
 ];
 
 /** Afwezigheden in de demo: [datum, lesuur, vak, reden, geoorloofd]. */
