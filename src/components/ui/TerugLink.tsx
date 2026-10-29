@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
-import { useLagen } from '../AppLayout';
+import { useLagen } from '../../lib/laag';
 import './ui.css';
 
 /**

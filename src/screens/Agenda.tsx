@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { api } from '../api';
@@ -9,24 +9,29 @@ import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { useVeeg } from '../hooks/useVeeg';
+import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/agenda/agenda.css';
 
-/** Onthoudt de gekozen dag zolang de app open is, zodat terugkomen uit Lesinformatie dezelfde dag toont. */
-let laatsteDag: Date | null = null;
+/** Een dag die de Agenda moet tonen zodra hij weer bovenop ligt, bijvoorbeeld na het opslaan van een afspraak. */
+let gevraagdeDag: Date | null = null;
 
 /** Laat de Agenda deze dag tonen, bijvoorbeeld na het opslaan van een nieuwe afspraak. */
 export function toonDagInAgenda(dag: Date) {
-  laatsteDag = beginVanDag(dag);
+  gevraagdeDag = beginVanDag(dag);
 }
 
 export function Agenda() {
-  const [dag, zetDag] = useState(() => laatsteDag ?? beginVanDag(new Date()));
-  const setDag = (nieuw: Date) => {
-    laatsteDag = nieuw;
-    zetDag(nieuw);
-  };
+  // Via de tabbalk begint de Agenda altijd op vandaag. Terug uit een les blijft de dag staan,
+  // omdat de Agenda dan onder de les bleef liggen (zie AppLayout).
+  const [dag, setDag] = useState(() => beginVanDag(new Date()));
+  const zichtbaar = useLaagZichtbaar();
+  useEffect(() => {
+    if (!gevraagdeDag) return;
+    setDag(gevraagdeDag);
+    gevraagdeDag = null;
+  }, [zichtbaar]);
   const maandag = maandagVan(dag);
 
   // Over de lessen vegen: naar links is de volgende dag, naar rechts de vorige.

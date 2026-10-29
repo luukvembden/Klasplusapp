@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type DependencyList } from 'react';
+import { useLaagZichtbaar } from '../lib/laag';
 
 interface Toestand<T> {
   data?: T;
@@ -15,11 +16,13 @@ const foutTekst = (e: unknown) =>
 /**
  * Laadt gegevens via de datalaag. Oude gegevens blijven staan tot de nieuwe binnen zijn.
  * Komt het toestel weer online, dan wordt opnieuw geladen. `vernieuw()` haalt alles opnieuw op
- * (voor omlaag vegen) en is klaar zodra de nieuwe gegevens er zijn.
+ * (voor omlaag vegen) en is klaar zodra de nieuwe gegevens er zijn. Kom je terug op deze pagina
+ * (bijvoorbeeld na het afvinken van huiswerk), dan wordt ook stil opnieuw geladen.
  */
 export function useLaden<T>(laad: () => Promise<T>, deps: DependencyList): Toestand<T> & { vernieuw: () => Promise<void> } {
   const [toestand, setToestand] = useState<Toestand<T>>({ laden: true });
   const [poging, setPoging] = useState(0);
+  const zichtbaar = useLaagZichtbaar();
   const laadRef = useRef(laad);
   laadRef.current = laad;
 
@@ -40,7 +43,7 @@ export function useLaden<T>(laad: () => Promise<T>, deps: DependencyList): Toest
       actief = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, poging]);
+  }, [...deps, poging, zichtbaar]);
 
   const vernieuw = useCallback(async () => {
     try {

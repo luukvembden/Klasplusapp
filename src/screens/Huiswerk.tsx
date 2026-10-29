@@ -25,16 +25,11 @@ function weekInWoorden(week: Date): string {
   return verschil > 0 ? `over ${verschil} weken` : `${-verschil} weken geleden`;
 }
 
-/** Onthoudt de gekozen week zolang de app open is, net als de dag in de Agenda. */
-let laatsteWeek: Date | null = null;
-
 /** Huiswerk en toetsen van een week, per dag en per vak. */
 export function Huiswerk() {
-  const [week, zetWeek] = useState(() => laatsteWeek ?? maandagVan(new Date()));
-  const kies = (d: Date) => {
-    laatsteWeek = maandagVan(d);
-    zetWeek(laatsteWeek);
-  };
+  // Via de tabbalk begint Huiswerk altijd op deze week; terug uit een opdracht blijft de week staan.
+  const [week, zetWeek] = useState(() => maandagVan(new Date()));
+  const kies = (d: Date) => zetWeek(maandagVan(d));
 
   // Over de lijst vegen: naar links is de volgende week, naar rechts de vorige.
   const lijst = useRef<HTMLDivElement>(null);

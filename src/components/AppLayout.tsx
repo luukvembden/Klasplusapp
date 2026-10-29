@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { Routes, useLocation, useNavigate, type Location } from 'react-router-dom';
+import { LaagZichtbaar, LagenContext } from '../lib/laag';
 import { paginaRoutes, TABS } from '../paginaRoutes';
 import { TabBar } from './TabBar';
 
@@ -11,10 +12,6 @@ interface Laag {
 
 /** Zo lang duurt het wegschuiven of terugveren (ms). */
 const DUUR = 240;
-
-/** Voor de terugknop: schuift de pagina weg en gaat terug. False als er geen pagina onder ligt. */
-const LagenContext = createContext<{ terug: () => boolean } | null>(null);
-export const useLagen = () => useContext(LagenContext);
 
 /** In een invoerveld (tekst selecteren, cursor verplaatsen) telt vegen niet. */
 const inInvoer = (doel: EventTarget | null) =>
@@ -40,6 +37,18 @@ export function AppLayout() {
       : [...stapel.current.filter((l) => l.idx < idx), { idx, location }];
   }
   const lagen = stapel.current;
+
+  // Telt per pagina hoe vaak hij bovenop kwam; zo ververst een pagina waar je naar terugkeert.
+  const tellers = useRef(new Map<string, number>());
+  const vorigeBoven = useRef<string | null>(null);
+  const bovenSleutel = lagen[lagen.length - 1].location.key;
+  if (vorigeBoven.current !== bovenSleutel) {
+    vorigeBoven.current = bovenSleutel;
+    tellers.current.set(bovenSleutel, (tellers.current.get(bovenSleutel) ?? 0) + 1);
+    for (const sleutel of tellers.current.keys()) {
+      if (!lagen.some((l) => l.location.key === sleutel)) tellers.current.delete(sleutel);
+    }
+  }
 
   const lagenRef = useRef<HTMLElement>(null);
   const bovenRef = useRef<HTMLDivElement>(null);
@@ -85,7 +94,9 @@ export function AppLayout() {
                 inert={!boven}
                 aria-hidden={boven ? undefined : true}
               >
-                <Routes location={laag.location}>{paginaRoutes}</Routes>
+                <LaagZichtbaar.Provider value={tellers.current.get(laag.location.key) ?? 0}>
+                  <Routes location={laag.location}>{paginaRoutes}</Routes>
+                </LaagZichtbaar.Provider>
               </div>
             );
           })}
