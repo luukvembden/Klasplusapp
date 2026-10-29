@@ -1,0 +1,93 @@
+/* Huiswerk: weekstrook en een lijst per dag, in de stijl van Cijfers. */
+
+.huiswerk {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--achtergrond);
+}
+
+.huiswerk__lijst {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.huiswerk__lijst .pagina {
+  padding-top: 14px;
+}
+
+.weekstrook {
+  min-height: 58px;
+}
+
+.weekstrook__midden {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.weekstrook__week {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.weekstrook__bereik {
+  font-size: 13px;
+  color: var(--tekst-zacht);
+}
+
+.huiswerkrij {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  min-height: 56px;
+  border-bottom: 1px solid var(--lijn-zacht);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.huiswerkrij:last-child {
+  border-bottom: none;
+}
+
+.huiswerkrij__tekst {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.huiswerkrij__vak {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Eén regel voorproefje; de rest staat achter de tik. */
+.huiswerkrij__inhoud {
+  font-size: 13px;
+  color: var(--tekst-secundair);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.huiswerkrij__rechts {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.huiswerkrij svg {
+  flex: 0 0 auto;
+}
+
+/* Afwezigheid: ruimte onderin, zodat de plusknop de laatste rij niet bedekt. */
+.huiswerk__lijst--met-plus .pagina {
+  padding-bottom: 88px;
+}

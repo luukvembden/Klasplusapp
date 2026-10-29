@@ -1,0 +1,213 @@
+.pagina--instellingen {
+  gap: 18px;
+}
+
+.profielkaart {
+  padding: 14px 16px;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-height: 76px;
+}
+
+.profielkaart__avatar {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 24px;
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.profielkaart__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profielkaart__naam {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profielkaart__school {
+  font-size: 14px;
+  color: var(--tekst-secundair);
+}
+
+/* Ouder: de profielkaart is een knop die de lijst met kinderen openklapt. */
+.profielkaart--ouder {
+  padding: 0;
+}
+
+.profielkaart__knop {
+  display: flex;
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profielkaart__knop .profielkaart__tekst {
+  flex: 1;
+  min-width: 0;
+}
+
+.profielkaart__pijl {
+  flex: 0 0 auto;
+  color: var(--groen-tekst);
+  transition: transform 0.2s ease;
+}
+
+.profielkaart__pijl--open {
+  transform: rotate(180deg);
+}
+
+.kindkiezer {
+  list-style: none;
+  margin: 0;
+  padding: 0 16px 6px;
+  border-top: 1px solid var(--lijn-zacht);
+}
+
+.kindkiezer li + li {
+  border-top: 1px solid var(--lijn-zacht);
+}
+
+.kindkiezer__rij {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tekst);
+  text-align: left;
+  cursor: pointer;
+}
+
+.kindkiezer__avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 16px;
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kindkiezer__naam {
+  flex: 1;
+}
+
+.instelrij {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--lijn-zacht);
+  color: var(--tekst);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.instelrij:last-child {
+  border-bottom: none;
+}
+
+.instelrij input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--groen);
+}
+
+.instelrij__waarde {
+  color: var(--tekst-secundair);
+}
+
+.instelrij--vast {
+  cursor: default;
+}
+
+.themakiezer {
+  background: var(--kaart);
+  border-radius: var(--radius-kaart);
+  padding: 6px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.themakiezer button {
+  min-height: var(--tik);
+  border: none;
+  border-radius: 10px;
+  background: var(--vlak);
+  color: var(--tekst);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.themakiezer button[aria-pressed='true'] {
+  background: var(--groen);
+  color: var(--op-groen);
+}
+
+.instellingen__let-op {
+  margin: 2px 4px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tekst-secundair);
+}
+
+.uitloggen {
+  min-height: 50px;
+  border: none;
+  border-radius: var(--radius-knop);
+  background: var(--kaart);
+  color: var(--onvoldoende);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Privacyverklaring */
+
+.privacy {
+  padding: 4px 16px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.privacy h2 {
+  margin: 14px 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.privacy p {
+  margin: 0 0 12px;
+  color: var(--tekst-zacht);
+}

@@ -1,0 +1,346 @@
+.agenda {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--achtergrond);
+}
+
+/* Kop: grote titel links, knoppen rechts. */
+
+.agendakop {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  /* Statusbalk erboven, net als bij Cijfers en Instellingen. */
+  padding: calc(var(--veilig-boven) + 16px) 20px 12px;
+}
+
+.agendakop__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.agendakop__titel {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.agendakop__sub {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tekst-secundair);
+}
+
+.agendakop__knoppen {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+/* Alleen zichtbaar op een andere dag dan vandaag. */
+.agendakop__vandaag {
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--kaart);
+  box-shadow: var(--schaduw-kaart);
+  color: var(--groen-tekst);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.agendakop__kiezer {
+  position: relative;
+}
+
+.agendakop__icoon {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: var(--radius-kaart);
+  background: var(--kaart);
+  box-shadow: var(--schaduw-kaart);
+  color: var(--groen-tekst);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Onzichtbaar datumveld; de kalenderknop opent de keuzelijst ervan. */
+.agendakop__datumveld {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--tik);
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+}
+
+/* Dagstrook */
+
+/*
+ * Dagen (en op Huiswerk de week) als afgeronde kaart onder de kop, in dezelfde lichtgrijsgroene
+ * tint als de vierkantjes met het uurnummer.
+ */
+.dagstrook {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  margin: 0 16px;
+  padding: 6px 2px;
+  border-radius: 18px;
+  background: var(--groen-licht);
+  color: var(--tekst);
+}
+
+.dagstrook .weekstrook__week {
+  color: var(--tekst);
+}
+
+.dagstrook .weekstrook__bereik {
+  color: var(--tekst-zacht);
+}
+
+.dagstrook__pijl {
+  width: 32px;
+  height: var(--tik);
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  color: var(--groen-tekst);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dagstrook__dagen {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.dagstrook__dag {
+  min-height: 50px;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  color: var(--tekst);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.dagstrook__kort {
+  font-size: 13px;
+  color: var(--tekst-zacht);
+}
+
+.dagstrook__nr {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Gekozen dag: gevuld groen rondje met het nummer in wit; valt op tegen het lichte vlak. */
+.dagstrook__dag[aria-pressed='true'] .dagstrook__nr {
+  background: var(--groen-donker);
+  color: var(--op-groen);
+}
+
+/* Lessenlijst */
+
+/* Lijst plus de zwevende knop; de knop staat vast rechtsonder, boven de bijgewerkt-regel. */
+.agenda__midden {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.agenda__lijst {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  /* Onderin ruimte, zodat de plusknop de laatste les niet bedekt. */
+  padding: 14px 16px 88px;
+}
+
+.plusknop {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--groen);
+  color: var(--op-groen);
+  box-shadow: 0 2px 6px rgba(27, 36, 32, 0.18), 0 8px 20px rgba(27, 36, 32, 0.18);
+}
+
+.plusknop:active {
+  background: var(--groen-donker);
+}
+
+/* De lessen als losse, licht zwevende kaart, net als op Cijfers en Instellingen. */
+/* Alle lessen samen in één witte kaart, met lijnen ertussen. */
+.agenda__kaart {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--kaart);
+  border-radius: var(--radius-kaart);
+  overflow: hidden;
+  box-shadow: var(--schaduw-kaart);
+}
+
+.lesrij {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--lijn-zacht);
+}
+
+.agenda__kaart .lesrij:last-child {
+  border-bottom: none;
+}
+
+/* Uurnummer in een lichtgroen vierkantje. */
+.lesrij__uur {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lesrij__tekst {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lesrij__titel {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lesrij__tijd {
+  font-size: 14px;
+  color: var(--tekst-zacht);
+}
+
+.lesrij__labels {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+/* Labels */
+
+/*
+ * Pilletjes: zachte, doorschijnende achtergrond in de kleur van de tekst, zonder rand.
+ * --label-kleur bepaalt beide; het vlak is die kleur voor een klein deel over de kaart heen.
+ */
+.leslabel {
+  --label-kleur: var(--tekst-zacht);
+  --label-sterkte: 14%;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--label-kleur) var(--label-sterkte), transparent);
+  color: var(--label-kleur);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Open huiswerk, Info en KWT: grijs. */
+.leslabel--huiswerk,
+.leslabel--informatie,
+.leslabel--kwt {
+  --label-kleur: var(--tekst-zacht);
+}
+
+/* Afgerond huiswerk: groen met een vinkje. */
+.leslabel--huiswerk.leslabel--afgerond {
+  --label-kleur: var(--groen-tekst);
+}
+
+/* Toetsen: groen en iets voller, zodat ze meer opvallen dan huiswerk. */
+.leslabel--proefwerk,
+.leslabel--tentamen,
+.leslabel--so,
+.leslabel--mondeling {
+  --label-kleur: var(--groen-tekst);
+  --label-sterkte: 24%;
+  font-weight: 700;
+}
+
+.leslabel--ingeschreven,
+.leslabel--eigen {
+  --label-kleur: var(--ingeschreven-tekst);
+  --label-sterkte: 18%;
+}
+
+/* Afwezigheid: groen als de school het goedkeurde, rood als dat niet zo is. */
+.leslabel--geoorloofd {
+  --label-kleur: var(--groen-tekst);
+  --label-sterkte: 16%;
+}
+
+.leslabel--ongeoorloofd {
+  --label-kleur: var(--onvoldoende);
+  --label-sterkte: 16%;
+}
+
+/* Rood, zodat een vervallen les meteen opvalt. */
+.leslabel--vervalt {
+  --label-kleur: var(--onvoldoende);
+  --label-sterkte: 16%;
+}
+
+/* Onderregel */
+

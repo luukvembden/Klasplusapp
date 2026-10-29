@@ -1,0 +1,70 @@
+/* Afwezigheid melden */
+
+.melding--gelukt {
+  padding: 12px 16px;
+  border-radius: var(--radius-kaart);
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+  font-weight: 600;
+}
+
+.bevestiging {
+  padding: 16px;
+  gap: 14px;
+}
+
+.bevestiging p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.bevestiging__knoppen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.knop-secundair {
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--lijn);
+  border-radius: var(--radius-knop);
+  background: var(--kaart);
+  color: var(--tekst);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.afwezigheid__knop {
+  justify-content: space-between;
+}
+
+/* Datum en tijd naast elkaar in één rij. */
+.invoerrij__velden {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.invoerrij__velden .invoerrij__veld {
+  flex: 0 1 auto;
+}
+
+.invoerrij__tijd {
+  max-width: 88px;
+}
+
+/* De redenlijst rechts uitgelijnd, zoals de andere waarden. */
+.invoerrij__keuze {
+  appearance: none;
+  text-align: right;
+  text-align-last: right;
+  cursor: pointer;
+  font-family: inherit;
+}

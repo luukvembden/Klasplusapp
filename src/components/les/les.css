@@ -1,0 +1,176 @@
+/* Lesinformatie en de volledige huiswerktekst, in de stijl van Cijfers en Instellingen. */
+
+.les__labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gegevenrij {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  min-height: 52px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--lijn-zacht);
+  font-size: 15px;
+}
+
+.gegevenrij:last-child {
+  border-bottom: none;
+}
+
+.gegevenrij__label {
+  flex: 0 0 auto;
+  color: var(--tekst-secundair);
+  font-weight: 500;
+}
+
+.gegevenrij__waarde {
+  text-align: right;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Voorproefje van het huiswerk; tik om alles te lezen. */
+.inhoudkaart {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.inhoudkaart__links {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.inhoudkaart__datums {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tekst-secundair);
+}
+
+.inhoudkaart__tekst {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.inhoudkaart svg {
+  flex: 0 0 auto;
+}
+
+/* Volledige tekst van de docent. */
+.lestekst {
+  display: block;
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.lestekst a {
+  color: var(--groen-tekst);
+  font-weight: 600;
+}
+
+/* Formulier Nieuwe afspraak: zelfde rijen als Lesinformatie, met een invoerveld rechts. */
+.invoerrij {
+  align-items: center;
+  padding: 6px 0;
+  cursor: text;
+}
+
+.invoerrij__veld {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 40px;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tekst);
+}
+
+.invoerrij__veld::placeholder,
+.invoer-beschrijving::placeholder {
+  color: var(--tekst-secundair);
+  font-weight: 500;
+}
+
+/* Datum- en tijdkiezers rechts uitlijnen zoals de andere waarden. */
+.invoerrij__veld::-webkit-datetime-edit {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.invoer-beschrijving {
+  width: 100%;
+  min-height: 110px;
+  margin: 0;
+  padding: 14px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  resize: vertical;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--tekst);
+}
+
+.formulier-fout {
+  margin: 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--onvoldoende);
+}
+
+/* Rode knop onderaan, zoals Uitloggen. */
+.knop-verwijderen {
+  min-height: 50px;
+  border: none;
+  border-radius: var(--radius-knop);
+  background: var(--kaart);
+  color: var(--onvoldoende);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Agenda-rij als knop naar Lesinformatie. */
+.lesrij--link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lesrij--link:active {
+  background: var(--vlak);
+}
+
+/* Voor ouders: alleen lezen of het huiswerk is afgevinkt. */
+.afgerond-waarde {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.afgerond-waarde--ja {
+  color: var(--groen-tekst);
+  font-weight: 600;
+}

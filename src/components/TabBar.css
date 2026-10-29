@@ -1,0 +1,28 @@
+.tabbalk {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-around;
+  background: var(--kaart);
+  border-top: 1px solid var(--lijn);
+  /* Ontwerp: 28px onderaan voor de home-indicator; zonder indicator blijft 8px over. */
+  padding: 8px 8px max(8px, var(--veilig-onder));
+}
+
+.tabbalk__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--tik);
+  text-decoration: none;
+  color: var(--tekst-secundair);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tabbalk__tab.active {
+  color: var(--groen-tekst);
+  font-weight: 700;
+}

@@ -1,0 +1,99 @@
+/* Kleuren en maten uit het ontwerp. Gebruik in componenten altijd deze variabelen. */
+:root {
+  --groen: #2e6b5a;
+  --groen-donker: #1f4d40;
+  --groen-licht: #e3eee9;
+  /* Groen als tekstkleur (links, actieve tab); in donker thema lichter voor contrast. */
+  --groen-tekst: #2e6b5a;
+
+  --achtergrond: #f4f5f1;
+  --kaart: #ffffff;
+  --vlak: #f1f3ef;
+  --chip: #eef1ec;
+
+  --tekst: #1b2420;
+  --tekst-zacht: #3f4843;
+  --tekst-secundair: #59625d;
+  --op-groen: #ffffff;
+
+  --lijn: #e2e5df;
+  --lijn-zacht: #eceee9;
+  --invoer-rand: #d5d9d2;
+
+  --onvoldoende: #a3401a;
+  --onvoldoende-vlak: #fbe9e0;
+  --onvoldoende-rand: #e8b8a2;
+
+  --ingeschreven-vlak: #ddf1ea;
+  --ingeschreven-tekst: #1f4d40;
+  --ingeschreven-rand: #8cc7b3;
+  --kwt-rand: #8a938e;
+
+  --font: 'Figtree', system-ui, sans-serif;
+  --tik: 44px;
+  --radius-kaart: 14px;
+  --radius-knop: 12px;
+  /* Heel lichte schaduw: kaart lijkt net los van de achtergrond te zweven. */
+  --schaduw-kaart: 0 1px 2px rgba(27, 36, 32, 0.06), 0 6px 16px rgba(27, 36, 32, 0.06);
+
+  /* Ruimte voor de statusbalk en de home-indicator op telefoons. */
+  --veilig-boven: env(safe-area-inset-top, 0px);
+  --veilig-onder: env(safe-area-inset-bottom, 0px);
+
+  color-scheme: light;
+}
+
+/* Donker thema: staat in twee blokken, voor "Donker" en voor "Systeem" op een donker toestel. */
+:root[data-thema='donker'] {
+  --groen: #2e6b5a;
+  --groen-donker: #3d8a74;
+  --groen-licht: #1c2b26;
+  --groen-tekst: #7cc2ab;
+  --achtergrond: #111513;
+  --kaart: #1a1f1d;
+  --vlak: #222825;
+  --chip: #262d2a;
+  --tekst: #e6ebe8;
+  --tekst-zacht: #c3cbc6;
+  --tekst-secundair: #9aa49f;
+  --lijn: #2d3431;
+  --lijn-zacht: #262c29;
+  --invoer-rand: #3a423e;
+  --onvoldoende: #f0a07f;
+  --onvoldoende-vlak: #3b231a;
+  --onvoldoende-rand: #7a4330;
+  --ingeschreven-vlak: #1d3a31;
+  --ingeschreven-tekst: #a9dccb;
+  --ingeschreven-rand: #3f7d69;
+  --kwt-rand: #6c7570;
+  --schaduw-kaart: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.25);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-thema]) {
+    --groen: #2e6b5a;
+    --groen-donker: #3d8a74;
+    --groen-licht: #1c2b26;
+    --groen-tekst: #7cc2ab;
+    --achtergrond: #111513;
+    --kaart: #1a1f1d;
+    --vlak: #222825;
+    --chip: #262d2a;
+    --tekst: #e6ebe8;
+    --tekst-zacht: #c3cbc6;
+    --tekst-secundair: #9aa49f;
+    --lijn: #2d3431;
+    --lijn-zacht: #262c29;
+    --invoer-rand: #3a423e;
+    --onvoldoende: #f0a07f;
+    --onvoldoende-vlak: #3b231a;
+    --onvoldoende-rand: #7a4330;
+    --ingeschreven-vlak: #1d3a31;
+    --ingeschreven-tekst: #a9dccb;
+    --ingeschreven-rand: #3f7d69;
+    --kwt-rand: #6c7570;
+    --schaduw-kaart: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+  }
+}

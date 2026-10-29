@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Klas+</string>
+    <string name="title_activity_main">Klas+</string>
+    <string name="package_name">nl.klasplus.app</string>
+    <string name="custom_url_scheme">nl.klasplus.app</string>
+</resources>

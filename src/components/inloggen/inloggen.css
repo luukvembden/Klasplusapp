@@ -1,0 +1,98 @@
+.inloggen {
+  min-height: 100%;
+  /* Ontwerp: 96px boven, waarvan 40px statusbalk. */
+  padding: calc(var(--veilig-boven) + 56px) 24px calc(var(--veilig-onder) + 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.inloggen__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.inloggen__logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--groen);
+  color: var(--op-groen);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inloggen__naam {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.inloggen__uitleg {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--tekst-secundair);
+}
+
+.inloggen__formulier {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inloggen__formulier .knop-primair {
+  margin-top: 8px;
+}
+
+.inloggen__klein {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tekst-secundair);
+}
+
+.inloggen__fout {
+  color: var(--onvoldoende);
+}
+
+.inloggen__ruimte {
+  flex: 1 1 auto;
+}
+
+.inloggen__let-op {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--groen-licht);
+  border-radius: var(--radius-knop);
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.inloggen__let-op svg {
+  flex: 0 0 auto;
+  color: var(--groen-tekst);
+}
+
+.inloggen__let-op p {
+  margin: 0;
+}
+
+
+/* Alleen in de demo: dezelfde app bekijken zoals een ouder hem ziet. */
+.inloggen__ouder {
+  min-height: 44px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--groen-tekst);
+  cursor: pointer;
+}

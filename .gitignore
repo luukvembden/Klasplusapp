@@ -1,0 +1,8 @@
+node_modules
+dist
+*.local
+
+# Lokale instellingen en build-uitvoer
+.claude/settings.local.json
+*.ipa
+android/.idea/

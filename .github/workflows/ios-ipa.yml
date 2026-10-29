@@ -1,0 +1,75 @@
+# Bouwt een ongetekende .ipa van Klas+ op een Mac in de cloud.
+# AltStore ondertekent hem daarna zelf met je eigen Apple ID.
+#
+# Starten: GitHub → tabblad Actions → "iOS .ipa bouwen" → Run workflow.
+# Ophalen: open de voltooide run en download het artifact "Klasplus-ipa" onderaan.
+
+name: iOS .ipa bouwen
+
+on:
+  workflow_dispatch: # handmatig starten via de knop "Run workflow"
+  push:
+    tags:
+      - 'v*' # of automatisch bij een versietag, bijvoorbeeld v1.0.1
+
+jobs:
+  ipa:
+    runs-on: macos-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Code ophalen
+        uses: actions/checkout@v4
+
+      - name: Xcode kiezen (nieuwste stabiele versie, nodig voor Capacitor 8)
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Node installeren
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Pakketten installeren
+        run: npm ci
+
+      - name: Web-app bouwen
+        run: npm run build
+
+      - name: Naar iOS kopiëren (installeert ook de CocoaPods)
+        run: npx cap sync ios
+
+      - name: App bouwen zonder ondertekening
+        working-directory: ios/App
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build | tail -n 60
+
+      - name: .ipa maken
+        working-directory: ios/App
+        run: |
+          APP="build/Build/Products/Release-iphoneos/App.app"
+          test -d "$APP" || { echo "App.app niet gevonden"; exit 1; }
+          mkdir -p Payload
+          cp -R "$APP" Payload/
+          zip -qry Klasplus.ipa Payload
+          ls -lh Klasplus.ipa
+
+      - name: .ipa uploaden als artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Klasplus-ipa
+          path: ios/App/Klasplus.ipa
+          retention-days: 14
