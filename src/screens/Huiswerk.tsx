@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { api, type Afspraak, type Label } from '../api';
 import { HuiswerkRij } from '../components/huiswerk/HuiswerkRij';
 import { WeekStrook } from '../components/huiswerk/WeekStrook';
@@ -34,6 +34,8 @@ export function Huiswerk() {
   // Deze week plus de week ervoor en erna: bij het vegen staat de buurweek al klaar.
   const geladen = useLaden(() => api.afspraken(plusDagen(week, -7), plusDagen(week, 14)), [week.getTime()]);
   const klaar = geladen.data && !geladen.laden && !geladen.fout;
+  // Vegen kan over de hele lijst, ook het lege stuk eronder tot aan de balk.
+  const lijstVlak = useRef<HTMLDivElement>(null);
 
   /** Huiswerk en toetsen van één week, per dag; ook voor de buurweken in de schuifbaan. */
   const weekLijst = (maandag: Date) => {
@@ -81,7 +83,7 @@ export function Huiswerk() {
       </header>
       <WeekStrook week={week} onKies={kies} />
 
-      <div className="huiswerk__lijst" aria-busy={geladen.laden}>
+      <div className="huiswerk__lijst" ref={lijstVlak} aria-busy={geladen.laden}>
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
           <div className="pagina">
             {geladen.fout && <p className="melding">{geladen.fout}</p>}
@@ -93,6 +95,7 @@ export function Huiswerk() {
               volgende={<div className="carrousel__week">{weekLijst(plusDagen(week, 7))}</div>}
               onVorige={() => kies(plusDagen(week, -7))}
               onVolgende={() => kies(plusDagen(week, 7))}
+              vlak={lijstVlak}
             />
           </div>
         </VegenOmTeVernieuwen>

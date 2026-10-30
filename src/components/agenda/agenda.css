@@ -261,11 +261,19 @@
 .lesrij__titel {
   font-size: 15px;
   font-weight: 700;
+  /* Een lange titel breekt af (hooguit twee regels) en schuift nooit onder de labels door. */
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .lesrij__tijd {
   font-size: 14px;
   color: var(--tekst-zacht);
+  overflow-wrap: anywhere;
 }
 
 .lesrij__labels {

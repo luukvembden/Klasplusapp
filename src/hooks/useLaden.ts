@@ -7,6 +7,18 @@ interface Toestand<T> {
   laden: boolean;
 }
 
+/**
+ * Laatst geladen gegevens per verzoek, zolang de app open is. Kom je terug op een tabblad, dan staat
+ * de lijst (en de balk "Bijgewerkt op") er meteen weer, terwijl op de achtergrond opnieuw geladen wordt.
+ */
+const geheugen = new Map<string, unknown>();
+const MAX_ONTHOUDEN = 60;
+
+/** Bij uitloggen of een ander kind kiezen: niets van het vorige account laten zien. */
+export function vergeetGeladen() {
+  geheugen.clear();
+}
+
 const foutTekst = (e: unknown) =>
   navigator.onLine
     ? // De technische reden tussen haakjes helpt bij het oplossen van problemen.
@@ -20,7 +32,11 @@ const foutTekst = (e: unknown) =>
  * (bijvoorbeeld na het afvinken van huiswerk), dan wordt ook stil opnieuw geladen.
  */
 export function useLaden<T>(laad: () => Promise<T>, deps: DependencyList): Toestand<T> & { vernieuw: () => Promise<void> } {
-  const [toestand, setToestand] = useState<Toestand<T>>({ laden: true });
+  // Zelfde verzoek (zelfde code en zelfde waarden) = zelfde plek in het geheugen.
+  const sleutel = `${laad.toString()}|${JSON.stringify(deps)}`;
+  const sleutelRef = useRef(sleutel);
+  sleutelRef.current = sleutel;
+  const [toestand, setToestand] = useState<Toestand<T>>(() => ({ data: geheugen.get(sleutel) as T | undefined, laden: true }));
   const [poging, setPoging] = useState(0);
   const zichtbaar = useLaagZichtbaar();
   const laadRef = useRef(laad);
@@ -34,9 +50,13 @@ export function useLaden<T>(laad: () => Promise<T>, deps: DependencyList): Toest
 
   useEffect(() => {
     let actief = true;
-    setToestand((t) => ({ data: t.data, laden: true }));
+    const bekend = geheugen.get(sleutel) as T | undefined;
+    setToestand((t) => ({ data: bekend ?? t.data, laden: true }));
     laad().then(
-      (data) => actief && setToestand({ data, laden: false }),
+      (data) => {
+        onthoud(sleutel, data);
+        if (actief) setToestand({ data, laden: false });
+      },
       (e: unknown) => actief && setToestand((t) => ({ data: t.data, fout: foutTekst(e), laden: false })),
     );
     return () => {
@@ -48,6 +68,7 @@ export function useLaden<T>(laad: () => Promise<T>, deps: DependencyList): Toest
   const vernieuw = useCallback(async () => {
     try {
       const data = await laadRef.current();
+      onthoud(sleutelRef.current, data);
       setToestand({ data, laden: false });
     } catch (e) {
       setToestand((t) => ({ data: t.data, fout: foutTekst(e), laden: false }));
@@ -55,4 +76,11 @@ export function useLaden<T>(laad: () => Promise<T>, deps: DependencyList): Toest
   }, []);
 
   return { ...toestand, vernieuw };
+}
+
+function onthoud(sleutel: string, data: unknown) {
+  geheugen.delete(sleutel);
+  geheugen.set(sleutel, data);
+  // Het oudste eerst weg.
+  if (geheugen.size > MAX_ONTHOUDEN) geheugen.delete(geheugen.keys().next().value!);
 }
