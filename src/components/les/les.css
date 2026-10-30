@@ -103,7 +103,8 @@
   outline: none;
   background: transparent;
   text-align: right;
-  font-size: 15px;
+  /* 16px: kleiner laat iOS inzoomen bij het typen. */
+  font-size: 16px;
   font-weight: 600;
   color: var(--tekst);
 }
@@ -129,7 +130,7 @@
   outline: none;
   background: transparent;
   resize: vertical;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.45;
   color: var(--tekst);
 }
