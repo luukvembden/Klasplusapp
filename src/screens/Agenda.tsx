@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { api } from '../api';
@@ -6,9 +6,9 @@ import { AgendaKop } from '../components/agenda/AgendaKop';
 import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
+import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
-import { useVeeg } from '../hooks/useVeeg';
 import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
@@ -34,38 +34,55 @@ export function Agenda() {
   }, [zichtbaar]);
   const maandag = maandagVan(dag);
 
-  // Over de lessen vegen: naar links is de volgende dag, naar rechts de vorige.
-  const midden = useRef<HTMLDivElement>(null);
-  useVeeg({ naarLinks: () => setDag(plusDagen(dag, 1)), naarRechts: () => setDag(plusDagen(dag, -1)) }, midden);
-
-  // De hele week in één keer ophalen, zodat wisselen tussen dagen direct gaat.
-  const week = useLaden(() => api.afspraken(maandag, plusDagen(maandag, 7)), [maandag.getTime()]);
+  // De week plus de week ervoor en erna in één keer ophalen: wisselen tussen dagen gaat dan direct,
+  // en bij het vegen staat de buurdag (ook over de weekgrens) al klaar.
+  const week = useLaden(() => api.afspraken(plusDagen(maandag, -7), plusDagen(maandag, 14)), [maandag.getTime()]);
+  const weekGeladen = week.data && !week.laden && !week.fout;
 
   // Een afspraak hoort bij elke dag die hij (deels) raakt; eigen afspraken kunnen meerdere dagen duren.
-  const dagEinde = plusDagen(dag, 1);
-  const lessen = (week.data?.data ?? [])
-    .filter((a) => new Date(a.start) < dagEinde && (new Date(a.einde) > dag || zelfdeDag(new Date(a.start), dag)))
-    // Hele-dag-afspraken bovenaan, daarna op begintijd.
-    .sort((a, b) => Number(!!b.heleDag) - Number(!!a.heleDag) || a.start.localeCompare(b.start));
-  const weekGeladen = week.data && !week.laden && !week.fout;
+  const lessenOp = (d: Date) => {
+    const einde = plusDagen(d, 1);
+    return (week.data?.data ?? [])
+      .filter((a) => new Date(a.start) < einde && (new Date(a.einde) > d || zelfdeDag(new Date(a.start), d)))
+      // Hele-dag-afspraken bovenaan, daarna op begintijd.
+      .sort((a, b) => Number(!!b.heleDag) - Number(!!a.heleDag) || a.start.localeCompare(b.start));
+  };
+
+  /** De lessen van één dag, zoals in de lijst; ook voor de buurdagen in de schuifbaan. */
+  const dagLijst = (d: Date) => {
+    const lessen = lessenOp(d);
+    return (
+      <>
+        {lessen.length > 0 && (
+          <section className="agenda__kaart">
+            {lessen.map((a) => (
+              <LesRij key={a.id} afspraak={a} />
+            ))}
+          </section>
+        )}
+        {weekGeladen && lessen.length === 0 && <p className="melding">Geen afspraken op deze dag.</p>}
+      </>
+    );
+  };
 
   return (
     <div className="agenda">
       <AgendaKop dag={dag} onKies={setDag} onVandaag={() => setDag(beginVanDag(new Date()))} />
       <DagStrook dag={dag} onKies={setDag} />
 
-      <div className="agenda__midden" ref={midden}>
+      <div className="agenda__midden">
         <div className="agenda__lijst" aria-busy={week.laden}>
           <VegenOmTeVernieuwen onVernieuw={week.vernieuw}>
             {week.fout && <p className="melding">{week.fout}</p>}
-            {lessen.length > 0 && (
-              <section className="agenda__kaart">
-                {lessen.map((a) => (
-                  <LesRij key={a.id} afspraak={a} />
-                ))}
-              </section>
-            )}
-            {weekGeladen && lessen.length === 0 && <p className="melding">Geen afspraken op deze dag.</p>}
+            {/* Vegen over de lessen: naar links de volgende dag, naar rechts de vorige, en je ziet hem binnenschuiven. */}
+            <VeegCarrousel
+              sleutel={naarInvoer(dag)}
+              vorige={dagLijst(plusDagen(dag, -1))}
+              huidige={dagLijst(dag)}
+              volgende={dagLijst(plusDagen(dag, 1))}
+              onVorige={() => setDag(plusDagen(dag, -1))}
+              onVolgende={() => setDag(plusDagen(dag, 1))}
+            />
           </VegenOmTeVernieuwen>
         </div>
 

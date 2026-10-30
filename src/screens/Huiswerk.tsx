@@ -1,13 +1,13 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { api, type Afspraak, type Label } from '../api';
 import { HuiswerkRij } from '../components/huiswerk/HuiswerkRij';
 import { WeekStrook } from '../components/huiswerk/WeekStrook';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { Sectie } from '../components/ui/Sectie';
+import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
-import { useVeeg } from '../hooks/useVeeg';
-import { dagTitel, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
+import { dagTitel, maandagVan, naarInvoer, plusDagen, vanInvoer, zelfdeDag } from '../lib/datum';
 import '../components/agenda/agenda.css';
 import '../components/huiswerk/huiswerk.css';
 import '../components/ui/ui.css';
@@ -31,20 +31,37 @@ export function Huiswerk() {
   const [week, zetWeek] = useState(() => maandagVan(new Date()));
   const kies = (d: Date) => zetWeek(maandagVan(d));
 
-  // Over de lijst vegen: naar links is de volgende week, naar rechts de vorige.
-  const lijst = useRef<HTMLDivElement>(null);
-  useVeeg({ naarLinks: () => kies(plusDagen(week, 7)), naarRechts: () => kies(plusDagen(week, -7)) }, lijst);
-
-  const geladen = useLaden(() => api.afspraken(week, plusDagen(week, 7)), [week.getTime()]);
-  const taken = (geladen.data?.data ?? []).filter(heeftTaak).sort((a, b) => a.start.localeCompare(b.start));
-
-  // Per dag groeperen, in volgorde van de week.
-  const perDag = new Map<string, Afspraak[]>();
-  for (const a of taken) {
-    const dag = naarInvoer(new Date(a.start));
-    perDag.set(dag, [...(perDag.get(dag) ?? []), a]);
-  }
+  // Deze week plus de week ervoor en erna: bij het vegen staat de buurweek al klaar.
+  const geladen = useLaden(() => api.afspraken(plusDagen(week, -7), plusDagen(week, 14)), [week.getTime()]);
   const klaar = geladen.data && !geladen.laden && !geladen.fout;
+
+  /** Huiswerk en toetsen van één week, per dag; ook voor de buurweken in de schuifbaan. */
+  const weekLijst = (maandag: Date) => {
+    const tot = plusDagen(maandag, 7);
+    const taken = (geladen.data?.data ?? [])
+      .filter((a) => heeftTaak(a) && new Date(a.start) >= maandag && new Date(a.start) < tot)
+      .sort((a, b) => a.start.localeCompare(b.start));
+    // Per dag groeperen, in volgorde van de week.
+    const perDag = new Map<string, Afspraak[]>();
+    for (const a of taken) {
+      const dag = naarInvoer(new Date(a.start));
+      perDag.set(dag, [...(perDag.get(dag) ?? []), a]);
+    }
+    return (
+      <>
+        {klaar && taken.length === 0 && <p className="melding">Geen huiswerk of toetsen deze week.</p>}
+        {[...perDag.entries()].map(([dag, lijst]) => (
+          <Sectie key={dag} titel={dagTitel(vanInvoer(dag)!)}>
+            <section className="kaart">
+              {lijst.map((a) => (
+                <HuiswerkRij key={a.id} afspraak={a} />
+              ))}
+            </section>
+          </Sectie>
+        ))}
+      </>
+    );
+  };
   const dezeWeek = zelfdeDag(week, maandagVan(new Date()));
 
   return (
@@ -64,20 +81,19 @@ export function Huiswerk() {
       </header>
       <WeekStrook week={week} onKies={kies} />
 
-      <div className="huiswerk__lijst" ref={lijst} aria-busy={geladen.laden}>
+      <div className="huiswerk__lijst" aria-busy={geladen.laden}>
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
           <div className="pagina">
             {geladen.fout && <p className="melding">{geladen.fout}</p>}
-            {klaar && taken.length === 0 && <p className="melding">Geen huiswerk of toetsen deze week.</p>}
-            {[...perDag.entries()].map(([dag, lijst]) => (
-              <Sectie key={dag} titel={dagTitel(new Date(dag))}>
-                <section className="kaart">
-                  {lijst.map((a) => (
-                    <HuiswerkRij key={a.id} afspraak={a} />
-                  ))}
-                </section>
-              </Sectie>
-            ))}
+            {/* Vegen: naar links de volgende week, naar rechts de vorige, en je ziet hem binnenschuiven. */}
+            <VeegCarrousel
+              sleutel={naarInvoer(week)}
+              vorige={<div className="carrousel__week">{weekLijst(plusDagen(week, -7))}</div>}
+              huidige={<div className="carrousel__week">{weekLijst(week)}</div>}
+              volgende={<div className="carrousel__week">{weekLijst(plusDagen(week, 7))}</div>}
+              onVorige={() => kies(plusDagen(week, -7))}
+              onVolgende={() => kies(plusDagen(week, 7))}
+            />
           </div>
         </VegenOmTeVernieuwen>
       </div>
