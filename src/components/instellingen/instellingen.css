@@ -218,3 +218,20 @@
   font-size: 12px;
   color: var(--tekst-secundair);
 }
+
+/* Kleurkiezer: zelfde knoppen als Thema, met een stip in de eigen kleur. */
+.themakiezer .kleurknop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 6px;
+}
+
+.kleurknop__stip {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border-radius: 7px;
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.9);
+}

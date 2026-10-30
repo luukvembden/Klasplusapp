@@ -97,3 +97,70 @@
     color-scheme: dark;
   }
 }
+
+/*
+ * Kleurensets (Instellingen → Kleur). Groen is de standaard hierboven; deze vervangen alleen de
+ * accentkleur: de knoppen (--groen), de lichte vlakken zoals de dagstrook (--groen-licht), tekst en labels.
+ * Eerst de lichte versie, daarna de donkere met een zwaardere selector, zodat die in donker altijd wint.
+ */
+:root[data-kleur='blauw'] {
+  --groen: #2f63a8;
+  --groen-donker: #1f4a80;
+  --groen-licht: #e3ebf6;
+  --groen-tekst: #2f63a8;
+  --ingeschreven-vlak: #dde8f7;
+  --ingeschreven-tekst: #1f4a80;
+  --ingeschreven-rand: #8fb0dc;
+}
+
+:root[data-kleur='donkerblauw'] {
+  --groen: #1f3a68;
+  --groen-donker: #142849;
+  --groen-licht: #e2e7f0;
+  --groen-tekst: #1f3a68;
+  --ingeschreven-vlak: #dfe5f0;
+  --ingeschreven-tekst: #142849;
+  --ingeschreven-rand: #8e9fc0;
+}
+
+:root[data-kleur='blauw'][data-thema='donker'] {
+  --groen: #2f63a8;
+  --groen-donker: #4a7fc4;
+  --groen-licht: #1a2433;
+  --groen-tekst: #8cb4ea;
+  --ingeschreven-vlak: #1c2d45;
+  --ingeschreven-tekst: #b0cbf0;
+  --ingeschreven-rand: #3f6699;
+}
+
+:root[data-kleur='donkerblauw'][data-thema='donker'] {
+  --groen: #2d4f8a;
+  --groen-donker: #4566a3;
+  --groen-licht: #1a2030;
+  --groen-tekst: #9fb4dc;
+  --ingeschreven-vlak: #1e2840;
+  --ingeschreven-tekst: #b7c6e6;
+  --ingeschreven-rand: #4a5f8f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-kleur='blauw']:not([data-thema]) {
+    --groen: #2f63a8;
+    --groen-donker: #4a7fc4;
+    --groen-licht: #1a2433;
+    --groen-tekst: #8cb4ea;
+    --ingeschreven-vlak: #1c2d45;
+    --ingeschreven-tekst: #b0cbf0;
+    --ingeschreven-rand: #3f6699;
+  }
+
+  :root[data-kleur='donkerblauw']:not([data-thema]) {
+    --groen: #2d4f8a;
+    --groen-donker: #4566a3;
+    --groen-licht: #1a2030;
+    --groen-tekst: #9fb4dc;
+    --ingeschreven-vlak: #1e2840;
+    --ingeschreven-tekst: #b7c6e6;
+    --ingeschreven-rand: #4a5f8f;
+  }
+}
