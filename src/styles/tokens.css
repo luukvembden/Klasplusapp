@@ -21,6 +21,8 @@
   --invoer-rand: #d5d9d2;
 
   --onvoldoende: #a3401a;
+  /* Geoorloofde afwezigheid: altijd groen, welke kleurenset je ook kiest. Niet geoorloofd is --onvoldoende (rood). */
+  --geoorloofd: #2e6b5a;
   --onvoldoende-vlak: #fbe9e0;
   --onvoldoende-rand: #e8b8a2;
 
@@ -60,6 +62,7 @@
   --lijn-zacht: #262c29;
   --invoer-rand: #3a423e;
   --onvoldoende: #f0a07f;
+  --geoorloofd: #7cc2ab;
   --onvoldoende-vlak: #3b231a;
   --onvoldoende-rand: #7a4330;
   --ingeschreven-vlak: #1d3a31;
@@ -87,6 +90,7 @@
     --lijn-zacht: #262c29;
     --invoer-rand: #3a423e;
     --onvoldoende: #f0a07f;
+  --geoorloofd: #7cc2ab;
     --onvoldoende-vlak: #3b231a;
     --onvoldoende-rand: #7a4330;
     --ingeschreven-vlak: #1d3a31;
@@ -102,7 +106,9 @@
  * Kleurensets (Instellingen → Kleur). Groen is de standaard hierboven; deze vervangen alleen de
  * accentkleur: de knoppen (--groen), de lichte vlakken zoals de dagstrook (--groen-licht), tekst en labels.
  * Eerst de lichte versie, daarna de donkere met een zwaardere selector, zodat die in donker altijd wint.
+ * --geoorloofd en --onvoldoende (afwezigheid, onvoldoendes) blijven altijd groen en rood.
  */
+
 :root[data-kleur='blauw'] {
   --groen: #2f63a8;
   --groen-donker: #1f4a80;
@@ -113,14 +119,45 @@
   --ingeschreven-rand: #8fb0dc;
 }
 
-:root[data-kleur='donkerblauw'] {
-  --groen: #1f3a68;
-  --groen-donker: #142849;
-  --groen-licht: #e2e7f0;
-  --groen-tekst: #1f3a68;
-  --ingeschreven-vlak: #dfe5f0;
-  --ingeschreven-tekst: #142849;
-  --ingeschreven-rand: #8e9fc0;
+:root[data-kleur='roze'] {
+  --groen: #c2417f;
+  --groen-donker: #9b2f63;
+  --groen-licht: #f8e4ee;
+  --groen-tekst: #b03872;
+  --ingeschreven-vlak: #f6dfea;
+  --ingeschreven-tekst: #7f2551;
+  --ingeschreven-rand: #e3a3c3;
+}
+
+:root[data-kleur='oranje'] {
+  --groen: #b85a17;
+  --groen-donker: #93460f;
+  --groen-licht: #fbeadb;
+  --groen-tekst: #a85314;
+  --ingeschreven-vlak: #f9e5d4;
+  --ingeschreven-tekst: #7d3c0c;
+  --ingeschreven-rand: #eab48c;
+}
+
+:root[data-kleur='rood'] {
+  --groen: #b8322f;
+  --groen-donker: #8f2321;
+  --groen-licht: #f8e1e0;
+  --groen-tekst: #b02e2b;
+  --ingeschreven-vlak: #f6dcdb;
+  --ingeschreven-tekst: #7e1f1d;
+  --ingeschreven-rand: #e5a09e;
+}
+
+:root[data-kleur='geel'] {
+  --groen: #e7b416;
+  --groen-donker: #c99700;
+  --groen-licht: #fbf1cf;
+  --groen-tekst: #876200;
+  --ingeschreven-vlak: #f8edc6;
+  --ingeschreven-tekst: #6b4e00;
+  --ingeschreven-rand: #e2c66a;
+  --op-groen: #2a2205;
 }
 
 :root[data-kleur='blauw'][data-thema='donker'] {
@@ -133,17 +170,49 @@
   --ingeschreven-rand: #3f6699;
 }
 
-:root[data-kleur='donkerblauw'][data-thema='donker'] {
-  --groen: #2d4f8a;
-  --groen-donker: #4566a3;
-  --groen-licht: #1a2030;
-  --groen-tekst: #9fb4dc;
-  --ingeschreven-vlak: #1e2840;
-  --ingeschreven-tekst: #b7c6e6;
-  --ingeschreven-rand: #4a5f8f;
+:root[data-kleur='roze'][data-thema='donker'] {
+  --groen: #b03872;
+  --groen-donker: #d0598f;
+  --groen-licht: #2e1a24;
+  --groen-tekst: #eca3c6;
+  --ingeschreven-vlak: #3a1f2d;
+  --ingeschreven-tekst: #f2bcd5;
+  --ingeschreven-rand: #8a3a61;
+}
+
+:root[data-kleur='oranje'][data-thema='donker'] {
+  --groen: #b85a17;
+  --groen-donker: #d6772f;
+  --groen-licht: #2e2118;
+  --groen-tekst: #f0b07e;
+  --ingeschreven-vlak: #3a2617;
+  --ingeschreven-tekst: #f4c49e;
+  --ingeschreven-rand: #8a5126;
+}
+
+:root[data-kleur='rood'][data-thema='donker'] {
+  --groen: #b02e2b;
+  --groen-donker: #d0504c;
+  --groen-licht: #2e1a1a;
+  --groen-tekst: #f09e9b;
+  --ingeschreven-vlak: #3a1d1c;
+  --ingeschreven-tekst: #f4b8b6;
+  --ingeschreven-rand: #8a3532;
+}
+
+:root[data-kleur='geel'][data-thema='donker'] {
+  --groen: #d9a80f;
+  --groen-donker: #e8c040;
+  --groen-licht: #2c2614;
+  --groen-tekst: #f0d06a;
+  --ingeschreven-vlak: #362d12;
+  --ingeschreven-tekst: #f3dc8c;
+  --ingeschreven-rand: #8a7224;
+  --op-groen: #1b1604;
 }
 
 @media (prefers-color-scheme: dark) {
+
   :root[data-kleur='blauw']:not([data-thema]) {
     --groen: #2f63a8;
     --groen-donker: #4a7fc4;
@@ -154,13 +223,44 @@
     --ingeschreven-rand: #3f6699;
   }
 
-  :root[data-kleur='donkerblauw']:not([data-thema]) {
-    --groen: #2d4f8a;
-    --groen-donker: #4566a3;
-    --groen-licht: #1a2030;
-    --groen-tekst: #9fb4dc;
-    --ingeschreven-vlak: #1e2840;
-    --ingeschreven-tekst: #b7c6e6;
-    --ingeschreven-rand: #4a5f8f;
+  :root[data-kleur='roze']:not([data-thema]) {
+    --groen: #b03872;
+    --groen-donker: #d0598f;
+    --groen-licht: #2e1a24;
+    --groen-tekst: #eca3c6;
+    --ingeschreven-vlak: #3a1f2d;
+    --ingeschreven-tekst: #f2bcd5;
+    --ingeschreven-rand: #8a3a61;
+  }
+
+  :root[data-kleur='oranje']:not([data-thema]) {
+    --groen: #b85a17;
+    --groen-donker: #d6772f;
+    --groen-licht: #2e2118;
+    --groen-tekst: #f0b07e;
+    --ingeschreven-vlak: #3a2617;
+    --ingeschreven-tekst: #f4c49e;
+    --ingeschreven-rand: #8a5126;
+  }
+
+  :root[data-kleur='rood']:not([data-thema]) {
+    --groen: #b02e2b;
+    --groen-donker: #d0504c;
+    --groen-licht: #2e1a1a;
+    --groen-tekst: #f09e9b;
+    --ingeschreven-vlak: #3a1d1c;
+    --ingeschreven-tekst: #f4b8b6;
+    --ingeschreven-rand: #8a3532;
+  }
+
+  :root[data-kleur='geel']:not([data-thema]) {
+    --groen: #d9a80f;
+    --groen-donker: #e8c040;
+    --groen-licht: #2c2614;
+    --groen-tekst: #f0d06a;
+    --ingeschreven-vlak: #362d12;
+    --ingeschreven-tekst: #f3dc8c;
+    --ingeschreven-rand: #8a7224;
+    --op-groen: #1b1604;
   }
 }

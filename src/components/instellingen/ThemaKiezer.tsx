@@ -30,11 +30,14 @@ export function AgendaWeergaveKiezer() {
   );
 }
 
-/** De drie kleurensets, met een stip in de eigen kleur (vast, zodat je ze naast elkaar ziet). */
+/** De kleurensets, met een stip in de eigen kleur (vast, zodat je ze naast elkaar ziet). In twee rijen van drie. */
 const kleuren: { waarde: Kleur; naam: string; stip: string }[] = [
   { waarde: 'groen', naam: 'Groen', stip: '#2e6b5a' },
   { waarde: 'blauw', naam: 'Blauw', stip: '#2f63a8' },
-  { waarde: 'donkerblauw', naam: 'Donkerblauw', stip: '#1f3a68' },
+  { waarde: 'roze', naam: 'Roze', stip: '#c2417f' },
+  { waarde: 'oranje', naam: 'Oranje', stip: '#b85a17' },
+  { waarde: 'rood', naam: 'Rood', stip: '#b8322f' },
+  { waarde: 'geel', naam: 'Geel', stip: '#e7b416' },
 ];
 
 /** Accentkleur van de app: knoppen, de dagstrook, labels en links. */

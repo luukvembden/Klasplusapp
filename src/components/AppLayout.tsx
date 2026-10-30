@@ -10,6 +10,12 @@ interface Laag {
   location: Location;
 }
 
+/**
+ * Wie een pagina is. Alleen `key` is niet genoeg: komt een adres van buitenaf binnen (een link, of het
+ * eerste adres bij opstarten), dan heet elke pagina "default".
+ */
+const sleutelVan = (l: Location) => `${l.key}|${l.pathname}${l.search}`;
+
 /** Zo lang duurt het wegschuiven of terugveren (ms). */
 const DUUR = 240;
 
@@ -30,7 +36,7 @@ export function AppLayout() {
 
   // De stapel bijwerken zodra het adres verandert. Een tab begint opnieuw; een terugstap valt eraf.
   const bovenste = stapel.current[stapel.current.length - 1];
-  if (bovenste?.location.key !== location.key) {
+  if (!bovenste || sleutelVan(bovenste.location) !== sleutelVan(location)) {
     const idx = (window.history.state?.idx as number | undefined) ?? 0;
     stapel.current = TABS.has(location.pathname)
       ? [{ idx, location }]
@@ -41,12 +47,12 @@ export function AppLayout() {
   // Telt per pagina hoe vaak hij bovenop kwam; zo ververst een pagina waar je naar terugkeert.
   const tellers = useRef(new Map<string, number>());
   const vorigeBoven = useRef<string | null>(null);
-  const bovenSleutel = lagen[lagen.length - 1].location.key;
+  const bovenSleutel = sleutelVan(lagen[lagen.length - 1].location);
   if (vorigeBoven.current !== bovenSleutel) {
     vorigeBoven.current = bovenSleutel;
     tellers.current.set(bovenSleutel, (tellers.current.get(bovenSleutel) ?? 0) + 1);
     for (const sleutel of tellers.current.keys()) {
-      if (!lagen.some((l) => l.location.key === sleutel)) tellers.current.delete(sleutel);
+      if (!lagen.some((l) => sleutelVan(l.location) === sleutel)) tellers.current.delete(sleutel);
     }
   }
 
@@ -66,7 +72,7 @@ export function AppLayout() {
     setInschuiven(true);
     const klaar = setTimeout(() => setInschuiven(false), DUUR + 40);
     return () => clearTimeout(klaar);
-  }, [location.key, lagen.length]);
+  }, [bovenSleutel, lagen.length]);
 
   const terug = schuifTerug(lagenRef, bovenRef, onderRef, () => navigate(-1));
 
@@ -88,13 +94,13 @@ export function AppLayout() {
             const onder = i === lagen.length - 2;
             return (
               <div
-                key={laag.location.key}
+                key={sleutelVan(laag.location)}
                 ref={boven ? bovenRef : onder ? onderRef : undefined}
                 className={`laag ${boven ? 'laag--boven' : onder ? 'laag--onder' : 'laag--weg'}${boven && inschuiven ? ' laag--nieuw' : ''}`}
                 inert={!boven}
                 aria-hidden={boven ? undefined : true}
               >
-                <LaagZichtbaar.Provider value={tellers.current.get(laag.location.key) ?? 0}>
+                <LaagZichtbaar.Provider value={tellers.current.get(sleutelVan(laag.location)) ?? 0}>
                   <Routes location={laag.location}>{paginaRoutes}</Routes>
                 </LaagZichtbaar.Provider>
               </div>

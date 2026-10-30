@@ -327,7 +327,7 @@
 
 /* Afwezigheid: groen als de school het goedkeurde, rood als dat niet zo is. */
 .leslabel--geoorloofd {
-  --label-kleur: var(--groen-tekst);
+  --label-kleur: var(--geoorloofd);
   --label-sterkte: 16%;
 }
 
