@@ -1,8 +1,15 @@
 import { useEffect } from 'react';
-import { useInstellingen } from '../lib/instellingen';
+import { useInstellingen, type Kleur } from '../lib/instellingen';
 
 /** Kleur van de browser- of statusbalk per kleurenset. */
-const balkKleur = { groen: '#2E6B5A', blauw: '#2F63A8', donkerblauw: '#1F3A68' } as const;
+const balkKleur: Record<Kleur, string> = {
+  groen: '#2E6B5A',
+  blauw: '#2F63A8',
+  roze: '#C2417F',
+  oranje: '#B85A17',
+  rood: '#B8322F',
+  geel: '#E7B416',
+};
 
 /**
  * Zet het gekozen thema en de kleurenset op <html>; bij "Systeem" volgt de app de instelling van het toestel.
