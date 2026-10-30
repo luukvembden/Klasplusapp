@@ -202,3 +202,39 @@
   padding-top: calc(var(--veilig-boven) + 4px);
   gap: 12px;
 }
+
+/* Schuifbaan voor dagen (Agenda) en weken (Huiswerk); zie VeegCarrousel. De rand loopt tot de schermrand,
+   zodat de schaduwen van de kaarten niet worden afgesneden. */
+.carrousel {
+  /* Zelfde als de zijmarge van de lijst eromheen (Agenda 16px, Huiswerk 20px). */
+  --carrousel-rand: 16px;
+  margin: -8px calc(-1 * var(--carrousel-rand));
+  padding: 8px 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.carrousel__baan {
+  display: flex;
+  align-items: flex-start;
+  transform: translateX(-100%);
+  will-change: transform;
+}
+
+.carrousel__vak {
+  flex: 0 0 100%;
+  min-width: 0;
+  padding: 0 var(--carrousel-rand);
+  box-sizing: border-box;
+}
+
+.huiswerk .carrousel {
+  --carrousel-rand: 20px;
+}
+
+/* Eén week bij Huiswerk: de dagen onder elkaar, net als op een gewone pagina. */
+.carrousel__week {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
