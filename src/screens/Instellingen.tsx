@@ -6,7 +6,7 @@ import { ProfielKaart } from '../components/instellingen/ProfielKaart';
 import { AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
-import { useLaden } from '../hooks/useLaden';
+import { useLaden, vergeetGeladen } from '../hooks/useLaden';
 import { wisEigenAfspraken } from '../lib/eigenAfspraken';
 import { herstelInstellingen } from '../lib/instellingen';
 import { wisAlles } from '../lib/opslag';
@@ -21,6 +21,7 @@ export function Instellingen() {
     // Zoals de privacyverklaring belooft: alles van dit toestel weg, ook de voorkeuren.
     wisEigenAfspraken();
     wisAlles();
+    vergeetGeladen();
     herstelInstellingen();
     navigate('/inloggen', { replace: true });
   };
@@ -32,6 +33,7 @@ export function Instellingen() {
         profiel={profiel.data?.data}
         onKiesKind={async (id) => {
           await api.kiesKind(id);
+          vergeetGeladen();
           await profiel.vernieuw();
         }}
       />

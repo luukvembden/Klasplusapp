@@ -64,6 +64,13 @@
 .huiswerkrij__vak {
   font-size: 15px;
   font-weight: 600;
+  /* Net als in de Agenda: lange namen breken af en lopen nooit onder de labels door. */
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 /* Eén regel voorproefje; de rest staat achter de tik. */

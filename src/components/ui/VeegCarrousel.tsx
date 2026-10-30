@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } from 'react';
 import './ui.css';
 
 /** Zo lang duurt het doorglijden of terugveren (ms). */
@@ -17,6 +17,11 @@ interface Props {
   volgende: ReactNode;
   onVorige: () => void;
   onVolgende: () => void;
+  /**
+   * Het vlak waarop je kunt vegen, bijvoorbeeld de hele lijst tot aan de balk onderin, ook het lege
+   * stuk onder de laatste les. Zonder dit alleen de baan zelf.
+   */
+  vlak?: RefObject<HTMLElement | null>;
 }
 
 /** In een invoerveld (tekst selecteren, cursor verplaatsen) telt vegen niet. */
@@ -28,7 +33,7 @@ const inInvoer = (doel: EventTarget | null) =>
  * met je vinger mee, zodat je de volgende ziet binnenkomen en de huidige ziet verdwijnen. Laat je ver
  * genoeg los, dan glijdt hij door en wordt de volgende de huidige; anders veert hij terug.
  */
-export function VeegCarrousel({ sleutel, vorige, huidige, volgende, onVorige, onVolgende }: Props) {
+export function VeegCarrousel({ sleutel, vorige, huidige, volgende, onVorige, onVolgende, vlak }: Props) {
   const houder = useRef<HTMLDivElement>(null);
   const baan = useRef<HTMLDivElement>(null);
   const acties = useRef({ onVorige, onVolgende });
@@ -43,7 +48,7 @@ export function VeegCarrousel({ sleutel, vorige, huidige, volgende, onVorige, on
   }, [sleutel]);
 
   useEffect(() => {
-    const el = houder.current;
+    const el = vlak?.current ?? houder.current;
     const b = baan.current;
     if (!el || !b) return;
 
@@ -115,7 +120,7 @@ export function VeegCarrousel({ sleutel, vorige, huidige, volgende, onVorige, on
       el.removeEventListener('touchend', eind);
       el.removeEventListener('touchcancel', eind);
     };
-  }, []);
+  }, [vlak]);
 
   return (
     <div ref={houder} className="carrousel">

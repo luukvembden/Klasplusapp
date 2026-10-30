@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { api } from '../api';
@@ -38,6 +38,8 @@ export function Agenda() {
   // en bij het vegen staat de buurdag (ook over de weekgrens) al klaar.
   const week = useLaden(() => api.afspraken(plusDagen(maandag, -7), plusDagen(maandag, 14)), [maandag.getTime()]);
   const weekGeladen = week.data && !week.laden && !week.fout;
+  // Vegen kan over de hele lijst, ook het lege stuk eronder tot aan de balk (het plusje ligt erbuiten).
+  const lijstVlak = useRef<HTMLDivElement>(null);
 
   // Een afspraak hoort bij elke dag die hij (deels) raakt; eigen afspraken kunnen meerdere dagen duren.
   const lessenOp = (d: Date) => {
@@ -71,7 +73,7 @@ export function Agenda() {
       <DagStrook dag={dag} onKies={setDag} />
 
       <div className="agenda__midden">
-        <div className="agenda__lijst" aria-busy={week.laden}>
+        <div className="agenda__lijst" ref={lijstVlak} aria-busy={week.laden}>
           <VegenOmTeVernieuwen onVernieuw={week.vernieuw}>
             {week.fout && <p className="melding">{week.fout}</p>}
             {/* Vegen over de lessen: naar links de volgende dag, naar rechts de vorige, en je ziet hem binnenschuiven. */}
@@ -82,6 +84,7 @@ export function Agenda() {
               volgende={dagLijst(plusDagen(dag, 1))}
               onVorige={() => setDag(plusDagen(dag, -1))}
               onVolgende={() => setDag(plusDagen(dag, 1))}
+              vlak={lijstVlak}
             />
           </VegenOmTeVernieuwen>
         </div>
