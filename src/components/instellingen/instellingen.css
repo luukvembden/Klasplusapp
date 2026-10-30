@@ -135,11 +135,55 @@
   border-bottom: none;
 }
 
-.instelrij input {
+/*
+ * Vinkjes (Afgerond, Hele dag): zelfde vorm als de uurnummers in de Agenda, een vierkantje met ronde
+ * hoeken in de lichte accentkleur. Aangevinkt wordt het vol in de accentkleur, met een klein vinkje.
+ */
+.instelrij input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
   width: 22px;
   height: 22px;
   margin: 0;
-  accent-color: var(--groen);
+  border: none;
+  border-radius: 7px;
+  background: var(--groen-licht);
+  /* Dun randje, zodat het lege vakje ook in het donkere thema goed te zien is. */
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--groen-tekst) 35%, transparent);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.instelrij input[type='checkbox']::before {
+  content: '';
+  width: 4px;
+  height: 8px;
+  margin-top: -2px;
+  border: solid var(--op-groen);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.15s ease;
+}
+
+.instelrij input[type='checkbox']:checked {
+  background: var(--groen);
+  box-shadow: none;
+}
+
+.instelrij input[type='checkbox']:checked::before {
+  transform: rotate(45deg) scale(1);
+}
+
+.instelrij input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--groen-tekst);
+  outline-offset: 2px;
+}
+
+.instelrij input[type='checkbox']:disabled {
+  opacity: 0.6;
 }
 
 .instelrij__waarde {
