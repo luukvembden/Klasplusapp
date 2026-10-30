@@ -7,9 +7,13 @@ export type Thema = 'licht' | 'donker' | 'systeem';
 /** Klassiek: "AK – KNNW – H5.AK4 (S252)" met de tijd eronder. Modern: vaknaam, en "tijd · lokaal · docent". */
 export type AgendaWeergave = 'klassiek' | 'modern';
 
+/** Accentkleur van de app; groen is de standaard. */
+export type Kleur = 'groen' | 'blauw' | 'donkerblauw';
+
 export interface Instellingen {
   thema: Thema;
   agenda: AgendaWeergave;
+  kleur: Kleur;
 }
 
 const SLEUTEL = 'schoolkompas.instellingen';
@@ -17,6 +21,7 @@ const SLEUTEL = 'schoolkompas.instellingen';
 const standaard: Instellingen = {
   thema: 'systeem',
   agenda: 'klassiek',
+  kleur: 'groen',
 };
 
 function lees(): Instellingen {
