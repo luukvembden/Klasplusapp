@@ -3,6 +3,6 @@ dist
 *.local
 
 # Lokale instellingen en build-uitvoer
-.claude/settings.local.json
+.claude/
 *.ipa
 android/.idea/
