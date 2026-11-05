@@ -34,7 +34,10 @@ export function LesRij({ afspraak }: { afspraak: Afspraak }) {
   return (
     <Link to={`/agenda/${encodeURIComponent(afspraak.id)}`} className="lesrij lesrij--link">
       {/* Zonder lesuur (bijvoorbeeld een persoonlijke afspraak) blijft het vierkantje leeg, zodat alles netjes uitlijnt. */}
-      <div className="lesrij__uur" aria-label={afspraak.lesuur ? `${afspraak.lesuur}e uur` : undefined}>
+      <div
+        className={`lesrij__uur${afspraak.lesuur ? '' : ' lesrij__uur--leeg'}`}
+        aria-label={afspraak.lesuur ? `${afspraak.lesuur}e uur` : undefined}
+      >
         {afspraak.lesuur ?? ''}
       </div>
       <div className="lesrij__tekst">

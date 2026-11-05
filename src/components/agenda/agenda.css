@@ -235,7 +235,7 @@
   border-bottom: none;
 }
 
-/* Uurnummer in een lichtgroen vierkantje. */
+/* Uurnummer in een gevuld vierkantje in de accentkleur, met het nummer in wit. */
 .lesrij__uur {
   width: 34px;
   height: 34px;
@@ -244,10 +244,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: var(--groen-licht);
-  color: var(--groen-tekst);
+  background: var(--groen);
+  color: var(--op-groen);
   font-size: 15px;
   font-weight: 700;
+}
+
+/* Geen lesuur (bijvoorbeeld een persoonlijke afspraak): een licht vierkantje, niet gevuld. */
+.lesrij__uur--leeg {
+  background: var(--groen-licht);
 }
 
 .lesrij__tekst {
@@ -373,9 +378,8 @@
  */
 .agendakop-vlak {
   flex: 0 0 auto;
-  margin: calc(var(--veilig-boven) + 8px) 16px 0;
-  padding: 16px 14px 8px;
-  border-radius: 22px;
+  /* Rechthoekig en tot de randen: vult de breedte en loopt bovenin door onder de statusbalk. */
+  padding: calc(var(--veilig-boven) + 14px) 16px 10px;
   background: var(--groen);
   color: var(--op-groen);
 }
