@@ -69,8 +69,11 @@ export function Agenda() {
 
   return (
     <div className="agenda">
-      <AgendaKop dag={dag} onKies={setDag} onVandaag={() => setDag(beginVanDag(new Date()))} />
-      <DagStrook dag={dag} onKies={setDag} />
+      {/* Kop en dagstrook samen in één gekleurd blok, met witte tekst en een witte cirkel om de gekozen dag. */}
+      <div className="agendakop-vlak">
+        <AgendaKop dag={dag} onKies={setDag} onVandaag={() => setDag(beginVanDag(new Date()))} />
+        <DagStrook dag={dag} onKies={setDag} />
+      </div>
 
       <div className="agenda__midden">
         <div className="agenda__lijst" ref={lijstVlak} aria-busy={week.laden}>

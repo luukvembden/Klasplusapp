@@ -366,3 +366,57 @@
   align-items: center;
   text-decoration: none;
 }
+
+/*
+ * Agenda: kop en dagstrook samen in één gekleurd blok (de accentkleur), met witte tekst.
+ * Alleen hier; Huiswerk houdt zijn lichte week-strook. De gekozen dag is een witte cirkel.
+ */
+.agendakop-vlak {
+  flex: 0 0 auto;
+  margin: calc(var(--veilig-boven) + 8px) 16px 0;
+  padding: 16px 14px 8px;
+  border-radius: 22px;
+  background: var(--groen);
+  color: var(--op-groen);
+}
+
+/* De kop staat nu in het blok: geen eigen rand of statusbalk-ruimte meer nodig. */
+.agendakop-vlak .agendakop {
+  padding: 0 4px 10px;
+}
+
+.agendakop-vlak .agendakop__sub {
+  color: color-mix(in srgb, var(--op-groen) 78%, transparent);
+}
+
+/* Kalenderknop en "Vandaag"-knop: doorschijnend wit op de kleur, in plaats van een witte kaart. */
+.agendakop-vlak .agendakop__icoon,
+.agendakop-vlak .agendakop__vandaag {
+  background: color-mix(in srgb, var(--op-groen) 16%, transparent);
+  box-shadow: none;
+  color: var(--op-groen);
+}
+
+/* De dagstrook zit al in het blok: geen eigen vlak, en alles in wit. */
+.agendakop-vlak .dagstrook {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--op-groen);
+}
+
+.agendakop-vlak .dagstrook__pijl,
+.agendakop-vlak .dagstrook__dag,
+.agendakop-vlak .dagstrook__nr {
+  color: var(--op-groen);
+}
+
+.agendakop-vlak .dagstrook__kort {
+  color: color-mix(in srgb, var(--op-groen) 72%, transparent);
+}
+
+/* Gekozen dag: witte cirkel met het nummer in de accentkleur. */
+.agendakop-vlak .dagstrook__dag[aria-pressed='true'] .dagstrook__nr {
+  background: var(--op-groen);
+  color: var(--groen);
+}
