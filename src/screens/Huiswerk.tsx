@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { api, type Afspraak, type Label } from '../api';
 import { HuiswerkRij } from '../components/huiswerk/HuiswerkRij';
-import { WeekStrook } from '../components/huiswerk/WeekStrook';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { Sectie } from '../components/ui/Sectie';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
-import { dagTitel, maandagVan, naarInvoer, plusDagen, vanInvoer, zelfdeDag } from '../lib/datum';
+import { dagTitel, maandagVan, naarInvoer, plusDagen, vanInvoer, weekNummer } from '../lib/datum';
 import '../components/agenda/agenda.css';
 import '../components/huiswerk/huiswerk.css';
 import '../components/ui/ui.css';
@@ -64,8 +64,6 @@ export function Huiswerk() {
       </>
     );
   };
-  const dezeWeek = zelfdeDag(week, maandagVan(new Date()));
-
   return (
     <div className="huiswerk">
       <header className="agendakop">
@@ -73,15 +71,19 @@ export function Huiswerk() {
           <h1 className="agendakop__titel">Huiswerk</h1>
           <span className="agendakop__sub">{weekInWoorden(week)}</span>
         </div>
-        {!dezeWeek && (
-          <div className="agendakop__knoppen">
-            <button type="button" className="agendakop__vandaag" onClick={() => kies(new Date())}>
-              Deze week
+        {/* Simpele weekwisselaar naast de titel, in de pil-stijl van de "Vandaag"-knop. */}
+        <div className="agendakop__knoppen">
+          <div className="weekknop" aria-label={`Week ${weekNummer(week)}`}>
+            <button type="button" className="weekknop__pijl" aria-label="Vorige week" onClick={() => kies(plusDagen(week, -7))}>
+              <ChevronLeft size={18} strokeWidth={2.4} aria-hidden="true" />
+            </button>
+            <span className="weekknop__label">Week {weekNummer(week)}</span>
+            <button type="button" className="weekknop__pijl" aria-label="Volgende week" onClick={() => kies(plusDagen(week, 7))}>
+              <ChevronRight size={18} strokeWidth={2.4} aria-hidden="true" />
             </button>
           </div>
-        )}
+        </div>
       </header>
-      <WeekStrook week={week} onKies={kies} />
 
       <div className="huiswerk__lijst" ref={lijstVlak} aria-busy={geladen.laden}>
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
