@@ -25,6 +25,13 @@ export function gewogenGemiddelde(cijfers: Cijfer[]): number | null {
   return tellend.reduce((som, c) => som + c.waarde! * c.weging, 0) / wegingen;
 }
 
+/** Som (cijfer × weging) en totale weging van de meetellende cijfers: de bouwstenen van het gemiddelde. */
+export function somEnWeging(cijfers: Cijfer[]): { som: number; weging: number } {
+  return cijfers
+    .filter((c) => c.teltMee && c.waarde !== null && c.weging > 0)
+    .reduce((a, c) => ({ som: a.som + c.waarde! * c.weging, weging: a.weging + c.weging }), { som: 0, weging: 0 });
+}
+
 export function meestRecent(cijfers: Cijfer[], aantal: number): Cijfer[] {
   return [...cijfers].sort((a, b) => b.datum.localeCompare(a.datum)).slice(0, aantal);
 }

@@ -5,6 +5,7 @@ import { AfwezigheidMelden } from './screens/AfwezigheidMelden';
 import { NieuweMelding } from './screens/NieuweMelding';
 import { Cijfers } from './screens/Cijfers';
 import { Gemiddeldes } from './screens/Gemiddeldes';
+import { CijferCalculator } from './screens/CijferCalculator';
 import { Huiswerk } from './screens/Huiswerk';
 import { Instellingen } from './screens/Instellingen';
 import { Les } from './screens/Les';
@@ -27,6 +28,7 @@ export const paginaRoutes = (
     <Route path="huiswerk/:id" element={<LesInhoud van="huiswerk" />} />
     <Route path="cijfers" element={<Cijfers />} />
     <Route path="cijfers/gemiddeldes" element={<Gemiddeldes />} />
+    <Route path="cijfers/calculator" element={<CijferCalculator />} />
     <Route path="afwezigheid" element={<Afwezigheid />} />
     <Route path="afwezigheid/melden" element={<AfwezigheidMelden />} />
     <Route path="afwezigheid/melden/nieuw" element={<NieuweMelding />} />

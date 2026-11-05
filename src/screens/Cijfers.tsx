@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Calculator } from 'lucide-react';
 import { CijferRij } from '../components/cijfers/CijferRij';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { Sectie } from '../components/ui/Sectie';
@@ -30,19 +31,25 @@ export function Cijfers() {
         </div>
       </header>
 
-      <div className="scherm__lijst">
-        <VegenOmTeVernieuwen onVernieuw={vernieuw}>
-          <div className="pagina pagina--onder-kop">
-            <Sectie titel="Recent">
-              <section className="kaart" aria-busy={!cijfers}>
-                {fout && <p className="melding">{fout}</p>}
-                {cijfers && cijfers.length === 0 && <p className="melding">Nog geen cijfers.</p>}
-                {cijfers && meestRecent(cijfers, AANTAL_RECENT).map((c) => <CijferRij key={c.id} cijfer={c} />)}
-              </section>
-            </Sectie>
+      <div className="agenda__midden">
+        <div className="scherm__lijst">
+          <VegenOmTeVernieuwen onVernieuw={vernieuw}>
+            <div className="pagina pagina--onder-kop">
+              <Sectie titel="Recent">
+                <section className="kaart" aria-busy={!cijfers}>
+                  {fout && <p className="melding">{fout}</p>}
+                  {cijfers && cijfers.length === 0 && <p className="melding">Nog geen cijfers.</p>}
+                  {cijfers && meestRecent(cijfers, AANTAL_RECENT).map((c) => <CijferRij key={c.id} cijfer={c} />)}
+                </section>
+              </Sectie>
+            </div>
+          </VegenOmTeVernieuwen>
+        </div>
 
-          </div>
-        </VegenOmTeVernieuwen>
+        {/* Ronde knop zoals het plusje elders, maar met een rekenmachine: naar de cijfercalculator. */}
+        <Link to="/cijfers/calculator" className="plusknop" aria-label="Cijfercalculator">
+          <Calculator size={24} strokeWidth={2.2} aria-hidden="true" />
+        </Link>
       </div>
 
       <BijgewerktBalk resultaat={resultaat} />

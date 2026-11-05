@@ -140,3 +140,74 @@
   font-weight: 700;
   white-space: nowrap;
 }
+
+/* Cijfercalculator */
+.calc-uitkomst {
+  margin: 8px 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tekst);
+}
+
+.proefrij {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--lijn-zacht);
+}
+
+.proefrij .invoerrij__veld {
+  text-align: left;
+  min-height: 40px;
+}
+
+.proefrij__cijfer {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.proefrij__weging {
+  width: 96px;
+  flex: 0 0 auto;
+}
+
+.proefrij__weg {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  color: var(--tekst-secundair);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.proef-toevoegen {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  background: transparent;
+  color: var(--groen-tekst);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.calc-metproef {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.calc-metproef__waarde {
+  font-size: 18px;
+  color: var(--groen-tekst);
+}
