@@ -68,20 +68,22 @@ export function Huiswerk() {
 
   return (
     <div className="huiswerk">
-      <header className="agendakop">
-        <div className="agendakop__tekst">
-          <h1 className="agendakop__titel">Huiswerk</h1>
-          <span className="agendakop__sub">{weekInWoorden(week)}</span>
-        </div>
-        {!dezeWeek && (
-          <div className="agendakop__knoppen">
-            <button type="button" className="agendakop__vandaag" onClick={() => kies(new Date())}>
-              Deze week
-            </button>
+      <div className="agendakop-vlak">
+        <header className="agendakop">
+          <div className="agendakop__tekst">
+            <h1 className="agendakop__titel">Huiswerk</h1>
+            <span className="agendakop__sub">{weekInWoorden(week)}</span>
           </div>
-        )}
-      </header>
-      <WeekStrook week={week} onKies={kies} />
+          {!dezeWeek && (
+            <div className="agendakop__knoppen">
+              <button type="button" className="agendakop__vandaag" onClick={() => kies(new Date())}>
+                Deze week
+              </button>
+            </div>
+          )}
+        </header>
+        <WeekStrook week={week} onKies={kies} />
+      </div>
 
       <div className="huiswerk__lijst" ref={lijstVlak} aria-busy={geladen.laden}>
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>

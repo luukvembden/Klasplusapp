@@ -36,12 +36,14 @@ export function Afwezigheid() {
 
   return (
     <div className="huiswerk">
+      <div className="agendakop-vlak">
       <header className="agendakop">
         <div className="agendakop__tekst">
           <h1 className="agendakop__titel">Afwezigheid</h1>
           <span className="agendakop__sub">{geladen.data ? samenvatting(lijst) : ' '}</span>
         </div>
       </header>
+      </div>
 
       <div className="agenda__midden">
         <div className={`huiswerk__lijst${magMelden ? ' huiswerk__lijst--met-plus' : ''}`} aria-busy={geladen.laden}>

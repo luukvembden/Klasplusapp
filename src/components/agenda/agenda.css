@@ -200,7 +200,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--groen);
+  background: var(--kop);
   color: var(--op-groen);
   box-shadow: 0 2px 6px rgba(27, 36, 32, 0.18), 0 8px 20px rgba(27, 36, 32, 0.18);
 }
@@ -244,7 +244,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: var(--groen);
+  background: var(--kop);
   color: var(--op-groen);
   font-size: 15px;
   font-weight: 700;
@@ -380,7 +380,7 @@
   flex: 0 0 auto;
   /* Rechthoekig en tot de randen: vult de breedte en loopt bovenin door onder de statusbalk. */
   padding: calc(var(--veilig-boven) + 14px) 16px 10px;
-  background: var(--groen);
+  background: var(--kop);
   color: var(--op-groen);
 }
 
@@ -422,5 +422,14 @@
 /* Gekozen dag: witte cirkel met het nummer in de accentkleur. */
 .agendakop-vlak .dagstrook__dag[aria-pressed='true'] .dagstrook__nr {
   background: var(--op-groen);
-  color: var(--groen);
+  color: var(--kop);
+}
+
+/* De weekstrook (Huiswerk) in het blok: tekst wit. */
+.agendakop-vlak .weekstrook__week {
+  color: var(--op-groen);
+}
+
+.agendakop-vlak .weekstrook__bereik {
+  color: color-mix(in srgb, var(--op-groen) 72%, transparent);
 }

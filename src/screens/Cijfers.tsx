@@ -17,6 +17,7 @@ export function Cijfers() {
 
   return (
     <div className="scherm">
+      <div className="agendakop-vlak">
       <header className="agendakop">
         <div className="agendakop__tekst">
           <h1 className="agendakop__titel">Cijfers</h1>
@@ -29,6 +30,7 @@ export function Cijfers() {
           </Link>
         </div>
       </header>
+      </div>
 
       <div className="scherm__lijst">
         <VegenOmTeVernieuwen onVernieuw={vernieuw}>
