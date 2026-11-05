@@ -421,8 +421,8 @@
 
 /* Gekozen dag: witte cirkel met het nummer in de accentkleur. */
 .agendakop-vlak .dagstrook__dag[aria-pressed='true'] .dagstrook__nr {
-  background: var(--op-groen);
-  color: var(--kop);
+  background: var(--dag-rondje);
+  color: var(--dag-rondje-tekst);
 }
 
 /* De weekstrook (Huiswerk) in het blok: tekst wit. */

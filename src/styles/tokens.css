@@ -7,6 +7,9 @@
   --groen-tekst: #2e6b5a;
   /* Vulkleur van de grote vlakken: kopbalk, plusknop en uurvakjes. In donker thema donkerder (zie onder). */
   --kop: var(--groen);
+  /* Cirkel om de dag die je bekijkt: licht een witte cirkel met accentnummer; donker een accent-cirkel met wit nummer. */
+  --dag-rondje: var(--op-groen);
+  --dag-rondje-tekst: var(--kop);
 
   --achtergrond: #f4f5f1;
   --kaart: #ffffff;
@@ -53,7 +56,9 @@
   --groen-donker: #3d8a74;
   --groen-licht: #1c2b26;
   --groen-tekst: #7cc2ab;
-  --kop: color-mix(in srgb, var(--groen) 60%, #000);
+  --kop: color-mix(in srgb, var(--groen) 48%, #000);
+  --dag-rondje: var(--groen);
+  --dag-rondje-tekst: var(--op-groen);
   --achtergrond: #111513;
   --kaart: #1a1f1d;
   --vlak: #222825;
@@ -82,7 +87,9 @@
     --groen-donker: #3d8a74;
     --groen-licht: #1c2b26;
     --groen-tekst: #7cc2ab;
-  --kop: color-mix(in srgb, var(--groen) 60%, #000);
+  --kop: color-mix(in srgb, var(--groen) 48%, #000);
+  --dag-rondje: var(--groen);
+  --dag-rondje-tekst: var(--op-groen);
     --achtergrond: #111513;
     --kaart: #1a1f1d;
     --vlak: #222825;
