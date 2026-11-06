@@ -18,5 +18,8 @@
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
+        <!-- Android 12+: het opstartscherm in het groen van Klas+, dan sluit het aan op het laadscherm. -->
+        <item name="windowSplashScreenBackground">#2E6B5A</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 </resources>

@@ -9,8 +9,106 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Klas+" />
     <title>Klas+</title>
+    <link rel="preload" href="./fonts/figtree-800.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      // Het gekozen thema (licht/donker) al vóór het laadscherm zetten, zodat dat meteen de goede kleur heeft.
+      try {
+        var t = JSON.parse(localStorage.getItem('schoolkompas.instellingen') || '{}').thema;
+        if (t === 'licht' || t === 'donker') document.documentElement.dataset.thema = t;
+      } catch (e) {}
+    </script>
+    <style>
+      /* Laadscherm: zichtbaar tot de app getekend is (main.tsx haalt het weg). Alleen HTML en CSS. */
+      @font-face {
+        font-family: 'Figtree Laad';
+        font-weight: 800;
+        font-display: block;
+        src: url('./fonts/figtree-800.woff2') format('woff2');
+      }
+      #laadscherm {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 26px;
+        background: #2e6b5a;
+        transition: opacity 220ms ease;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-thema='licht']) #laadscherm {
+          background: #173b31;
+        }
+      }
+      :root[data-thema='donker'] #laadscherm {
+        background: #173b31;
+      }
+      #laadscherm.laadscherm--weg {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .laadscherm__naam {
+        font-family: 'Figtree Laad', 'Figtree', system-ui, sans-serif;
+        font-size: 64px;
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 1;
+        color: #ffffff;
+      }
+      .laadscherm__plus {
+        color: #a6dcc9;
+      }
+      .laadscherm__baan {
+        width: 140px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.22);
+        overflow: hidden;
+      }
+      .laadscherm__balk {
+        width: 56px;
+        height: 4px;
+        border-radius: 2px;
+        background: #ffffff;
+        animation: laadscherm-balk 1.4s ease-in-out infinite;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-thema='licht']) .laadscherm__baan {
+          background: rgba(255, 255, 255, 0.14);
+        }
+        :root:not([data-thema='licht']) .laadscherm__balk {
+          background: #a6dcc9;
+        }
+      }
+      :root[data-thema='donker'] .laadscherm__baan {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      :root[data-thema='donker'] .laadscherm__balk {
+        background: #a6dcc9;
+      }
+      @keyframes laadscherm-balk {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(250%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .laadscherm__balk {
+          animation: none;
+          transform: translateX(75%);
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="laadscherm" role="progressbar" aria-label="Klas+ wordt geladen">
+      <span class="laadscherm__naam">Klas<span class="laadscherm__plus">+</span></span>
+      <div class="laadscherm__baan"><div class="laadscherm__balk"></div></div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

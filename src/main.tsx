@@ -19,10 +19,24 @@ if (isDemo) registerSW({ immediate: true });
 api
   .start()
   .catch(() => undefined)
-  .finally(() =>
+  .finally(() => {
     createRoot(document.getElementById('root')!).render(
       <StrictMode>
         <App />
       </StrictMode>,
-    ),
+    );
+    verbergLaadscherm();
+  });
+
+/** Het laadscherm uit index.html zacht laten verdwijnen zodra de app op het scherm staat. */
+function verbergLaadscherm() {
+  const scherm = document.getElementById('laadscherm');
+  if (!scherm) return;
+  // Twee frames wachten: dan is de eerste weergave van de app echt getekend.
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      scherm.classList.add('laadscherm--weg');
+      setTimeout(() => scherm.remove(), 260);
+    }),
   );
+}

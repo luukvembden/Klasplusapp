@@ -6,6 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   // Geen plugin-uitkomsten in het Android/iOS-logboek: daar zouden anders de inlogsleutels in komen.
   loggingBehavior: 'none',
+  // Groen achter de webweergave: tussen het opstartscherm en het laadscherm geen witte flits.
+  backgroundColor: '#2E6B5A',
   plugins: {
     // Verzoeken lopen via de native HTTP van het toestel: geen CORS-blokkade.
     CapacitorHttp: { enabled: true },
