@@ -63,7 +63,7 @@ export function CijferCalculator() {
   const kop = (
     <>
       <TerugLink naar="/cijfers" label="Cijfers" />
-      <PaginaKop titel="Rekenhulp" sub={sub} />
+      <PaginaKop titel="Cijfercalculator" sub={sub} />
     </>
   );
 
