@@ -147,9 +147,38 @@
   margin-top: 12px;
 }
 
+/* De uitkomst staat als laatste regel in de kaart, op een zacht getinte achtergrond. */
 .calc-uitkomst {
-  margin: 14px 4px 10px;
-  font-size: 16px;
+  margin: 0 -16px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--groen) 10%, transparent);
+  border-radius: 0 0 var(--radius-kaart, 16px) var(--radius-kaart, 16px);
+}
+
+.calc-uitkomst__rij {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
   font-weight: 600;
+  color: var(--tekst);
+}
+
+.calc-uitkomst__getal {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--groen-tekst);
+}
+
+.calc-uitkomst__getal--laag {
+  color: var(--onvoldoende);
+}
+
+.calc-uitkomst__uitleg {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
   color: var(--tekst);
 }

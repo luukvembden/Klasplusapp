@@ -4,7 +4,7 @@ import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
 import { useCijfers } from '../hooks/useCijfers';
-import { formatCijfer, perVak, somEnWeging } from '../lib/cijfers';
+import { formatCijfer, isOnvoldoende, perVak, somEnWeging } from '../lib/cijfers';
 import { metHoofdletter } from '../lib/tekst';
 import '../components/cijfers/cijfers.css';
 import '../components/les/les.css';
@@ -17,9 +17,33 @@ const parse = (s: string): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
+/** Een uitkomst: een getal met een label, of alleen een korte uitleg (bij foute invoer of een randgeval). */
+interface Uitkomst {
+  label?: string;
+  waarde?: number;
+  uitleg?: string;
+}
+
+/** De uitkomst als laatste regel in de kaart, met het getal groot in de accentkleur. */
+function UitkomstRij({ uitkomst }: { uitkomst: Uitkomst }) {
+  return (
+    <div className="calc-uitkomst" aria-live="polite">
+      {uitkomst.label && uitkomst.waarde !== undefined && (
+        <div className="calc-uitkomst__rij">
+          <span>{uitkomst.label}</span>
+          <span className={`calc-uitkomst__getal${isOnvoldoende(uitkomst.waarde) ? ' calc-uitkomst__getal--laag' : ''}`}>
+            {formatCijfer(uitkomst.waarde)}
+          </span>
+        </div>
+      )}
+      {uitkomst.uitleg && <p className="calc-uitkomst__uitleg">{uitkomst.uitleg}</p>}
+    </div>
+  );
+}
+
 /**
- * Cijfercalculator in drie stukken: vak kiezen, "Wat ga ik staan?" en "Wat moet ik halen?".
- * Alles blijft in de app; er gaat niets naar Magister.
+ * Cijfercalculator: kies een vak, kijk wat een nieuw cijfer met je gemiddelde doet,
+ * of reken uit wat je nodig hebt voor je doel. Alles blijft in de app; er gaat niets naar Magister.
  */
 export function CijferCalculator() {
   const { cijfers, sub } = useCijfers();
@@ -30,16 +54,16 @@ export function CijferCalculator() {
 
   const [nieuw, setNieuw] = useState('');
   const [nieuwWeging, setNieuwWeging] = useState('');
-  const [staan, setStaan] = useState<string | null>(null);
+  const [stel, setStel] = useState<Uitkomst | null>(null);
 
   const [doel, setDoel] = useState('');
   const [doelWeging, setDoelWeging] = useState('');
-  const [halen, setHalen] = useState<string | null>(null);
+  const [nodig, setNodig] = useState<Uitkomst | null>(null);
 
   const kop = (
     <>
       <TerugLink naar="/cijfers" label="Cijfers" />
-      <PaginaKop titel="Calculator" sub={sub} />
+      <PaginaKop titel="Rekenhulp" sub={sub} />
     </>
   );
 
@@ -65,37 +89,37 @@ export function CijferCalculator() {
 
   const kiesVak = (code: string) => {
     setVakCode(code);
-    setStaan(null);
-    setHalen(null);
+    setStel(null);
+    setNodig(null);
   };
 
-  /** Wat ga ik staan? Huidig gemiddelde plus het nieuwe cijfer met zijn weging. */
-  const berekenStaan = () => {
+  /** Stel dat ik dit haal: het gemiddelde met het nieuwe cijfer erbij. */
+  const rekenStel = () => {
     const c = parse(nieuw);
     const w = parse(nieuwWeging || '1');
-    if (c === null || c < 1 || c > 10) return setStaan('Vul een cijfer tussen 1 en 10 in.');
-    if (w === null || w <= 0) return setStaan('Vul een weging groter dan 0 in.');
-    setStaan(`Dan sta je een ${formatCijfer((som + c * w) / (W + w))}.`);
+    if (c === null || c < 1 || c > 10) return setStel({ uitleg: 'Vul een cijfer van 1 tot en met 10 in.' });
+    if (w === null || w <= 0) return setStel({ uitleg: 'De weging moet meer dan 0 zijn.' });
+    setStel({ label: 'Nieuw gemiddelde', waarde: (som + c * w) / (W + w) });
   };
 
-  /** Wat moet ik halen? Het cijfer dat je nodig hebt voor het gewenste gemiddelde. */
-  const berekenHalen = () => {
+  /** Mijn doel: het laagste cijfer waarmee je je doelgemiddelde haalt. */
+  const rekenNodig = () => {
     const d = parse(doel);
     const w = parse(doelWeging || '1');
-    if (d === null || d < 1 || d > 10) return setHalen('Een gemiddelde ligt tussen 1 en 10.');
-    if (w === null || w <= 0) return setHalen('Vul een weging groter dan 0 in.');
+    if (d === null || d < 1 || d > 10) return setNodig({ uitleg: 'Kies een doel van 1 tot en met 10.' });
+    if (w === null || w <= 0) return setNodig({ uitleg: 'De weging moet meer dan 0 zijn.' });
     const x = (d * (W + w) - som) / w;
-    const nodig = Math.ceil(x * 10) / 10;
-    if (x <= 1) setHalen('Dat haal je sowieso, zelfs met een 1.');
-    else if (nodig > 10) setHalen(`Niet haalbaar: je zou een ${formatCijfer(x)} nodig hebben.`);
-    else setHalen(`Je moet minstens een ${formatCijfer(nodig)} halen.`);
+    const minimaal = Math.ceil(x * 10) / 10;
+    if (x <= 1) setNodig({ uitleg: 'Geen zorgen: dit doel haal je met elk cijfer.' });
+    else if (minimaal > 10) setNodig({ uitleg: `Met één toets lukt dit niet; daarvoor zou je een ${formatCijfer(x)} nodig hebben.` });
+    else setNodig({ label: 'Minimaal nodig', waarde: minimaal });
   };
 
   return (
     <div className="pagina pagina--met-terug">
       {kop}
 
-      <Sectie titel="Kies een vak">
+      <Sectie titel="Vak">
         <section className="kaart">
           <Invoerrij label="Vak" voor="calc-vak">
             <select
@@ -112,68 +136,68 @@ export function CijferCalculator() {
             </select>
           </Invoerrij>
           <div className="instelrij instelrij--vast">
-            <span>Huidig gemiddelde</span>
+            <span>Nu gemiddeld</span>
             <span className="instelrij__waarde">{huidig === null ? '—' : formatCijfer(huidig)}</span>
           </div>
         </section>
       </Sectie>
 
-      <Sectie titel="Wat ga ik staan?">
+      <Sectie titel="Stel, ik haal een…">
         <section className="kaart">
-          <Invoerrij label="Nieuw cijfer" voor="calc-nieuw">
+          <Invoerrij label="Cijfer" voor="calc-nieuw">
             <input
               id="calc-nieuw"
               className="invoerrij__veld"
               inputMode="decimal"
-              placeholder="Bijv. 6,5"
+              placeholder="bijv. 6,5"
               value={nieuw}
               onChange={(e) => setNieuw(e.target.value)}
             />
           </Invoerrij>
-          <Invoerrij label="Weging" voor="calc-nieuw-weging">
+          <Invoerrij label="Telt mee" voor="calc-nieuw-weging">
             <input
               id="calc-nieuw-weging"
               className="invoerrij__veld"
               inputMode="decimal"
-              placeholder="1"
+              placeholder="1×"
               value={nieuwWeging}
               onChange={(e) => setNieuwWeging(e.target.value)}
             />
           </Invoerrij>
+          {stel && <UitkomstRij uitkomst={stel} />}
         </section>
-        <button type="button" className="knop-primair calc-knop" onClick={berekenStaan}>
-          Bereken
+        <button type="button" className="knop-primair calc-knop" onClick={rekenStel}>
+          Reken uit
         </button>
-        {staan && <p className="calc-uitkomst">{staan}</p>}
       </Sectie>
 
-      <Sectie titel="Wat moet ik halen?">
+      <Sectie titel="Mijn doel">
         <section className="kaart">
-          <Invoerrij label="Ik wil staan" voor="calc-doel">
+          <Invoerrij label="Doelgemiddelde" voor="calc-doel">
             <input
               id="calc-doel"
               className="invoerrij__veld"
               inputMode="decimal"
-              placeholder="Bijv. 7,0"
+              placeholder="bijv. 7,0"
               value={doel}
               onChange={(e) => setDoel(e.target.value)}
             />
           </Invoerrij>
-          <Invoerrij label="Weging" voor="calc-doel-weging">
+          <Invoerrij label="Volgende toets telt" voor="calc-doel-weging">
             <input
               id="calc-doel-weging"
               className="invoerrij__veld"
               inputMode="decimal"
-              placeholder="1"
+              placeholder="1×"
               value={doelWeging}
               onChange={(e) => setDoelWeging(e.target.value)}
             />
           </Invoerrij>
+          {nodig && <UitkomstRij uitkomst={nodig} />}
         </section>
-        <button type="button" className="knop-primair calc-knop" onClick={berekenHalen}>
-          Bereken
+        <button type="button" className="knop-primair calc-knop" onClick={rekenNodig}>
+          Reken uit
         </button>
-        {halen && <p className="calc-uitkomst">{halen}</p>}
       </Sectie>
     </div>
   );
