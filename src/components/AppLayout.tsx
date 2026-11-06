@@ -76,6 +76,38 @@ export function AppLayout() {
 
   const terug = schuifTerug(lagenRef, bovenRef, onderRef, () => navigate(-1));
 
+  /**
+   * Tik op de tab waar je al in zit terwijl je dieper zit (zoals Gemiddeldes onder Cijfers): de bovenste
+   * pagina schuift naar rechts weg en de hoofdpagina van de tab komt eronder tevoorschijn, ook als je
+   * meerdere pagina's diep zat. Geeft false als dat hier niet kan; dan doet de tab gewoon zijn eigen ding.
+   */
+  const bezig = useRef(false);
+  const naarTab = (pad: string) => {
+    if (lagen.length < 2 || lagen[0].location.pathname !== pad) return false;
+    if (bezig.current) return true;
+    const stappen = lagen[0].idx - lagen[lagen.length - 1].idx;
+    const doos = lagenRef.current;
+    const boven = bovenRef.current;
+    const wortel = doos?.firstElementChild as HTMLElement | null;
+    if (!doos || !boven || !wortel || wortel === boven || stappen >= 0) {
+      navigate(stappen < 0 ? stappen : -1);
+      return true;
+    }
+    bezig.current = true;
+    wortel.classList.add('laag--doel');
+    doos.classList.add('app__lagen--vegen', 'app__lagen--wortel');
+    zet(boven, wortel, boven.clientWidth, DUUR);
+    setTimeout(() => {
+      doos.classList.remove('app__lagen--vegen', 'app__lagen--wortel');
+      wortel.classList.remove('laag--doel');
+      wortel.style.transform = '';
+      wortel.style.transition = '';
+      bezig.current = false;
+      navigate(stappen);
+    }, DUUR);
+    return true;
+  };
+
   useVegenTerug({
     lagenRef,
     bovenRef,
@@ -107,7 +139,7 @@ export function AppLayout() {
             );
           })}
         </main>
-        <TabBar />
+        <TabBar naarTab={naarTab} />
       </div>
     </LagenContext.Provider>
   );

@@ -92,6 +92,15 @@ a {
   visibility: visible;
 }
 
+/* Via de tabbalk terug naar de hoofdpagina: alleen die is eronder te zien, niet de pagina's ertussen. */
+.app__lagen--wortel .laag--onder:not(.laag--doel) {
+  visibility: hidden;
+}
+
+.app__lagen--wortel .laag--doel {
+  visibility: visible;
+}
+
 .app__lagen--vegen .laag--boven,
 .app__lagen--schuift .laag--boven {
   box-shadow: -8px 0 28px rgba(0, 0, 0, 0.18);

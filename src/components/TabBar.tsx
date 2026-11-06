@@ -13,7 +13,8 @@ const tabs: Tab[] = [
   { pad: '/instellingen', label: 'Instellingen', icoon: Settings, actief: (p) => p.startsWith('/instellingen') },
 ];
 
-export function TabBar() {
+/** `naarTab` mag de tik zelf afhandelen (terugschuiven naar de hoofdpagina); geeft dan true. */
+export function TabBar({ naarTab }: { naarTab?: (pad: string) => boolean }) {
   const { pathname } = useLocation();
 
   return (
@@ -24,6 +25,9 @@ export function TabBar() {
           to={pad}
           className={`tabbalk__tab${actief(pathname) ? ' active' : ''}`}
           aria-current={actief(pathname) ? 'page' : undefined}
+          onClick={(e) => {
+            if (naarTab?.(pad)) e.preventDefault();
+          }}
         >
           <Icoon size={24} strokeWidth={2} aria-hidden="true" />
           {label}
