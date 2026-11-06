@@ -6,9 +6,6 @@ const balkKleur: Record<Kleur, string> = {
   groen: '#2E6B5A',
   blauw: '#2F63A8',
   roze: '#C2417F',
-  oranje: '#B85A17',
-  rood: '#B8322F',
-  geel: '#E7B416',
 };
 
 /**

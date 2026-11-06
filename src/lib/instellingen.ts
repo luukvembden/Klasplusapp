@@ -8,7 +8,7 @@ export type Thema = 'licht' | 'donker' | 'systeem';
 export type AgendaWeergave = 'klassiek' | 'modern';
 
 /** Accentkleur van de app; groen is de standaard. */
-export const KLEUREN = ['groen', 'blauw', 'roze', 'oranje', 'rood', 'geel'] as const;
+export const KLEUREN = ['groen', 'blauw', 'roze'] as const;
 export type Kleur = (typeof KLEUREN)[number];
 
 export interface Instellingen {
@@ -30,7 +30,7 @@ function lees(): Instellingen {
     const opgeslagen = localStorage.getItem(SLEUTEL);
     if (opgeslagen) {
       const waarde = JSON.parse(opgeslagen) as Partial<Instellingen>;
-      // Een kleur die niet meer bestaat (zoals het vroegere donkerblauw) wordt weer groen.
+      // Een kleur die niet meer bestaat (zoals het vroegere oranje of geel) wordt weer groen.
       const kleur = KLEUREN.includes(waarde.kleur as Kleur) ? (waarde.kleur as Kleur) : standaard.kleur;
       return { ...standaard, ...waarde, kleur };
     }

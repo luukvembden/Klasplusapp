@@ -35,9 +35,6 @@ const kleuren: { waarde: Kleur; naam: string; stip: string }[] = [
   { waarde: 'groen', naam: 'Groen', stip: '#2e6b5a' },
   { waarde: 'blauw', naam: 'Blauw', stip: '#2f63a8' },
   { waarde: 'roze', naam: 'Roze', stip: '#c2417f' },
-  { waarde: 'oranje', naam: 'Oranje', stip: '#b85a17' },
-  { waarde: 'rood', naam: 'Rood', stip: '#b8322f' },
-  { waarde: 'geel', naam: 'Geel', stip: '#e7b416' },
 ];
 
 /** Accentkleur van de app: knoppen, de dagstrook, labels en links. */
