@@ -42,16 +42,20 @@ export function AgendaKop({ dag, onKies, onVandaag }: Props) {
             Vandaag
           </button>
         )}
+        {/*
+          Het onzichtbare datumveld ligt precies over het icoon. Een iPhone opent een datumkiezer alleen
+          als je er zelf op tikt, niet via een script; zo landt de tik direct op het veld.
+        */}
         <div className="agendakop__kiezer">
-          <button type="button" className="agendakop__icoon" aria-label="Kies datum" onClick={openKiezer}>
-            <Calendar size={22} strokeWidth={2} aria-hidden="true" />
-          </button>
+          <span className="agendakop__icoon" aria-hidden="true">
+            <Calendar size={22} strokeWidth={2} />
+          </span>
           <input
             ref={datumVeld}
             type="date"
             className="agendakop__datumveld"
-            tabIndex={-1}
-            aria-hidden="true"
+            aria-label="Kies datum"
+            onClick={openKiezer}
             value={naarInvoer(dag)}
             onChange={(e) => {
               const gekozen = vanInvoer(e.target.value);
