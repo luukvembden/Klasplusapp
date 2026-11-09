@@ -331,6 +331,9 @@
   color: var(--op-groen);
   font-size: 15px;
   font-weight: 700;
+  /* Het uurvakje heeft voorrang: het ligt altijd boven het nu-lijntje en de tijd. */
+  position: relative;
+  z-index: 3;
 }
 
 /* Geen lesuur (bijvoorbeeld een persoonlijke afspraak): een licht vierkantje, niet gevuld. */

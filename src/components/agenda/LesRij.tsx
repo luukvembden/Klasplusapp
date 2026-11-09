@@ -41,7 +41,7 @@ export function LesRij({ afspraak, nu, nuTijd }: { afspraak: Afspraak; nu?: numb
       {nu !== undefined && nuTijd !== undefined && (
         // Nooit door de tekst: op de bovenrand (pauze ervoor), in de eerste helft van de les net boven
         // de tekst, in de tweede helft net onder de tekst. Zo blijft het wel in het vak van de les.
-        <NuLijn nu={nuTijd} top={nu === 0 ? '0' : nu < 0.5 ? '5px' : 'calc(100% - 5px)'} />
+        <NuLijn nu={nuTijd} top={nu === 0 ? '0' : nu < 0.5 ? '4px' : 'calc(100% - 4px)'} />
       )}
       {/* Zonder lesuur (bijvoorbeeld een persoonlijke afspraak) blijft het vierkantje leeg, zodat alles netjes uitlijnt. */}
       <div
