@@ -42,13 +42,14 @@ export function LesInhoud({ van }: { van: keyof typeof terugNaar }) {
         </section>
       )}
 
+      {/* Afgerond altijd direct onder de tekst; bijlagen daaronder. */}
+      {a && <AfgerondSchakelaar id={a.id} afgerond={afgerond} onWijzig={setGewijzigd} />}
+
       {a && a.bijlagen.length > 0 && (
         <Sectie titel={a.bijlagen.length === 1 ? 'Bijlage' : 'Bijlagen'}>
           <BijlagenLijst bijlagen={a.bijlagen} />
         </Sectie>
       )}
-
-      {a && <AfgerondSchakelaar id={a.id} afgerond={afgerond} onWijzig={setGewijzigd} />}
 
       {a && (
         <Sectie titel="Details">
