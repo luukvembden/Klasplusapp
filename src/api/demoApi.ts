@@ -1,6 +1,7 @@
 import {
   demoAfwezigheden,
   demoBerichten,
+  demoVerzonden,
   demoCijfers,
   demoDocenten,
   demoInhoud,
@@ -224,13 +225,14 @@ export const demoApi: SchoolApi = {
     return resultaat(demoCijfers);
   },
 
-  async berichten() {
+  async berichten(map = 'postvak') {
     await vertraging();
     return resultaat(
-      demoPostvak().map((b) => ({
+      (map === 'verzonden' ? demoVerzonden : demoPostvak()).map((b) => ({
         id: b.id,
         onderwerp: b.onderwerp,
         afzender: b.afzender,
+        aan: b.aan,
         verzondenOp: b.verzondenOp,
         gelezen: b.gelezen,
         heeftBijlagen: b.heeftBijlagen,
@@ -241,7 +243,7 @@ export const demoApi: SchoolApi = {
 
   async bericht(id) {
     await vertraging(150);
-    const b = demoPostvak().find((x) => x.id === id);
+    const b = [...demoPostvak(), ...demoVerzonden].find((x) => x.id === id);
     if (!b) throw new Error('Bericht niet gevonden');
     return resultaat(b);
   },

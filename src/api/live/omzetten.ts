@@ -431,11 +431,17 @@ export function postvakIn(mappen: RuweBerichtMap[]): RuweBerichtMap | undefined 
   );
 }
 
+/** De verzonden berichten: de map die zo heet. */
+export function verzondenMap(mappen: RuweBerichtMap[]): RuweBerichtMap | undefined {
+  return mappen.find((m) => (m.naam ?? '').toLowerCase().startsWith('verzonden'));
+}
+
 export function naarBerichtKort(b: RuwBericht): BerichtKort {
   return {
     id: String(b.id),
     onderwerp: b.onderwerp?.trim() || '(geen onderwerp)',
     afzender: b.afzender?.naam?.trim() || 'Onbekend',
+    aan: (b.ontvangers ?? []).map((o) => o.weergavenaam?.trim()).filter((n): n is string => !!n),
     verzondenOp: b.verzondenOp ?? new Date(0).toISOString(),
     gelezen: b.isGelezen ?? true,
     heeftBijlagen: b.heeftBijlagen ?? false,

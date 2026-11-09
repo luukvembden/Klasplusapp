@@ -26,6 +26,7 @@ import {
   naarRuwePersoonlijke,
   PERSOONLIJK,
   postvakIn,
+  verzondenMap,
   schoolNaam,
   volledigeNaam,
   type RuwAccount,
@@ -145,11 +146,11 @@ const items = <T>(x: { items?: T[]; Items?: T[] } | T[] | undefined): T[] =>
 /** Links in antwoorden beginnen met "/"; onze verzoeken gaan relatief aan de schoolserver. */
 const zonderSlash = (href: string) => href.replace(/^\//, '');
 
-/** Het postvak van dit account (bij een ouder: diens eigen postvak). */
-async function postvak(): Promise<RuweBerichtMap> {
+/** Een map van dit account (bij een ouder: diens eigen berichten): het postvak of de verzonden berichten. */
+async function berichtenMap(soort: 'postvak' | 'verzonden' = 'postvak'): Promise<RuweBerichtMap> {
   const mappen = items(await haal<{ items?: RuweBerichtMap[] }>('api/berichten/mappen/alle'));
-  const map = postvakIn(mappen);
-  if (!map) throw new Error('Geen postvak gevonden');
+  const map = soort === 'postvak' ? postvakIn(mappen) : verzondenMap(mappen);
+  if (!map) throw new Error(soort === 'postvak' ? 'Geen postvak gevonden' : 'Geen map met verzonden berichten gevonden');
   return map;
 }
 
@@ -393,8 +394,8 @@ export const liveApi: SchoolApi = {
     return resultaat(kindId === undefined ? [] : meldingenVan(kindId));
   },
 
-  async berichten() {
-    const map = await postvak();
+  async berichten(soort = 'postvak') {
+    const map = await berichtenMap(soort);
     const href = map.links?.berichten?.href ?? `api/berichten/mappen/${map.id}/berichten`;
     const lijst = items(await haal<{ items?: RuwBericht[] }>(`${zonderSlash(href)}?top=50&skip=0`));
     return resultaat(lijst.map(naarBerichtKort).sort((a, b) => b.verzondenOp.localeCompare(a.verzondenOp)));
@@ -418,7 +419,7 @@ export const liveApi: SchoolApi = {
   },
 
   async ongelezen() {
-    return (await postvak()).aantalOngelezen ?? 0;
+    return (await berichtenMap('postvak')).aantalOngelezen ?? 0;
   },
 
   async opdrachten() {

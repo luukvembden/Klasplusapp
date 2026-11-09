@@ -1,5 +1,18 @@
 /* Berichten en opdrachten (onder Meer). */
 
+/* Kop van Berichten: titel links, de knop naar de andere map rechts (zoals Gemiddeldes). */
+.berichtenkop {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.berichtenkop .agendakop__vandaag {
+  flex: 0 0 auto;
+  margin-bottom: 2px;
+}
+
 /* Eén bericht in het postvak: stip voor ongelezen, afzender en datum, onderwerp. */
 .berichtrij {
   display: flex;

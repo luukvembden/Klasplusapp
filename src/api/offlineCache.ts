@@ -74,7 +74,7 @@ export function metOfflineCache(bron: SchoolApi): SchoolApi {
 
     meldingen: () => metCache('meldingen', () => bron.meldingen()),
 
-    berichten: () => metCache('berichten', () => bron.berichten()),
+    berichten: (map = 'postvak') => metCache(`berichten.${map}`, () => bron.berichten(map)),
     bericht: (id) => metCache(`bericht.${id}`, () => bron.bericht(id)),
     // Zonder verbinding is het getal onbekend: dan geen rood getal in plaats van een fout.
     ongelezen: () => bron.ongelezen().catch(() => 0),

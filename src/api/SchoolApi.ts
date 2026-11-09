@@ -5,6 +5,7 @@ import type {
   Afwezigheid,
   Bericht,
   BerichtKort,
+  BerichtMap,
   Bijlage,
   Cijfer,
   Opdracht,
@@ -67,8 +68,8 @@ export interface SchoolApi {
   /** Eerder gedane meldingen, nieuwste eerst. */
   meldingen(): Promise<Resultaat<Melding[]>>;
 
-  /** Berichten in het postvak van dit account (ook bij een ouder: diens eigen postvak), nieuwste eerst. */
-  berichten(): Promise<Resultaat<BerichtKort[]>>;
+  /** Berichten van dit account (ook bij een ouder: diens eigen berichten), nieuwste eerst. Standaard het postvak. */
+  berichten(map?: BerichtMap): Promise<Resultaat<BerichtKort[]>>;
   /** Eén bericht met de volledige tekst en bijlagen. */
   bericht(id: string): Promise<Resultaat<Bericht>>;
   /** Zet een bericht op gelezen, ook in de officiële app. */

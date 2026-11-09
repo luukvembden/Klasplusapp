@@ -184,11 +184,16 @@ export interface Bijlage {
   bron: string;
 }
 
+/** Welke map: wat je kreeg, of wat je zelf verstuurde. */
+export type BerichtMap = 'postvak' | 'verzonden';
+
 /** Een bericht in het postvak, zoals in de lijst. */
 export interface BerichtKort {
   id: string;
   onderwerp: string;
   afzender: string;
+  /** Aan wie het ging; vooral voor verzonden berichten. */
+  aan: string[];
   /** ISO-tijdstip. */
   verzondenOp: string;
   gelezen: boolean;
@@ -200,6 +205,7 @@ export interface BerichtKort {
 export interface Bericht extends BerichtKort {
   /** De tekst zoals de afzender die typte (HTML); wij tonen hem als gewone tekst. */
   inhoudHtml: string | null;
+  /** Ontvangers en kopie-ontvangers samen. */
   ontvangers: string[];
   bijlagen: Bijlage[];
 }
