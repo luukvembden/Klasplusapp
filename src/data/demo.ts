@@ -485,4 +485,5 @@ export const demoOnderdelen: ActiviteitOnderdeel[] = [
   onderdeel('act-1', 'ond-3', 'Hardlopen', '<p>5 of 10 km door het park.</p>', null, null),
   onderdeel('act-2', 'ond-4', 'Rondleiding Gouden Eeuw', null, 25, 4, true),
   onderdeel('act-3', 'ond-5', 'Deelnemen in een team', null, 32, 8, true),
+  onderdeel('act-3', 'ond-6', 'Jury', '<p>Beoordeel de debatten samen met twee docenten.</p>', 6, 2),
 ];

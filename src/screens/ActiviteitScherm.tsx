@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Check } from 'lucide-react';
-import { api, type ActiviteitOnderdeel } from '../api';
+import { api, type Activiteit, type ActiviteitOnderdeel } from '../api';
 import { BijlagenLijst } from '../components/meer/BijlagenLijst';
 import { TekstMetLinks } from '../components/les/TekstMetLinks';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
@@ -36,18 +36,26 @@ function plekken(o: ActiviteitOnderdeel): string | null {
 
 function OnderdeelKaart({
   o,
+  activiteit,
   bezig,
   onKies,
 }: {
   o: ActiviteitOnderdeel;
+  /** Voor de inschrijfperiode als het onderdeel zelf geen data heeft. */
+  activiteit?: Activiteit;
   bezig: boolean;
   onKies: (inschrijven: boolean) => void;
 }) {
   const details = o.detailsHtml ? htmlNaarTekst(o.detailsHtml) : '';
   const vol = o.plekkenVrij !== null && o.plekkenVrij <= 0;
   const plek = plekken(o);
-  const kanIn = o.kanInschrijven && !o.ingeschreven && !vol;
-  const kanUit = o.kanInschrijven && o.ingeschreven && !o.verplicht;
+  // School zegt soms "op in te schrijven" terwijl de periode voorbij is; de data zijn leidend.
+  const periode = o.inschrijvenVan || o.inschrijvenTot ? o : activiteit;
+  const stand = periode ? inschrijfStand(periode) : null;
+  const periodeOpen = stand?.open ?? true;
+  const kanIn = periodeOpen && o.kanInschrijven && !o.ingeschreven && !vol;
+  const kanUit = periodeOpen && o.kanInschrijven && o.ingeschreven && !o.verplicht;
+  const gesloten = !periodeOpen && !o.ingeschreven;
 
   return (
     <section className={`kaart onderdeel${o.ingeschreven ? ' onderdeel--gekozen' : ''}`}>
@@ -70,6 +78,11 @@ function OnderdeelKaart({
       {kanIn && (
         <button type="button" className="knop-primair onderdeel__knop" disabled={bezig} onClick={() => onKies(true)}>
           {bezig ? 'Bezig…' : 'Inschrijven'}
+        </button>
+      )}
+      {gesloten && (
+        <button type="button" className="onderdeel__dicht" disabled>
+          {stand?.tekst.startsWith('Inschrijven vanaf') ? stand.tekst : 'Inschrijving gesloten'}
         </button>
       )}
       {kanUit && (
@@ -136,7 +149,7 @@ export function ActiviteitScherm() {
           {lijstOnderdelen.length === 0 && <p className="melding">Hier kun je je (nog) niet voor inschrijven.</p>}
           <div className="onderdelen">
             {lijstOnderdelen.map((o) => (
-              <OnderdeelKaart key={o.id} o={o} bezig={bezig === o.id} onKies={(aan) => kies(o, aan)} />
+              <OnderdeelKaart key={o.id} o={o} activiteit={a} bezig={bezig === o.id} onKies={(aan) => kies(o, aan)} />
             ))}
           </div>
         </Sectie>

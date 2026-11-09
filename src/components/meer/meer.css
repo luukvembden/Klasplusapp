@@ -426,3 +426,17 @@
   font-size: 14.5px;
   font-weight: 600;
 }
+
+/* Inschrijven kan niet (meer): grijze balk op de plek van de knop. */
+.onderdeel__dicht {
+  margin-top: 4px;
+  min-height: 46px;
+  border: none;
+  border-radius: var(--radius-knop);
+  background: var(--vlak);
+  color: var(--tekst-secundair);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: default;
+}
