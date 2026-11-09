@@ -14,7 +14,9 @@ import {
   isToetsCijfer,
   naarAfspraak,
   naarAfspraakDetail,
+  naarActiviteit,
   naarAfwezigheid,
+  naarOnderdeel,
   naarBericht,
   naarBerichtKort,
   naarContact,
@@ -33,7 +35,9 @@ import {
   volledigeNaam,
   type RuwAccount,
   type RuweAanmelding,
+  type RuweActiviteit,
   type RuweAfwezigheid,
+  type RuwOnderdeel,
   type RuweAfspraak,
   type RuwBericht,
   type RuwContact,
@@ -459,6 +463,33 @@ export const liveApi: SchoolApi = {
       ? await haal<RuweOpdrachtVersie>(`api/personen/${leerlingId()}/opdrachten/versie/${laatste.Id}`).catch(() => null)
       : null;
     return resultaat(naarOpdracht(ruw, versie));
+  },
+
+  // Activiteiten: zoals MagisterJS (api/personen/{id}/activiteiten, onderdelen en inschrijvingen).
+  async activiteiten() {
+    const lijst = items(await haal<{ Items?: RuweActiviteit[] }>(`api/personen/${leerlingId()}/activiteiten`));
+    return resultaat(lijst.map(naarActiviteit));
+  },
+
+  async onderdelen(activiteitId) {
+    const pad = `api/personen/${leerlingId()}/activiteiten/${encodeURIComponent(activiteitId)}/onderdelen`;
+    const lijst = items(await haal<{ Items?: RuwOnderdeel[] }>(pad));
+    return resultaat(lijst.map((o) => naarOnderdeel(o, activiteitId)));
+  },
+
+  async schrijfIn(onderdeel, inschrijven) {
+    const pad =
+      `api/personen/${leerlingId()}/activiteiten/${encodeURIComponent(onderdeel.activiteitId)}` +
+      `/onderdelen/${encodeURIComponent(onderdeel.id)}/inschrijvingen`;
+    if (inschrijven) {
+      await stuur('POST', pad, {
+        persoonId: Number(leerlingId()),
+        activiteitId: Number(onderdeel.activiteitId),
+        onderdeelId: Number(onderdeel.id),
+      });
+    } else {
+      await stuur('DELETE', pad);
+    }
   },
 
   async openBijlage(bijlage) {

@@ -32,11 +32,12 @@ export function Privacy({ van = 'instellingen' }: { van?: 'meer' | 'instellingen
           gaat rechtstreeks naar school.
         </p>
 
-        <h2>Berichten en opdrachten</h2>
+        <h2>Berichten, opdrachten en activiteiten</h2>
         <p>
           Onder Meer kun je je berichten en opdrachten van school lezen. Als je een bericht opent, wordt het ook bij
-          school als gelezen gemarkeerd, net als in de officiële app. Een bijlage opent buiten de app, in de browser
-          of viewer van je telefoon. Berichten versturen en opdrachten inleveren kan niet in Klas+.
+          school als gelezen gemarkeerd, net als in de officiële app. Een bericht dat je verstuurt, en een in- of
+          uitschrijving voor een activiteit, gaat rechtstreeks naar het schoolsysteem. Een bijlage opent buiten de
+          app, in de browser of viewer van je telefoon. Opdrachten inleveren kan niet in Klas+.
         </p>
 
         <h2>Meldingen</h2>

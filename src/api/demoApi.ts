@@ -1,5 +1,7 @@
 import {
+  demoActiviteiten,
   demoAfwezigheden,
+  demoOnderdelen,
   demoBerichten,
   demoContacten,
   demoVerzonden,
@@ -48,6 +50,10 @@ async function vertraging(ms = 250) {
   if (!navigator.onLine) throw new Error('Geen internetverbinding');
   await new Promise((klaar) => setTimeout(klaar, ms));
 }
+
+// Demo: in- en uitschrijvingen blijven bewaard op dit toestel.
+const INSCHRIJVINGEN = 'demo.activiteiten';
+const inschrijvingen = () => lees<Record<string, boolean>>(INSCHRIJVINGEN) ?? {};
 
 const resultaat = <T>(data: T): Resultaat<T> => ({ data, opgehaaldOp: new Date().toISOString() });
 
@@ -313,6 +319,31 @@ export const demoApi: SchoolApi = {
     const o = demoOpdrachten.find((x) => x.id === id);
     if (!o) throw new Error('Opdracht niet gevonden');
     return resultaat(o);
+  },
+
+  async activiteiten() {
+    await vertraging();
+    return resultaat(demoActiviteiten);
+  },
+
+  async onderdelen(activiteitId) {
+    await vertraging(150);
+    const eigen = inschrijvingen();
+    return resultaat(
+      demoOnderdelen
+        .filter((o) => o.activiteitId === activiteitId)
+        .map((o) => {
+          const nu = eigen[o.id] ?? o.ingeschreven;
+          const verschil = nu === o.ingeschreven ? 0 : nu ? -1 : 1;
+          return { ...o, ingeschreven: nu, plekkenVrij: o.plekkenVrij === null ? null : o.plekkenVrij + verschil };
+        }),
+    );
+  },
+
+  async schrijfIn(onderdeel, inschrijven) {
+    await vertraging(300);
+    if (inschrijven && onderdeel.plekkenVrij === 0) throw new Error('Dit onderdeel is vol.');
+    schrijf(INSCHRIJVINGEN, { ...inschrijvingen(), [onderdeel.id]: inschrijven });
   },
 
   async openBijlage() {

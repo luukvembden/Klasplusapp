@@ -256,3 +256,34 @@ export interface Opdracht extends OpdrachtKort {
   feedbackHtml: string | null;
   feedbackBijlagen: Bijlage[];
 }
+
+// ---- Activiteiten ----
+
+/** Een activiteit van school waarvoor je je kunt inschrijven, zoals een excursie of keuzemiddag. */
+export interface Activiteit {
+  id: string;
+  titel: string;
+  detailsHtml: string | null;
+  /** ISO-tijdstippen waartussen je je kunt inschrijven; null als de school ze niet invulde. */
+  inschrijvenVan: string | null;
+  inschrijvenTot: string | null;
+}
+
+/** Een keuze binnen een activiteit (bijvoorbeeld "Museum" of "Sporthal"). */
+export interface ActiviteitOnderdeel {
+  id: string;
+  activiteitId: string;
+  titel: string;
+  detailsHtml: string | null;
+  inschrijvenVan: string | null;
+  inschrijvenTot: string | null;
+  maxDeelnemers: number | null;
+  /** Hoeveel plekken er nog vrij zijn, als de school dat bijhoudt. */
+  plekkenVrij: number | null;
+  ingeschreven: boolean;
+  /** Mag je je nu inschrijven (of uitschrijven)? */
+  kanInschrijven: boolean;
+  /** Door school ingeschreven; uitschrijven kan dan niet. */
+  verplicht: boolean;
+  bijlagen: Bijlage[];
+}

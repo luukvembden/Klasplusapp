@@ -14,6 +14,8 @@ import { BerichtScherm } from './screens/BerichtScherm';
 import { NieuwBericht } from './screens/NieuwBericht';
 import { Opdrachten } from './screens/Opdrachten';
 import { OpdrachtScherm } from './screens/OpdrachtScherm';
+import { Activiteiten } from './screens/Activiteiten';
+import { ActiviteitScherm } from './screens/ActiviteitScherm';
 import { Les } from './screens/Les';
 import { LesInhoud } from './screens/LesInhoud';
 import { Privacy } from './screens/Privacy';
@@ -41,6 +43,8 @@ export const paginaRoutes = (
     <Route path="meer/berichten/:id" element={<BerichtScherm />} />
     <Route path="meer/opdrachten" element={<Opdrachten />} />
     <Route path="meer/opdrachten/:id" element={<OpdrachtScherm />} />
+    <Route path="meer/activiteiten" element={<Activiteiten />} />
+    <Route path="meer/activiteiten/:id" element={<ActiviteitScherm />} />
     <Route path="meer/afwezigheid" element={<Afwezigheid />} />
     <Route path="meer/afwezigheid/melden" element={<AfwezigheidMelden />} />
     <Route path="meer/afwezigheid/melden/nieuw" element={<NieuweMelding />} />

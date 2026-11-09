@@ -6,6 +6,8 @@ import type {
   Afspraak,
   AfspraakDetail,
   AfspraakInvoer,
+  Activiteit,
+  ActiviteitOnderdeel,
   Afwezigheid,
   Bericht,
   BerichtKort,
@@ -590,5 +592,48 @@ export function naarRuwBericht(b: BerichtInvoer) {
     onderwerp: b.onderwerp.trim(),
     verzendOptie: 'standaard',
     bijlagen: [],
+  };
+}
+
+// ---- Activiteiten ----
+
+export interface RuweActiviteit {
+  Id: number | string;
+  Titel?: string | null;
+  Details?: string | null;
+  StartInschrijfdatum?: string | null;
+  EindeInschrijfdatum?: string | null;
+}
+
+export interface RuwOnderdeel extends RuweActiviteit {
+  MaxAantalDeelnemers?: number | null;
+  AantalPlaatsenBeschikbaar?: number | null;
+  IsIngeschreven?: boolean;
+  IsOpInTeSchrijven?: boolean;
+  IsVerplichtIngeschreven?: boolean;
+  Bijlagen?: RuweOpdrachtBijlage[] | null;
+}
+
+export function naarActiviteit(a: RuweActiviteit): Activiteit {
+  return {
+    id: String(a.Id),
+    titel: a.Titel?.trim() || 'Activiteit',
+    detailsHtml: a.Details?.trim() || null,
+    inschrijvenVan: a.StartInschrijfdatum ?? null,
+    inschrijvenTot: a.EindeInschrijfdatum ?? null,
+  };
+}
+
+export function naarOnderdeel(o: RuwOnderdeel, activiteitId: string): ActiviteitOnderdeel {
+  return {
+    ...naarActiviteit(o),
+    titel: o.Titel?.trim() || 'Onderdeel',
+    activiteitId,
+    maxDeelnemers: o.MaxAantalDeelnemers || null,
+    plekkenVrij: o.AantalPlaatsenBeschikbaar ?? null,
+    ingeschreven: !!o.IsIngeschreven,
+    kanInschrijven: !!o.IsOpInTeSchrijven,
+    verplicht: !!o.IsVerplichtIngeschreven,
+    bijlagen: (o.Bijlagen ?? []).map(naarOpdrachtBijlage),
   };
 }

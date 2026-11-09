@@ -1,5 +1,5 @@
 // Nep-data voor de demo. Alle namen zijn verzonnen.
-import type { Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
+import type { Activiteit, ActiviteitOnderdeel, Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
 import { nlMoment } from '../lib/datum';
 
 export const demoProfiel: Profiel = {
@@ -423,4 +423,66 @@ export const demoContacten: Contact[] = [
   { id: 201, naam: 'Sem de Boer', soort: 'leerling', extra: '4V2' },
   { id: 202, naam: 'Noa Visser', soort: 'leerling', extra: '4V2' },
   { id: 203, naam: 'Daan Smit', soort: 'leerling', extra: '4V1' },
+];
+
+// ---- Activiteiten ----
+
+export const demoActiviteiten: Activiteit[] = [
+  {
+    id: 'act-1',
+    titel: 'Sportdag 4 vwo',
+    detailsHtml:
+      '<p>Op de sportdag kies je één onderdeel. Neem sportkleding en een lunch mee. We verzamelen om 8:30 bij de sporthal.</p>',
+    inschrijvenVan: dagenGeleden(5, 8),
+    inschrijvenTot: dagenGeleden(-6, 23, 59),
+  },
+  {
+    id: 'act-2',
+    titel: 'Excursie Rijksmuseum',
+    detailsHtml: '<p>Kunstgeschiedenis in het echt. Vertrek om 8:00 met de bus vanaf school, terug rond 17:00.</p>',
+    inschrijvenVan: dagenGeleden(10, 8),
+    inschrijvenTot: dagenGeleden(-2, 23, 59),
+  },
+  {
+    id: 'act-3',
+    titel: 'Debatwedstrijd',
+    detailsHtml: '<p>Teams van vier leerlingen. De finale is in de aula.</p>',
+    inschrijvenVan: dagenGeleden(40, 8),
+    inschrijvenTot: dagenGeleden(20, 23, 59),
+  },
+];
+
+const onderdeel = (
+  activiteitId: string,
+  id: string,
+  titel: string,
+  detailsHtml: string | null,
+  max: number | null,
+  vrij: number | null,
+  ingeschreven = false,
+  verplicht = false,
+): ActiviteitOnderdeel => {
+  const a = demoActiviteiten.find((x) => x.id === activiteitId)!;
+  return {
+    id,
+    activiteitId,
+    titel,
+    detailsHtml,
+    inschrijvenVan: a.inschrijvenVan,
+    inschrijvenTot: a.inschrijvenTot,
+    maxDeelnemers: max,
+    plekkenVrij: vrij,
+    ingeschreven,
+    kanInschrijven: new Date(a.inschrijvenTot!) > new Date(),
+    verplicht,
+    bijlagen: [],
+  };
+};
+
+export const demoOnderdelen: ActiviteitOnderdeel[] = [
+  onderdeel('act-1', 'ond-1', 'Voetbal', '<p>Toernooi op het kunstgrasveld.</p>', 40, 12),
+  onderdeel('act-1', 'ond-2', 'Klimmen', '<p>In de klimhal naast de sporthal.</p>', 20, 0),
+  onderdeel('act-1', 'ond-3', 'Hardlopen', '<p>5 of 10 km door het park.</p>', null, null),
+  onderdeel('act-2', 'ond-4', 'Rondleiding Gouden Eeuw', null, 25, 4, true),
+  onderdeel('act-3', 'ond-5', 'Deelnemen in een team', null, 32, 8, true),
 ];

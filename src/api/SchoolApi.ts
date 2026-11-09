@@ -2,6 +2,8 @@ import type {
   Afspraak,
   AfspraakDetail,
   AfspraakInvoer,
+  Activiteit,
+  ActiviteitOnderdeel,
   Afwezigheid,
   Bericht,
   BerichtKort,
@@ -87,6 +89,13 @@ export interface SchoolApi {
   opdrachten(): Promise<Resultaat<OpdrachtKort[]>>;
   /** Eén opdracht met omschrijving, bijlagen en feedback. */
   opdracht(id: string): Promise<Resultaat<Opdracht>>;
+
+  /** Activiteiten van school waarvoor je je kunt inschrijven. */
+  activiteiten(): Promise<Resultaat<Activiteit[]>>;
+  /** De keuzes binnen één activiteit, met of je bent ingeschreven. */
+  onderdelen(activiteitId: string): Promise<Resultaat<ActiviteitOnderdeel[]>>;
+  /** Inschrijven (true) of uitschrijven (false) voor een keuze. */
+  schrijfIn(onderdeel: ActiviteitOnderdeel, inschrijven: boolean): Promise<void>;
 
   /** Opent een bijlage buiten de app (in de browser of viewer van het toestel). */
   openBijlage(bijlage: Bijlage): Promise<void>;
