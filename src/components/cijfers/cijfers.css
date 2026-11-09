@@ -29,10 +29,10 @@
 }
 
 /* Cijfer en weging blijven altijd heel: deze kolom krimpt nooit en breekt niet af. */
-/* Vandaag binnengekomen: altijd de lichte variant van de themakleur, ook in lichte modus. */
+/* Vandaag binnengekomen: dezelfde kleur als de tekst van de Gemiddeldes-knop. */
 .cijferrij__nieuw {
   font-weight: 700;
-  color: var(--nieuw-tekst);
+  color: var(--groen-tekst);
 }
 
 .cijferrij__rechts {
