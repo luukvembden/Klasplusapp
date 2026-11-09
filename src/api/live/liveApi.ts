@@ -47,6 +47,7 @@ import {
   type RuweReden,
 } from './omzetten';
 import { haal, huidigeSessie, stuur, zetSessie, zoekSchoolUrl } from './verbinding';
+import { markeerEchteWijzigingen } from './wijzigingen';
 
 /** Niet-geheime sessiegegevens; de tokens zelf staan in de veilige opslag. */
 const SESSIE = 'live.sessie';
@@ -267,11 +268,12 @@ export const liveApi: SchoolApi = {
       // Bewust zonder status=1: dat filter laat vervallen lessen weg, en die willen we juist tonen.
       `api/personen/${leerlingId()}/afspraken?van=${naarInvoer(van)}&tot=${naarInvoer(tot)}`,
     );
-    const lijst = (antwoord.Items ?? [])
+    const omgezet = (antwoord.Items ?? [])
       // Persoonlijke afspraken van het kind zijn niet voor de ouder bedoeld.
       .filter((r) => kindId === undefined || r.Type !== PERSOONLIJK)
-      .map(naarAfspraak)
-      .filter((a) => new Date(a.start) >= van && new Date(a.start) < tot);
+      .map((r) => ({ afspraak: naarAfspraak(r), status3: r.Status === 3 }));
+    // "Wijziging" alleen als docent of lokaal echt anders is dan in een andere week (niet bij alleen huiswerk).
+    const lijst = markeerEchteWijzigingen(omgezet).filter((a) => new Date(a.start) >= van && new Date(a.start) < tot);
     return resultaat(lijst);
   },
 

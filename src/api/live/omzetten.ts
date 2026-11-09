@@ -169,8 +169,9 @@ function labels(a: RuweAfspraak): Label[] {
   if (a.Type === 7) lijst.push('kwt');
   if (a.InfoType && infoLabels[a.InfoType]) lijst.push(infoLabels[a.InfoType]);
   if (a.Status === 4 || a.Status === 5) lijst.push('vervalt');
-  // Andere docent, ander lokaal of verplaatst: de school heeft de les aangepast.
-  else if (a.Status === 3 || a.Status === 9 || a.Status === 10) lijst.push('gewijzigd');
+  // Verplaatst (9) of gewijzigd en verplaatst (10): de tijd is anders, dus altijd een wijziging.
+  // Status 3 ("gewijzigd") komt ook bij alleen nieuw huiswerk; zie wijzigingen.ts.
+  else if (a.Status === 9 || a.Status === 10) lijst.push('gewijzigd');
   return lijst;
 }
 
