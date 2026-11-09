@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AfgerondSchakelaar } from '../components/les/AfgerondSchakelaar';
 import { GegevenRij } from '../components/les/GegevenRij';
+import { BijlagenLijst } from '../components/meer/BijlagenLijst';
 import { TekstMetLinks } from '../components/les/TekstMetLinks';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
@@ -39,6 +40,12 @@ export function LesInhoud({ van }: { van: keyof typeof terugNaar }) {
         <section className="kaart lestekst">
           {tekst ? <TekstMetLinks tekst={tekst} /> : 'De docent heeft hier niets bij gezet.'}
         </section>
+      )}
+
+      {a && a.bijlagen.length > 0 && (
+        <Sectie titel={a.bijlagen.length === 1 ? 'Bijlage' : 'Bijlagen'}>
+          <BijlagenLijst bijlagen={a.bijlagen} />
+        </Sectie>
       )}
 
       {a && <AfgerondSchakelaar id={a.id} afgerond={afgerond} onWijzig={setGewijzigd} />}

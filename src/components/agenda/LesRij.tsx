@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Paperclip } from 'lucide-react';
 import type { Afspraak } from '../../api';
 import { tijdvak } from '../../lib/datum';
 import { useInstellingen } from '../../lib/instellingen';
@@ -51,7 +52,10 @@ export function LesRij({ afspraak, nu, nuTijd }: { afspraak: Afspraak; nu?: numb
         {afspraak.lesuur ?? ''}
       </div>
       <div className="lesrij__tekst">
-        <span className="lesrij__titel">{titel}</span>
+        <span className="lesrij__titel">
+          {titel}
+          {afspraak.heeftBijlagen && <Paperclip className="paperclip" size={13} strokeWidth={2.2} aria-label="met bijlage" />}
+        </span>
         <span className="lesrij__tijd">{onder}</span>
       </div>
       {afspraak.labels.length > 0 && (

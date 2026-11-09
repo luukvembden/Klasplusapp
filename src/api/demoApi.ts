@@ -79,6 +79,8 @@ function lesOp(dag: Date, les: DemoLes): Afspraak {
     vak: demoVakken[vakCode] ?? null,
     docenten: demoDocenten[docentCode] ? [demoDocenten[docentCode]] : [],
     inhoudHtml: demoInhoud[les.labels.find((l) => l in demoInhoud)!] ?? null,
+    // In de demo zit bij elk proefwerk een oefentoets.
+    heeftBijlagen: les.labels.includes('proefwerk'),
   };
 }
 
@@ -155,6 +157,7 @@ export const demoApi: SchoolApi = {
         aangemaaktOp: eigen.aangemaaktOp,
         gewijzigdOp: eigen.gewijzigdOp ?? null,
         groepen: [],
+        bijlagen: [],
       });
     }
     const [datum, uur] = id.split('_');
@@ -168,6 +171,7 @@ export const demoApi: SchoolApi = {
       aangemaaktOp: soort ? plusDagen(new Date(les.start), -7).toISOString() : null,
       gewijzigdOp: soort ? plusDagen(new Date(les.start), -5).toISOString() : null,
       groepen: les.omschrijving.includes('4V2') ? ['4V2'] : [],
+      bijlagen: les.heeftBijlagen ? [{ id: `${les.id}-oefentoets`, naam: 'Oefentoets.pdf', grootte: 348_000, bron: '' }] : [],
     };
     return resultaat(detail);
   },

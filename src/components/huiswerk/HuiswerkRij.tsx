@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Paperclip } from 'lucide-react';
 import type { Afspraak } from '../../api';
 import { htmlNaarTekst, metHoofdletter } from '../../lib/tekst';
 import { LesLabel } from '../agenda/LesLabel';
@@ -12,7 +12,10 @@ export function HuiswerkRij({ afspraak: a }: { afspraak: Afspraak }) {
   return (
     <Link to={`/huiswerk/${encodeURIComponent(a.id)}`} className="huiswerkrij">
       <div className="huiswerkrij__tekst">
-        <span className="huiswerkrij__vak">{metHoofdletter(a.vak ?? a.omschrijving)}</span>
+        <span className="huiswerkrij__vak">
+          {metHoofdletter(a.vak ?? a.omschrijving)}
+          {a.heeftBijlagen && <Paperclip className="paperclip" size={13} strokeWidth={2.2} aria-label="met bijlage" />}
+        </span>
         {tekst && <span className="huiswerkrij__inhoud">{tekst}</span>}
       </div>
       <div className="huiswerkrij__rechts">

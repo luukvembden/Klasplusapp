@@ -72,6 +72,9 @@ export interface RuweAfspraak {
   /** HTML die de docent typte. */
   Inhoud?: string | null;
   Afgerond?: boolean;
+  HeeftBijlagen?: boolean;
+  /** Alleen in het detailverzoek; zelfde vorm als bij opdrachten. */
+  Bijlagen?: RuweOpdrachtBijlage[] | null;
   /** Alleen in het detailverzoek. */
   TaakAangemaaktOp?: string | null;
   TaakGewijzigdOp?: string | null;
@@ -196,6 +199,7 @@ export function naarAfspraak(a: RuweAfspraak): Afspraak {
     docenten: (a.Docenten ?? []).map((d) => d.Naam).filter(Boolean),
     inhoudHtml: a.Inhoud?.trim() ? a.Inhoud : null,
     afgerond: a.Afgerond ?? false,
+    heeftBijlagen: a.HeeftBijlagen ?? false,
   };
 }
 
@@ -205,6 +209,7 @@ export function naarAfspraakDetail(a: RuweAfspraak): AfspraakDetail {
     aangemaaktOp: a.TaakAangemaaktOp ?? null,
     gewijzigdOp: a.TaakGewijzigdOp ?? null,
     groepen: (a.Groepen ?? []).map((g) => g.Code).filter(Boolean),
+    bijlagen: (a.Bijlagen ?? []).map(naarOpdrachtBijlage),
   };
 }
 

@@ -67,6 +67,8 @@ export interface Afspraak {
   inhoudHtml: string | null;
   /** Heeft de leerling het huiswerk afgevinkt? Zelfde vinkje als in de officiële app. */
   afgerond: boolean;
+  /** De docent heeft er bestanden bij gezet (te zien op de lespagina). */
+  heeftBijlagen?: boolean;
 }
 
 /** Wat de leerling invult voor een eigen (persoonlijke) afspraak. */
@@ -87,6 +89,8 @@ export interface AfspraakDetail extends Afspraak {
   gewijzigdOp: string | null;
   /** Klassen of groepen, bijvoorbeeld "h5.ak4". */
   groepen: string[];
+  /** Bestanden die de docent bij het huiswerk of de les zette. */
+  bijlagen: Bijlage[];
 }
 
 /** Eén keer afwezig (of te laat, uit de les gestuurd, enzovoort), zoals de school het registreerde. */

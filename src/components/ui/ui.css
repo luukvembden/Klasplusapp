@@ -238,3 +238,11 @@
   flex-direction: column;
   gap: 16px;
 }
+
+/* Paperclipje achter een titel: er zit een bijlage bij. */
+.paperclip {
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: -1px;
+  color: var(--tekst-secundair);
+}

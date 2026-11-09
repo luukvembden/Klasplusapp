@@ -4,6 +4,7 @@ import { AfgerondSchakelaar } from '../components/les/AfgerondSchakelaar';
 import { ChevronRight } from 'lucide-react';
 import { LesLabel } from '../components/agenda/LesLabel';
 import { GegevenRij } from '../components/les/GegevenRij';
+import { BijlagenLijst } from '../components/meer/BijlagenLijst';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
@@ -58,6 +59,12 @@ export function Les() {
             <ChevronRight size={18} strokeWidth={2} color="var(--tekst-secundair)" aria-hidden="true" />
           </Link>
           <AfgerondSchakelaar id={a.id} afgerond={afgerond} onWijzig={setGewijzigd} />
+        </Sectie>
+      )}
+
+      {a && a.bijlagen.length > 0 && (
+        <Sectie titel={a.bijlagen.length === 1 ? 'Bijlage' : 'Bijlagen'}>
+          <BijlagenLijst bijlagen={a.bijlagen} />
         </Sectie>
       )}
 
