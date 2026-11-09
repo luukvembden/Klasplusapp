@@ -29,7 +29,7 @@ function regels(a: Afspraak, modern: boolean): [string, string] {
 
 /**
  * Eén les in de lijst: links het uurnummer in een vierkantje, dan twee regels tekst, rechts de labels.
- * `nu` (0 tot 1): waar in deze rij het lijntje van de huidige tijd staat; 0 is de bovenrand, 1 de onderrand.
+ * `nu` (0 tot 1): hoe ver de les is; 0 is nog niet begonnen (lijntje op de bovenrand).
  * `nuTijd`: de huidige tijd (ms), die links van het bolletje staat.
  */
 export function LesRij({ afspraak, nu, nuTijd }: { afspraak: Afspraak; nu?: number; nuTijd?: number }) {
@@ -39,7 +39,9 @@ export function LesRij({ afspraak, nu, nuTijd }: { afspraak: Afspraak; nu?: numb
   return (
     <Link to={`/agenda/${encodeURIComponent(afspraak.id)}`} className="lesrij lesrij--link">
       {nu !== undefined && nuTijd !== undefined && (
-        <NuLijn nu={nuTijd} top={`${nu * 100}%`} />
+        // Nooit door de tekst: op de bovenrand (pauze ervoor), in de eerste helft van de les net boven
+        // de tekst, in de tweede helft net onder de tekst. Zo blijft het wel in het vak van de les.
+        <NuLijn nu={nuTijd} top={nu === 0 ? '0' : nu < 0.5 ? '5px' : 'calc(100% - 5px)'} />
       )}
       {/* Zonder lesuur (bijvoorbeeld een persoonlijke afspraak) blijft het vierkantje leeg, zodat alles netjes uitlijnt. */}
       <div
