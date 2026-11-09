@@ -21,7 +21,8 @@ const SLEUTEL = 'schoolkompas.instellingen';
 
 const standaard: Instellingen = {
   thema: 'systeem',
-  agenda: 'klassiek',
+  // Nieuw in Klas+: Modern (vaknaam, en tijd · lokaal · docent). Wie al iets koos, houdt dat.
+  agenda: 'modern',
   kleur: 'groen',
 };
 

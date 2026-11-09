@@ -8,8 +8,8 @@ const themas: { waarde: Thema; naam: string }[] = [
 ];
 
 const agendaWeergaven: { waarde: AgendaWeergave; naam: string }[] = [
-  { waarde: 'klassiek', naam: 'Klassiek' },
   { waarde: 'modern', naam: 'Modern' },
+  { waarde: 'klassiek', naam: 'Klassiek' },
 ];
 
 export function ThemaKiezer() {
