@@ -50,6 +50,20 @@ export function Agenda() {
       .sort((a, b) => Number(!!b.heleDag) - Number(!!a.heleDag) || a.start.localeCompare(b.start));
   };
 
+  // Openen in het weekend zonder afspraken (vandaag t/m zondag leeg): meteen naar maandag.
+  // Eén keer per keer openen, en alleen zolang je nog niet zelf een andere dag koos.
+  const weekendBekeken = useRef(false);
+  useEffect(() => {
+    if (weekendBekeken.current || !weekGeladen) return;
+    weekendBekeken.current = true;
+    const vandaag = beginVanDag(new Date());
+    const weekdag = vandaag.getDay(); // 6 = zaterdag, 0 = zondag
+    if (!zelfdeDag(dag, vandaag) || (weekdag !== 6 && weekdag !== 0)) return;
+    const restVanWeekend = weekdag === 6 ? [vandaag, plusDagen(vandaag, 1)] : [vandaag];
+    if (restVanWeekend.every((d) => lessenOp(d).length === 0)) setDag(plusDagen(vandaag, weekdag === 6 ? 2 : 1));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen zodra de week voor het eerst geladen is
+  }, [weekGeladen]);
+
   /** De lessen van één dag, zoals in de lijst; ook voor de buurdagen in de schuifbaan. */
   const dagLijst = (d: Date) => {
     const lessen = lessenOp(d);

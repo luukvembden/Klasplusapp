@@ -57,6 +57,12 @@
 
 /* Gemiddeldes */
 
+/* Vaste kop boven de lijst: de ruimte tot de lijst komt van de lijst zelf. */
+.gemiddeldes__kop {
+  flex: 0 0 auto;
+  padding-bottom: 0;
+}
+
 .kaart--vakken {
   padding: 4px 16px;
 }
