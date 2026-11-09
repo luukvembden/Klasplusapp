@@ -2,7 +2,24 @@
 // Veldnamen komen uit de broncode van Gemairo; ze zijn niet officieel gedocumenteerd.
 import { nlTijd } from '../../lib/datum';
 import { metHoofdletter } from '../../lib/tekst';
-import type { Afspraak, AfspraakDetail, AfspraakInvoer, Afwezigheid, Cijfer, Kind, Label, Melding, Reden, Vak } from '../types';
+import type {
+  Afspraak,
+  AfspraakDetail,
+  AfspraakInvoer,
+  Afwezigheid,
+  Bericht,
+  BerichtKort,
+  Bijlage,
+  Cijfer,
+  Kind,
+  Label,
+  Melding,
+  Opdracht,
+  OpdrachtKort,
+  OpdrachtStatus,
+  Reden,
+  Vak,
+} from '../types';
 
 // ---- Ruwe vormen (alleen de velden die we gebruiken) ----
 
@@ -369,5 +386,151 @@ export function naarMelding(m: RuweMelding, namen = new Map<string, string>()): 
     einde: einde ? (heleDag && isLaatsteMinuut(einde) ? new Date(einde.getTime() + 60_000) : einde).toISOString() : null,
     opmerking: m.comment?.trim() ?? '',
     gemeldOp: m.createdDateTime ?? m.lastModified ?? null,
+  };
+}
+
+// ---- Berichten (module api/berichten, kleine letters) ----
+// Veldnamen uit de broncode van MagisterAPIKt (Tiebe) en magistergo; niet officieel gedocumenteerd.
+
+type RuweLink = { href?: string };
+
+export interface RuweBerichtMap {
+  id: number;
+  naam?: string;
+  aantalOngelezen?: number;
+  links?: { berichten?: RuweLink };
+}
+
+export interface RuwBericht {
+  id: number;
+  onderwerp?: string;
+  afzender?: { naam?: string };
+  verzondenOp?: string;
+  isGelezen?: boolean;
+  heeftBijlagen?: boolean;
+  heeftPrioriteit?: boolean;
+  /** Alleen bij één bericht. */
+  inhoud?: string | null;
+  ontvangers?: { weergavenaam?: string }[];
+  kopieOntvangers?: { weergavenaam?: string }[];
+  links?: { bijlagen?: RuweLink };
+}
+
+export interface RuweBerichtBijlage {
+  id: number;
+  naam?: string;
+  grootte?: number;
+  links?: { download?: RuweLink; self?: RuweLink };
+}
+
+/** Het postvak: de map die zo heet, anders de eerste map met berichten. */
+export function postvakIn(mappen: RuweBerichtMap[]): RuweBerichtMap | undefined {
+  return (
+    mappen.find((m) => (m.naam ?? '').toLowerCase().replace(/\s+/g, '') === 'postvakin') ??
+    mappen.find((m) => m.links?.berichten?.href)
+  );
+}
+
+export function naarBerichtKort(b: RuwBericht): BerichtKort {
+  return {
+    id: String(b.id),
+    onderwerp: b.onderwerp?.trim() || '(geen onderwerp)',
+    afzender: b.afzender?.naam?.trim() || 'Onbekend',
+    verzondenOp: b.verzondenOp ?? new Date(0).toISOString(),
+    gelezen: b.isGelezen ?? true,
+    heeftBijlagen: b.heeftBijlagen ?? false,
+    belangrijk: b.heeftPrioriteit ?? false,
+  };
+}
+
+export function naarBerichtBijlage(b: RuweBerichtBijlage): Bijlage {
+  return {
+    id: String(b.id),
+    naam: b.naam ?? 'Bijlage',
+    grootte: b.grootte ?? null,
+    bron: b.links?.download?.href ?? b.links?.self?.href ?? '',
+  };
+}
+
+export function naarBericht(b: RuwBericht, bijlagen: RuweBerichtBijlage[]): Bericht {
+  const namen = [...(b.ontvangers ?? []), ...(b.kopieOntvangers ?? [])]
+    .map((o) => o.weergavenaam?.trim())
+    .filter((n): n is string => !!n);
+  return {
+    ...naarBerichtKort(b),
+    inhoudHtml: b.inhoud?.trim() ? b.inhoud : null,
+    ontvangers: namen,
+    bijlagen: bijlagen.map(naarBerichtBijlage),
+  };
+}
+
+// ---- Opdrachten (api/personen/{id}/opdrachten, hoofdletters) ----
+
+type RuweHoofdLink = { Rel?: string; Href?: string };
+
+export interface RuweOpdrachtBijlage {
+  Id: number;
+  Naam?: string;
+  Grootte?: number;
+  /** Bij een link in plaats van een bestand. */
+  Url?: string | null;
+  Links?: RuweHoofdLink[];
+}
+
+export interface RuweOpdracht {
+  Id: number;
+  Titel?: string;
+  Vak?: string;
+  Omschrijving?: string | null;
+  InleverenVoor?: string | null;
+  IngeleverdOp?: string | null;
+  Afgesloten?: boolean;
+  Beoordeling?: string | null;
+  Docenten?: { Naam?: string }[];
+  Bijlagen?: RuweOpdrachtBijlage[];
+  Links?: RuweHoofdLink[];
+  VersieNavigatieItems?: { Id: number; Links?: RuweHoofdLink[] }[];
+}
+
+export interface RuweOpdrachtVersie {
+  Beoordeling?: string | null;
+  DocentOpmerking?: string | null;
+  IngeleverdOp?: string | null;
+  FeedbackBijlagen?: RuweOpdrachtBijlage[];
+}
+
+export function naarOpdrachtBijlage(b: RuweOpdrachtBijlage): Bijlage {
+  const link = b.Links?.find((l) => l.Rel === 'Contents') ?? b.Links?.find((l) => l.Rel === 'Self');
+  return { id: String(b.Id), naam: b.Naam ?? 'Bijlage', grootte: b.Grootte ?? null, bron: b.Url || link?.Href || '' };
+}
+
+function opdrachtStatus(o: { IngeleverdOp?: string | null; Beoordeling?: string | null; InleverenVoor?: string | null }): OpdrachtStatus {
+  if (o.Beoordeling?.trim()) return 'beoordeeld';
+  if (o.IngeleverdOp) return 'ingeleverd';
+  if (o.InleverenVoor && new Date(o.InleverenVoor).getTime() < Date.now()) return 'te-laat';
+  return 'open';
+}
+
+export function naarOpdrachtKort(o: RuweOpdracht): OpdrachtKort {
+  return {
+    id: String(o.Id),
+    titel: o.Titel?.trim() || 'Opdracht',
+    vak: o.Vak?.trim() || '',
+    inleverenVoor: o.InleverenVoor ?? null,
+    ingeleverdOp: o.IngeleverdOp ?? null,
+    status: opdrachtStatus(o),
+    beoordeling: o.Beoordeling?.trim() || null,
+  };
+}
+
+export function naarOpdracht(o: RuweOpdracht, versie: RuweOpdrachtVersie | null): Opdracht {
+  const samen = { ...o, IngeleverdOp: o.IngeleverdOp ?? versie?.IngeleverdOp, Beoordeling: o.Beoordeling ?? versie?.Beoordeling };
+  return {
+    ...naarOpdrachtKort(samen),
+    omschrijvingHtml: o.Omschrijving?.trim() ? o.Omschrijving : null,
+    docenten: (o.Docenten ?? []).map((d) => d.Naam?.trim()).filter((n): n is string => !!n),
+    bijlagen: (o.Bijlagen ?? []).map(naarOpdrachtBijlage),
+    feedbackHtml: versie?.DocentOpmerking?.trim() ? versie.DocentOpmerking : null,
+    feedbackBijlagen: (versie?.FeedbackBijlagen ?? []).map(naarOpdrachtBijlage),
   };
 }

@@ -47,7 +47,7 @@ async function vernieuw(): Promise<void> {
 
 const wacht = (ms: number) => new Promise((klaar) => setTimeout(klaar, ms));
 
-type Methode = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type Methode = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 /**
  * Verzoek aan de schoolserver; `pad` zonder beginnende slash, bijvoorbeeld "api/account".

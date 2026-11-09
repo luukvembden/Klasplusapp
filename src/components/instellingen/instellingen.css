@@ -190,6 +190,61 @@
   color: var(--tekst-secundair);
 }
 
+/* Regels in Meer: icoon in een gevuld vakje (zoals de uurvakjes), naam, rood getal, pijltje. */
+.meerrij {
+  justify-content: flex-start;
+  text-decoration: none;
+}
+
+.meerrij__icoon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  background: var(--kop);
+  color: var(--op-groen);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meerrij__naam {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Rood getal: ongelezen berichten. Zelfde vorm op de tab Meer. */
+.teller {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--onvoldoende);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Instelrij als knop (GitHub): zelfde uiterlijk als een link. */
+button.instelrij {
+  width: 100%;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tekst);
+  text-align: left;
+  cursor: pointer;
+}
+
 .instelrij--vast {
   cursor: default;
 }

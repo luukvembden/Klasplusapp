@@ -1,5 +1,5 @@
 // Nep-data voor de demo. Alle namen zijn verzonnen.
-import type { Afwezigheid, Cijfer, Label, Melding, Profiel, Reden, Vak } from '../api/types';
+import type { Afwezigheid, Bericht, Cijfer, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
 import { nlMoment } from '../lib/datum';
 
 export const demoProfiel: Profiel = {
@@ -218,5 +218,157 @@ export const demoMeldingen: Melding[] = [
     einde: nlMoment(2026, 8, 23, 12, 30).toISOString(),
     opmerking: '',
     gemeldOp: nlMoment(2026, 8, 21, 19, 5).toISOString(),
+  },
+];
+
+// ---- Berichten en opdrachten (verzonnen; datums ten opzichte van vandaag) ----
+
+const dagenGeleden = (dagen: number, uur = 9, minuut = 0) => {
+  const d = new Date();
+  d.setDate(d.getDate() - dagen);
+  d.setHours(uur, minuut, 0, 0);
+  return d.toISOString();
+};
+
+const criteria = { id: 'b1', naam: 'Criteria betoog.pdf', grootte: 219_000, bron: '' };
+
+/** Postvak in de demo. "gelezen" is de beginstand; wat je opent wordt op het toestel onthouden. */
+export const demoBerichten: Bericht[] = [
+  {
+    id: 'bericht-1',
+    onderwerp: 'Inleveren betoog verschoven',
+    afzender: 'D. de Vries',
+    verzondenOp: dagenGeleden(0, 9, 12),
+    gelezen: false,
+    heeftBijlagen: true,
+    belangrijk: false,
+    inhoudHtml:
+      '<p>Beste 4V2,</p><p>De deadline voor het betoog is verplaatst naar <strong>vrijdag</strong>. In de bijlage vinden jullie de beoordelingscriteria nog een keer.</p><p>Groet, mevrouw De Vries</p>',
+    ontvangers: ['4V2'],
+    bijlagen: [criteria],
+  },
+  {
+    id: 'bericht-2',
+    onderwerp: 'Ouderavond donderdag',
+    afzender: 'Mentor 4V2',
+    verzondenOp: dagenGeleden(1, 16, 40),
+    gelezen: false,
+    heeftBijlagen: false,
+    belangrijk: true,
+    inhoudHtml:
+      '<p>Beste leerlingen,</p><p>Donderdag is de ouderavond. Jullie ouders hebben een uitnodiging gekregen. Neem je planner mee als je ook komt.</p><p>Groeten, je mentor</p>',
+    ontvangers: ['4V2', 'Ouders 4V2'],
+    bijlagen: [],
+  },
+  {
+    id: 'bericht-3',
+    onderwerp: 'Uitwerkingen hoofdstuk 3',
+    afzender: 'K. Rietveld',
+    verzondenOp: dagenGeleden(2, 13, 5),
+    gelezen: false,
+    heeftBijlagen: true,
+    belangrijk: false,
+    inhoudHtml:
+      '<p>Bijgevoegd de uitwerkingen van de oefentoets. Kijk vooral naar opgave 4 en 7, daar gingen de meeste punten verloren.</p>',
+    ontvangers: ['4V2'],
+    bijlagen: [{ id: 'b2', naam: 'Uitwerkingen H3.pdf', grootte: 512_000, bron: '' }],
+  },
+  {
+    id: 'bericht-4',
+    onderwerp: 'Wijziging lokaal wiskunde',
+    afzender: 'Roosterbureau',
+    verzondenOp: dagenGeleden(5, 8, 2),
+    gelezen: true,
+    heeftBijlagen: false,
+    belangrijk: false,
+    inhoudHtml: '<p>Het 2e uur wiskunde op maandag is verplaatst naar lokaal 3.12.</p>',
+    ontvangers: ['4V2'],
+    bijlagen: [],
+  },
+  {
+    id: 'bericht-5',
+    onderwerp: 'Leesvaardigheid',
+    afzender: 'S. Mulder',
+    verzondenOp: dagenGeleden(9, 15, 30),
+    gelezen: true,
+    heeftBijlagen: false,
+    belangrijk: false,
+    inhoudHtml: '<p>Goed gedaan vandaag! Voor volgende week lezen jullie tekst 4 en 5 uit het tekstboek.</p>',
+    ontvangers: ['4V2'],
+    bijlagen: [],
+  },
+];
+
+export const demoOpdrachten: Opdracht[] = [
+  {
+    id: 'opdracht-1',
+    titel: 'Betoog over schermtijd',
+    vak: 'Nederlands',
+    inleverenVoor: dagenGeleden(-4, 23, 59),
+    ingeleverdOp: null,
+    status: 'open',
+    beoordeling: null,
+    omschrijvingHtml:
+      '<p>Schrijf een betoog van 600 tot 800 woorden over de vraag of schermtijd op school beperkt moet worden. Gebruik minstens twee bronnen.</p>',
+    docenten: ['D. de Vries'],
+    bijlagen: [criteria],
+    feedbackHtml: null,
+    feedbackBijlagen: [],
+  },
+  {
+    id: 'opdracht-2',
+    titel: 'Bronnenonderzoek Eerste Wereldoorlog',
+    vak: 'Geschiedenis',
+    inleverenVoor: dagenGeleden(-7, 23, 59),
+    ingeleverdOp: null,
+    status: 'open',
+    beoordeling: null,
+    omschrijvingHtml: '<p>Zoek drie bronnen over het leven in de loopgraven en beantwoord de vragen in het werkblad.</p>',
+    docenten: ['J. Nijhuis'],
+    bijlagen: [],
+    feedbackHtml: null,
+    feedbackBijlagen: [],
+  },
+  {
+    id: 'opdracht-3',
+    titel: 'Practicumverslag cellen',
+    vak: 'Biologie',
+    inleverenVoor: dagenGeleden(3, 17, 0),
+    ingeleverdOp: null,
+    status: 'te-laat',
+    beoordeling: null,
+    omschrijvingHtml: '<p>Maak een verslag van het practicum met de microscoop. Gebruik het sjabloon uit de les.</p>',
+    docenten: ['V. Bakker'],
+    bijlagen: [],
+    feedbackHtml: null,
+    feedbackBijlagen: [],
+  },
+  {
+    id: 'opdracht-4',
+    titel: 'Luistertoets voorbereiding',
+    vak: 'Frans',
+    inleverenVoor: dagenGeleden(6, 23, 59),
+    ingeleverdOp: dagenGeleden(7, 20, 15),
+    status: 'beoordeeld',
+    beoordeling: '7,5',
+    omschrijvingHtml: '<p>Luister fragment 1 tot en met 3 en maak de vragen.</p>',
+    docenten: ['L. Meijer'],
+    bijlagen: [],
+    feedbackHtml: '<p>Goed gedaan! Let bij fragment 3 nog op de werkwoordstijden.</p>',
+    feedbackBijlagen: [],
+  },
+  {
+    id: 'opdracht-5',
+    titel: 'Samenvatting hoofdstuk 2',
+    vak: 'Scheikunde',
+    inleverenVoor: dagenGeleden(10, 23, 59),
+    ingeleverdOp: dagenGeleden(11, 19, 2),
+    status: 'ingeleverd',
+    beoordeling: null,
+    omschrijvingHtml: '<p>Maak een samenvatting van hoofdstuk 2 van maximaal een A4.</p>',
+    docenten: ['H. Fransen'],
+    bijlagen: [],
+    feedbackHtml: null,
+    feedbackBijlagen: [],
   },
 ];

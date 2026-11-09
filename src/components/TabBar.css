@@ -26,3 +26,29 @@
   color: var(--groen-tekst);
   font-weight: 700;
 }
+
+/* Rood getal op Meer: ongelezen berichten. */
+.tabbalk__icoon {
+  position: relative;
+  display: inline-flex;
+}
+
+.tabbalk__teller {
+  position: absolute;
+  top: -5px;
+  left: 15px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  border: 2px solid var(--kaart);
+  background: var(--onvoldoende);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

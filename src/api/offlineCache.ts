@@ -73,5 +73,13 @@ export function metOfflineCache(bron: SchoolApi): SchoolApi {
     afwezigheden: () => metCache('afwezigheden', () => bron.afwezigheden()),
 
     meldingen: () => metCache('meldingen', () => bron.meldingen()),
+
+    berichten: () => metCache('berichten', () => bron.berichten()),
+    bericht: (id) => metCache(`bericht.${id}`, () => bron.bericht(id)),
+    // Zonder verbinding is het getal onbekend: dan geen rood getal in plaats van een fout.
+    ongelezen: () => bron.ongelezen().catch(() => 0),
+
+    opdrachten: () => metCache('opdrachten', () => bron.opdrachten()),
+    opdracht: (id) => metCache(`opdracht.${id}`, () => bron.opdracht(id)),
   };
 }

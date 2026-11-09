@@ -3,7 +3,12 @@ import type {
   AfspraakDetail,
   AfspraakInvoer,
   Afwezigheid,
+  Bericht,
+  BerichtKort,
+  Bijlage,
   Cijfer,
+  Opdracht,
+  OpdrachtKort,
   Profiel,
   Resultaat,
   Melding,
@@ -61,6 +66,25 @@ export interface SchoolApi {
   meldAfwezig(melding: MeldingInvoer): Promise<void>;
   /** Eerder gedane meldingen, nieuwste eerst. */
   meldingen(): Promise<Resultaat<Melding[]>>;
+
+  /** Berichten in het postvak van dit account (ook bij een ouder: diens eigen postvak), nieuwste eerst. */
+  berichten(): Promise<Resultaat<BerichtKort[]>>;
+  /** Eén bericht met de volledige tekst en bijlagen. */
+  bericht(id: string): Promise<Resultaat<Bericht>>;
+  /** Zet een bericht op gelezen, ook in de officiële app. */
+  markeerGelezen(id: string): Promise<void>;
+  /** Aantal ongelezen berichten in het postvak, voor het rode getal. */
+  ongelezen(): Promise<number>;
+
+  /** Opdrachten van dit schooljaar. */
+  opdrachten(): Promise<Resultaat<OpdrachtKort[]>>;
+  /** Eén opdracht met omschrijving, bijlagen en feedback. */
+  opdracht(id: string): Promise<Resultaat<Opdracht>>;
+
+  /** Opent een bijlage buiten de app (in de browser of viewer van het toestel). */
+  openBijlage(bijlage: Bijlage): Promise<void>;
+  /** De website van de school, om daar iets te doen wat in deze app niet kan (zoals inleveren). Null in de demo. */
+  schoolsite(): string | null;
 }
 
 /** De leerling sloot de inlogpagina zelf; geen foutmelding nodig. */

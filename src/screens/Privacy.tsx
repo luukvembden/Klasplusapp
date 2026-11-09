@@ -2,10 +2,11 @@ import { PaginaKop } from '../components/ui/PaginaKop';
 import { TerugLink } from '../components/ui/TerugLink';
 import '../components/instellingen/instellingen.css';
 
-export function Privacy() {
+/** Privacy is te openen vanuit Meer en vanuit Instellingen; de terugknop gaat naar waar je vandaan kwam. */
+export function Privacy({ van = 'instellingen' }: { van?: 'meer' | 'instellingen' }) {
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/instellingen" label="Instellingen" />
+      {van === 'meer' ? <TerugLink naar="/meer" label="Meer" /> : <TerugLink naar="/instellingen" label="Instellingen" />}
       <PaginaKop titel="Privacy" />
 
       <section className="kaart privacy">
@@ -25,10 +26,17 @@ export function Privacy() {
         <h2>Voor ouders</h2>
         <p>
           Log je in met een ouderaccount, dan zie je het rooster, huiswerk, cijfers en afwezigheid van je kind, net
-          zoals de school dat voor ouders toestaat. Heb je meer kinderen, dan wissel je bovenaan bij Instellingen.
+          zoals de school dat voor ouders toestaat. Heb je meer kinderen, dan wissel je bovenaan bij Meer.
           Persoonlijke afspraken van je kind blijven verborgen, en alleen je kind zelf kan huiswerk afvinken. Je ziet
           wel of het huiswerk is afgerond. Staat de school het toe, dan kun je je kind ook afwezig melden; die melding
           gaat rechtstreeks naar school.
+        </p>
+
+        <h2>Berichten en opdrachten</h2>
+        <p>
+          Onder Meer kun je je berichten en opdrachten van school lezen. Als je een bericht opent, wordt het ook bij
+          school als gelezen gemarkeerd, net als in de officiële app. Een bijlage opent buiten de app, in de browser
+          of viewer van je telefoon. Berichten versturen en opdrachten inleveren kan niet in Klas+.
         </p>
 
         <h2>Waar staan je gegevens?</h2>

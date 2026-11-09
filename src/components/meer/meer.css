@@ -1,0 +1,237 @@
+/* Berichten en opdrachten (onder Meer). */
+
+/* Eén bericht in het postvak: stip voor ongelezen, afzender en datum, onderwerp. */
+.berichtrij {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--lijn-zacht);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.berichtrij:last-child {
+  border-bottom: none;
+}
+
+.berichtrij:active {
+  background: var(--vlak);
+}
+
+.berichtrij__stip {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--groen-tekst);
+}
+
+.berichtrij__stip--gelezen {
+  background: transparent;
+}
+
+.berichtrij__tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.berichtrij__boven {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.berichtrij__van {
+  font-size: 15px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.berichtrij__datum {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--tekst-secundair);
+  font-variant-numeric: tabular-nums;
+}
+
+.berichtrij__onderwerp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--tekst-secundair);
+  overflow-wrap: anywhere;
+}
+
+.berichtrij--ongelezen .berichtrij__van {
+  font-weight: 700;
+}
+
+.berichtrij--ongelezen .berichtrij__onderwerp {
+  color: var(--tekst);
+  font-weight: 600;
+}
+
+.berichtrij__onderwerp svg {
+  flex: 0 0 auto;
+  color: var(--tekst-secundair);
+}
+
+/* Eén opdracht: vak, titel en datum, rechts een label. */
+.opdrachtrij {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--lijn-zacht);
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.opdrachtrij:last-child {
+  border-bottom: none;
+}
+
+.opdrachtrij:active {
+  background: var(--vlak);
+}
+
+.opdrachtrij__tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.opdrachtrij__vak {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.opdrachtrij__titel {
+  font-size: 13px;
+  color: var(--tekst-secundair);
+  overflow-wrap: anywhere;
+}
+
+/* Labels bij opdrachten, in de vorm van de lessenlabels. */
+.statuslabel {
+  --label-kleur: var(--tekst-zacht);
+  --label-sterkte: 14%;
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--label-kleur);
+  background: color-mix(in srgb, var(--label-kleur) var(--label-sterkte), transparent);
+}
+
+.statuslabel--bijna,
+.statuslabel--klaar {
+  --label-kleur: var(--groen-tekst);
+  --label-sterkte: 18%;
+  font-weight: 700;
+}
+
+.statuslabel--laat {
+  --label-kleur: var(--onvoldoende);
+  --label-sterkte: 16%;
+  font-weight: 700;
+}
+
+/* Kop van een geopend bericht. */
+.berichtkop {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.berichtkop__onderwerp {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.berichtkop__meta {
+  font-size: 13px;
+  color: var(--tekst-secundair);
+}
+
+.berichtkop__meta strong {
+  color: var(--tekst);
+  font-weight: 600;
+}
+
+/* Bijlagen: een rij per bestand, tik om te openen. */
+.bijlagerij {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--lijn-zacht);
+  background: transparent;
+  color: var(--tekst);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bijlagerij:last-child {
+  border-bottom: none;
+}
+
+.bijlagerij:disabled {
+  opacity: 0.6;
+}
+
+.bijlagerij__type {
+  width: 34px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--groen-tekst) 14%, transparent);
+  color: var(--groen-tekst);
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bijlagerij__tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.bijlagerij__naam {
+  font-size: 15px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.bijlagerij__grootte {
+  font-size: 12px;
+  color: var(--tekst-secundair);
+}

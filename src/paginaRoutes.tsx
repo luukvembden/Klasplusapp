@@ -8,13 +8,18 @@ import { Gemiddeldes } from './screens/Gemiddeldes';
 import { CijferCalculator } from './screens/CijferCalculator';
 import { Huiswerk } from './screens/Huiswerk';
 import { Instellingen } from './screens/Instellingen';
+import { Meer } from './screens/Meer';
+import { Berichten } from './screens/Berichten';
+import { BerichtScherm } from './screens/BerichtScherm';
+import { Opdrachten } from './screens/Opdrachten';
+import { OpdrachtScherm } from './screens/OpdrachtScherm';
 import { Les } from './screens/Les';
 import { LesInhoud } from './screens/LesInhoud';
 import { Privacy } from './screens/Privacy';
 import { AfspraakBewerken, NieuweAfspraak } from './screens/NieuweAfspraak';
 
 /** De vijf tabbladen. Een tab openen begint een nieuwe stapel pagina's. */
-export const TABS = new Set(['/', '/huiswerk', '/cijfers', '/afwezigheid', '/instellingen']);
+export const TABS = new Set(['/', '/huiswerk', '/cijfers', '/afwezigheid', '/meer']);
 
 /** Alle schermen binnen de app (met tabbalk). AppLayout toont ze in lagen, zodat terugvegen de vorige laat zien. */
 export const paginaRoutes = (
@@ -32,6 +37,12 @@ export const paginaRoutes = (
     <Route path="afwezigheid" element={<Afwezigheid />} />
     <Route path="afwezigheid/melden" element={<AfwezigheidMelden />} />
     <Route path="afwezigheid/melden/nieuw" element={<NieuweMelding />} />
+    <Route path="meer" element={<Meer />} />
+    <Route path="meer/berichten" element={<Berichten />} />
+    <Route path="meer/berichten/:id" element={<BerichtScherm />} />
+    <Route path="meer/opdrachten" element={<Opdrachten />} />
+    <Route path="meer/opdrachten/:id" element={<OpdrachtScherm />} />
+    <Route path="meer/privacy" element={<Privacy van="meer" />} />
     <Route path="instellingen" element={<Instellingen />} />
     <Route path="instellingen/privacy" element={<Privacy />} />
     <Route path="*" element={<Navigate to="/" replace />} />

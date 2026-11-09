@@ -1,10 +1,12 @@
 import {
   demoAfwezigheden,
+  demoBerichten,
   demoCijfers,
   demoDocenten,
   demoInhoud,
   demoKinderen,
   demoMeldingen,
+  demoOpdrachten,
   demoLesuren,
   demoOuder,
   demoProfiel,
@@ -77,6 +79,14 @@ function lesOp(dag: Date, les: DemoLes): Afspraak {
     inhoudHtml: demoInhoud[les.labels.find((l) => l in demoInhoud)!] ?? null,
   };
 }
+
+/** Ids van berichten die in de demo zijn geopend. */
+const GELEZEN = 'demo.berichten.gelezen';
+const geopend = () => new Set(lees<string[]>(GELEZEN) ?? []);
+const demoPostvak = () => {
+  const open = geopend();
+  return demoBerichten.map((b) => ({ ...b, gelezen: b.gelezen || open.has(b.id) }));
+};
 
 const lessenOp = (dag: Date) => demoWeek[(nlTijd(dag).weekdag + 6) % 7].map((les) => lesOp(dag, les));
 
@@ -213,4 +223,63 @@ export const demoApi: SchoolApi = {
     await vertraging();
     return resultaat(demoCijfers);
   },
+
+  async berichten() {
+    await vertraging();
+    return resultaat(
+      demoPostvak().map((b) => ({
+        id: b.id,
+        onderwerp: b.onderwerp,
+        afzender: b.afzender,
+        verzondenOp: b.verzondenOp,
+        gelezen: b.gelezen,
+        heeftBijlagen: b.heeftBijlagen,
+        belangrijk: b.belangrijk,
+      })),
+    );
+  },
+
+  async bericht(id) {
+    await vertraging(150);
+    const b = demoPostvak().find((x) => x.id === id);
+    if (!b) throw new Error('Bericht niet gevonden');
+    return resultaat(b);
+  },
+
+  async markeerGelezen(id) {
+    await vertraging(100);
+    schrijf(GELEZEN, [...geopend().add(id)]);
+  },
+
+  async ongelezen() {
+    return demoPostvak().filter((b) => !b.gelezen).length;
+  },
+
+  async opdrachten() {
+    await vertraging();
+    return resultaat(
+      demoOpdrachten.map((o) => ({
+        id: o.id,
+        titel: o.titel,
+        vak: o.vak,
+        inleverenVoor: o.inleverenVoor,
+        ingeleverdOp: o.ingeleverdOp,
+        status: o.status,
+        beoordeling: o.beoordeling,
+      })),
+    );
+  },
+
+  async opdracht(id) {
+    await vertraging(150);
+    const o = demoOpdrachten.find((x) => x.id === id);
+    if (!o) throw new Error('Opdracht niet gevonden');
+    return resultaat(o);
+  },
+
+  async openBijlage() {
+    throw new Error('In de demo zijn de bijlagen niet echt. Met een echt account opent de bijlage hier.');
+  },
+
+  schoolsite: () => null,
 };

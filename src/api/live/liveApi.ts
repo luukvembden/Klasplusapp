@@ -1,6 +1,7 @@
 // De echte koppeling, voor de telefoon-app (Capacitor).
 import { naarInvoer, nlTijd, plusDagen } from '../../lib/datum';
 import { lees, schrijf, verwijder } from '../../lib/opslag';
+import { openExtern } from '../../lib/tekst';
 import { bewaarMelding, meldingenVan } from '../../lib/meldingen';
 import type { SchoolApi } from '../SchoolApi';
 import type { Resultaat } from '../types';
@@ -14,18 +15,28 @@ import {
   naarAfspraak,
   naarAfspraakDetail,
   naarAfwezigheid,
+  naarBericht,
+  naarBerichtKort,
   naarCijfers,
   naarKind,
   naarMelding,
+  naarOpdracht,
+  naarOpdrachtKort,
   naarReden,
   naarRuwePersoonlijke,
   PERSOONLIJK,
+  postvakIn,
   schoolNaam,
   volledigeNaam,
   type RuwAccount,
   type RuweAanmelding,
   type RuweAfwezigheid,
   type RuweAfspraak,
+  type RuwBericht,
+  type RuweBerichtBijlage,
+  type RuweBerichtMap,
+  type RuweOpdracht,
+  type RuweOpdrachtVersie,
   type RuweKolomInfo,
   type RuwePeriode,
   type RuwCijfer,
@@ -126,6 +137,21 @@ function alleenLeerling() {
 }
 
 const resultaat = <T>(data: T): Resultaat<T> => ({ data, opgehaaldOp: new Date().toISOString() });
+
+/** Een lijst uit een antwoord: in "items" (nieuwe modules) of "Items" (oudere delen). */
+const items = <T>(x: { items?: T[]; Items?: T[] } | T[] | undefined): T[] =>
+  Array.isArray(x) ? x : (x?.items ?? x?.Items ?? []);
+
+/** Links in antwoorden beginnen met "/"; onze verzoeken gaan relatief aan de schoolserver. */
+const zonderSlash = (href: string) => href.replace(/^\//, '');
+
+/** Het postvak van dit account (bij een ouder: diens eigen postvak). */
+async function postvak(): Promise<RuweBerichtMap> {
+  const mappen = items(await haal<{ items?: RuweBerichtMap[] }>('api/berichten/mappen/alle'));
+  const map = postvakIn(mappen);
+  if (!map) throw new Error('Geen postvak gevonden');
+  return map;
+}
 
 function persoonId() {
   const s = huidigeSessie();
@@ -365,6 +391,75 @@ export const liveApi: SchoolApi = {
       );
     }
     return resultaat(kindId === undefined ? [] : meldingenVan(kindId));
+  },
+
+  async berichten() {
+    const map = await postvak();
+    const href = map.links?.berichten?.href ?? `api/berichten/mappen/${map.id}/berichten`;
+    const lijst = items(await haal<{ items?: RuwBericht[] }>(`${zonderSlash(href)}?top=50&skip=0`));
+    return resultaat(lijst.map(naarBerichtKort).sort((a, b) => b.verzondenOp.localeCompare(a.verzondenOp)));
+  },
+
+  async bericht(id) {
+    const ruw = await haal<RuwBericht>(`api/berichten/berichten/${encodeURIComponent(id)}`);
+    const bijlagenHref = ruw.links?.bijlagen?.href;
+    const bijlagen =
+      ruw.heeftBijlagen && bijlagenHref
+        ? items(await haal<{ items?: RuweBerichtBijlage[] }>(zonderSlash(bijlagenHref)).catch(() => ({ items: [] })))
+        : [];
+    return resultaat(naarBericht(ruw, bijlagen));
+  },
+
+  async markeerGelezen(id) {
+    // Zoals MagisterAPIKt: een lijst wijzigingen per bericht, hier alleen "gelezen".
+    await stuur('PATCH', 'api/berichten/berichten', {
+      berichten: [{ berichtId: Number(id), operations: [{ op: 'replace', path: '/isGelezen', value: true }] }],
+    });
+  },
+
+  async ongelezen() {
+    return (await postvak()).aantalOngelezen ?? 0;
+  },
+
+  async opdrachten() {
+    const huidig = await aanmelding();
+    const van = naarInvoer(new Date(huidig.begin));
+    const tot = naarInvoer(new Date(huidig.einde));
+    const lijst = items(
+      await haal<{ Items?: RuweOpdracht[] }>(
+        `api/personen/${leerlingId()}/opdrachten?skip=0&top=250&startdatum=${van}&einddatum=${tot}`,
+      ),
+    );
+    return resultaat(lijst.map(naarOpdrachtKort));
+  },
+
+  async opdracht(id) {
+    const ruw = await haal<RuweOpdracht>(`api/personen/${leerlingId()}/opdrachten/${encodeURIComponent(id)}`);
+    // De laatste versie heeft de feedback van de docent; niet erg als die niet lukt.
+    const laatste = ruw.VersieNavigatieItems?.[ruw.VersieNavigatieItems.length - 1];
+    const versie = laatste
+      ? await haal<RuweOpdrachtVersie>(`api/personen/${leerlingId()}/opdrachten/versie/${laatste.Id}`).catch(() => null)
+      : null;
+    return resultaat(naarOpdracht(ruw, versie));
+  },
+
+  async openBijlage(bijlage) {
+    const s = huidigeSessie();
+    if (!s || !bijlage.bron) throw new Error('Deze bijlage kan niet worden geopend');
+    // Een link (geen bestand): gewoon openen.
+    if (/^https?:\/\//.test(bijlage.bron) && !bijlage.bron.startsWith(s.schoolUrl)) {
+      openExtern(bijlage.bron);
+      return;
+    }
+    // Een bestand: de school geeft een tijdelijk downloadadres terug, zoals op de officiële website.
+    const pad = zonderSlash(bijlage.bron.replace(s.schoolUrl, ''));
+    const antwoord = await haal<{ location?: string }>(`${pad}${pad.includes('?') ? '&' : '?'}redirect_type=body`);
+    if (!antwoord?.location) throw new Error('Kon de bijlage niet openen');
+    openExtern(antwoord.location);
+  },
+
+  schoolsite() {
+    return huidigeSessie()?.schoolUrl ?? null;
   },
 
   async cijfers() {

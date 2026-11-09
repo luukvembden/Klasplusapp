@@ -171,3 +171,61 @@ export interface Cijfer {
   /** Telt het cijfer mee voor het gemiddelde? */
   teltMee: boolean;
 }
+
+// ---- Berichten ----
+
+/** Een bijlage bij een bericht of opdracht. */
+export interface Bijlage {
+  id: string;
+  naam: string;
+  /** In bytes, als bekend. */
+  grootte: number | null;
+  /** Waar de bijlage te downloaden is; alleen voor de koppeling, niet om te tonen. */
+  bron: string;
+}
+
+/** Een bericht in het postvak, zoals in de lijst. */
+export interface BerichtKort {
+  id: string;
+  onderwerp: string;
+  afzender: string;
+  /** ISO-tijdstip. */
+  verzondenOp: string;
+  gelezen: boolean;
+  heeftBijlagen: boolean;
+  belangrijk: boolean;
+}
+
+/** Een geopend bericht. */
+export interface Bericht extends BerichtKort {
+  /** De tekst zoals de afzender die typte (HTML); wij tonen hem als gewone tekst. */
+  inhoudHtml: string | null;
+  ontvangers: string[];
+  bijlagen: Bijlage[];
+}
+
+// ---- Opdrachten ----
+
+/** Open: nog in te leveren. Te laat: datum voorbij en niets ingeleverd. */
+export type OpdrachtStatus = 'open' | 'te-laat' | 'ingeleverd' | 'beoordeeld';
+
+export interface OpdrachtKort {
+  id: string;
+  titel: string;
+  vak: string;
+  /** ISO-tijdstip, of null als er geen inleverdatum is. */
+  inleverenVoor: string | null;
+  ingeleverdOp: string | null;
+  status: OpdrachtStatus;
+  /** Bijvoorbeeld "7,5" of "Goed", als de docent heeft beoordeeld. */
+  beoordeling: string | null;
+}
+
+export interface Opdracht extends OpdrachtKort {
+  omschrijvingHtml: string | null;
+  docenten: string[];
+  bijlagen: Bijlage[];
+  /** Wat de docent bij de laatste versie terugschreef. */
+  feedbackHtml: string | null;
+  feedbackBijlagen: Bijlage[];
+}

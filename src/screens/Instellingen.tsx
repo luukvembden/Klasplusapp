@@ -1,20 +1,25 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ExternalLink } from 'lucide-react';
 import { version } from '../../package.json';
 import { api } from '../api';
-import { ProfielKaart } from '../components/instellingen/ProfielKaart';
 import { AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
-import { useLaden, vergeetGeladen } from '../hooks/useLaden';
+import { TerugLink } from '../components/ui/TerugLink';
+import { vergeetGeladen } from '../hooks/useLaden';
 import { wisEigenAfspraken } from '../lib/eigenAfspraken';
 import { herstelInstellingen } from '../lib/instellingen';
+import { zetOngelezen } from '../lib/ongelezen';
 import { wisAlles } from '../lib/opslag';
+import { openExtern } from '../lib/tekst';
 import '../components/instellingen/instellingen.css';
 
+/** De broncode van Klas+. */
+const GITHUB = 'https://github.com/luukvembden/Klasplusapp';
+
+/** Instellingen, onder Meer. Je naam en het kiezen van een kind staan bovenaan bij Meer. */
 export function Instellingen() {
   const navigate = useNavigate();
-  const profiel = useLaden(() => api.profiel(), []);
 
   const uitloggen = async () => {
     await api.uitloggen();
@@ -23,20 +28,14 @@ export function Instellingen() {
     wisAlles();
     vergeetGeladen();
     herstelInstellingen();
+    zetOngelezen(0);
     navigate('/inloggen', { replace: true });
   };
 
   return (
-    <div className="pagina pagina--instellingen">
+    <div className="pagina pagina--met-terug pagina--instellingen">
+      <TerugLink naar="/meer" label="Meer" />
       <PaginaKop titel="Instellingen" />
-      <ProfielKaart
-        profiel={profiel.data?.data}
-        onKiesKind={async (id) => {
-          await api.kiesKind(id);
-          vergeetGeladen();
-          await profiel.vernieuw();
-        }}
-      />
 
       <Sectie titel="Weergave">
         <ThemaKiezer />
@@ -64,6 +63,10 @@ export function Instellingen() {
             Privacyverklaring
             <ChevronRight size={18} strokeWidth={2} color="var(--tekst-secundair)" aria-hidden="true" />
           </Link>
+          <button type="button" className="instelrij" onClick={() => openExtern(GITHUB)}>
+            Broncode op GitHub
+            <ExternalLink size={17} strokeWidth={2} color="var(--tekst-secundair)" aria-hidden="true" />
+          </button>
           <div className="instelrij instelrij--vast">
             Versie
             <span className="instelrij__waarde">{version}</span>
