@@ -24,6 +24,14 @@ export function Cijfers() {
       cijfers && profiel ? nieuwVandaag(cijfers, profiel.ouder ? String(profiel.ouder.gekozen) : 'ik') : new Set<string>(),
     [cijfers, profiel],
   );
+  // Vandaag binnengekomen cijfers altijd bovenaan, ook als de toetsdatum ouder is (Cijfertijd);
+  // daaronder de rest op datum.
+  const lijst = cijfers
+    ? [
+        ...meestRecent(cijfers.filter((c) => nieuw.has(c.id)), AANTAL_RECENT),
+        ...meestRecent(cijfers.filter((c) => !nieuw.has(c.id)), AANTAL_RECENT),
+      ].slice(0, Math.max(AANTAL_RECENT, nieuw.size))
+    : [];
 
   return (
     <div className="scherm">
@@ -49,7 +57,7 @@ export function Cijfers() {
                   {fout && <p className="melding">{fout}</p>}
                   {cijfers && cijfers.length === 0 && <p className="melding">Nog geen cijfers.</p>}
                   {cijfers &&
-                    meestRecent(cijfers, AANTAL_RECENT).map((c) => (
+                    lijst.map((c) => (
                       <CijferRij key={c.id} cijfer={c} nieuw={nieuw.has(c.id)} />
                     ))}
                 </section>
