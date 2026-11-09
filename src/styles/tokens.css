@@ -5,6 +5,8 @@
   --groen-licht: #e3eee9;
   /* Groen als tekstkleur (links, actieve tab); in donker thema lichter voor contrast. */
   --groen-tekst: #2e6b5a;
+  /* "Nieuw" bij een vandaag binnengekomen cijfer: de lichte variant, in licht en donker gelijk. */
+  --nieuw-tekst: #7cc2ab;
   /* Vulkleur van de grote vlakken: kopbalk, plusknop en uurvakjes. In donker thema donkerder (zie onder). */
   --kop: var(--groen);
   /* Cirkel om de dag die je bekijkt: licht een witte cirkel met accentnummer; donker een accent-cirkel met wit nummer. */
@@ -125,6 +127,7 @@
   --groen-donker: #1f4a80;
   --groen-licht: #e3ebf6;
   --groen-tekst: #2f63a8;
+  --nieuw-tekst: #8cb4ea;
   --ingeschreven-vlak: #dde8f7;
   --ingeschreven-tekst: #1f4a80;
   --ingeschreven-rand: #8fb0dc;
@@ -135,6 +138,7 @@
   --groen-donker: #9b2f63;
   --groen-licht: #f8e4ee;
   --groen-tekst: #b03872;
+  --nieuw-tekst: #eca3c6;
   --ingeschreven-vlak: #f6dfea;
   --ingeschreven-tekst: #7f2551;
   --ingeschreven-rand: #e3a3c3;

@@ -29,6 +29,12 @@
 }
 
 /* Cijfer en weging blijven altijd heel: deze kolom krimpt nooit en breekt niet af. */
+/* Vandaag binnengekomen: altijd de lichte variant van de themakleur, ook in lichte modus. */
+.cijferrij__nieuw {
+  font-weight: 700;
+  color: var(--nieuw-tekst);
+}
+
 .cijferrij__rechts {
   flex: 0 0 auto;
   display: flex;
