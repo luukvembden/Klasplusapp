@@ -20,7 +20,7 @@ function ActiviteitRij({ a }: { a: Activiteit }) {
         <span className="opdrachtrij__vak">{a.titel}</span>
         <span className="opdrachtrij__titel">
           {/* Gesloten: het rode label zegt het al, hier alleen de datum. */}
-          {stand.gesloten && a.inschrijvenTot ? `Sloot op ${korteDatumMetJaar(a.inschrijvenTot)}` : stand.tekst}
+          {stand.gesloten && a.inschrijvenTot ? `Gesloten sinds ${korteDatumMetJaar(a.inschrijvenTot)}` : stand.tekst}
         </span>
       </span>
       {/* Al ingeschreven gaat voor op hoe lang je nog kunt inschrijven. */}
