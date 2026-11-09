@@ -4,6 +4,7 @@ import { tijdvak } from '../../lib/datum';
 import { useInstellingen } from '../../lib/instellingen';
 import { metHoofdletter } from '../../lib/tekst';
 import { LesLabel } from './LesLabel';
+import { NuLijn } from './NuLijn';
 import './agenda.css';
 import '../les/les.css';
 
@@ -29,16 +30,16 @@ function regels(a: Afspraak, modern: boolean): [string, string] {
 /**
  * Eén les in de lijst: links het uurnummer in een vierkantje, dan twee regels tekst, rechts de labels.
  * `nu` (0 tot 1): waar in deze rij het lijntje van de huidige tijd staat; 0 is de bovenrand, 1 de onderrand.
+ * `nuTijd`: de huidige tijd (ms), die links van het bolletje staat.
  */
-export function LesRij({ afspraak, nu }: { afspraak: Afspraak; nu?: number }) {
+export function LesRij({ afspraak, nu, nuTijd }: { afspraak: Afspraak; nu?: number; nuTijd?: number }) {
   const { agenda } = useInstellingen();
   const [titel, onder] = regels(afspraak, agenda === 'modern');
 
   return (
     <Link to={`/agenda/${encodeURIComponent(afspraak.id)}`} className="lesrij lesrij--link">
-      {nu !== undefined && (
-        // Helemaal boven of onder blijft het binnen de afgeronde kaart, zodat het bolletje niet wordt afgesneden.
-        <span className="nulijn" style={{ top: `clamp(5px, ${nu * 100}%, calc(100% - 5px))` }} aria-hidden="true" />
+      {nu !== undefined && nuTijd !== undefined && (
+        <NuLijn nu={nuTijd} top={`${nu * 100}%`} />
       )}
       {/* Zonder lesuur (bijvoorbeeld een persoonlijke afspraak) blijft het vierkantje leeg, zodat alles netjes uitlijnt. */}
       <div

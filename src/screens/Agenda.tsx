@@ -5,6 +5,7 @@ import { api, type Afspraak } from '../api';
 import { AgendaKop } from '../components/agenda/AgendaKop';
 import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
+import { NuLijn } from '../components/agenda/NuLijn';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
@@ -74,18 +75,20 @@ export function Agenda() {
   /**
    * Waar het nu-lijntje komt: in welke rij (id) en hoe ver daarin (0 = bovenrand, 1 = onderrand).
    * Tijdens een les loopt het door die les heen; tussen twee lessen staat het op de grens;
-   * voor de eerste les bovenaan en na de laatste onderaan. Hele-dag-afspraken tellen niet mee.
+   * voor de eerste les "voor" (net boven de kaart), na de laatste "na" (net onder de kaart).
+   * Hele-dag-afspraken tellen niet mee.
    */
-  const nuPlek = (lessen: Afspraak[]): { id: string; plek: number } | null => {
+  const nuPlek = (lessen: Afspraak[]): { id: string; plek: number } | 'voor' | 'na' | null => {
     const getimed = lessen.filter((a) => !a.heleDag);
     if (getimed.length === 0) return null;
+    if (nu < new Date(getimed[0].start).getTime()) return 'voor';
     for (const a of getimed) {
       const start = new Date(a.start).getTime();
       const einde = new Date(a.einde).getTime();
       if (nu < start) return { id: a.id, plek: 0 };
       if (nu < einde) return { id: a.id, plek: (nu - start) / Math.max(einde - start, 1) };
     }
-    return { id: getimed[getimed.length - 1].id, plek: 1 };
+    return 'na';
   };
 
   /** De lessen van één dag, zoals in de lijst; ook voor de buurdagen in de schuifbaan. */
@@ -94,12 +97,27 @@ export function Agenda() {
     const lijn = zelfdeDag(d, new Date(nu)) ? nuPlek(lessen) : null;
     return (
       <>
+        {lijn === 'voor' && (
+          <div className="nulijn-buiten nulijn-buiten--boven">
+            <NuLijn nu={nu} top="0" />
+          </div>
+        )}
         {lessen.length > 0 && (
           <section className="agenda__kaart">
             {lessen.map((a) => (
-              <LesRij key={a.id} afspraak={a} nu={lijn?.id === a.id ? lijn.plek : undefined} />
+              <LesRij
+                key={a.id}
+                afspraak={a}
+                nu={lijn && typeof lijn === 'object' && lijn.id === a.id ? lijn.plek : undefined}
+                nuTijd={nu}
+              />
             ))}
           </section>
+        )}
+        {lijn === 'na' && (
+          <div className="nulijn-buiten">
+            <NuLijn nu={nu} top="0" />
+          </div>
         )}
         {weekGeladen && lessen.length === 0 && <p className="melding">Geen afspraken op deze dag.</p>}
       </>
