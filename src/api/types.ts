@@ -42,7 +42,9 @@ export type Label =
   | 'ingeschreven'
   | 'eigen'
   | 'kwt'
-  | 'vervalt';
+  | 'vervalt'
+  /** Iets aan de les is anders dan normaal: docent, lokaal, tijd. */
+  | 'gewijzigd';
 
 export interface Afspraak {
   id: string;

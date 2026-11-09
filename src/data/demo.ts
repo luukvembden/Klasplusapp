@@ -84,7 +84,7 @@ export const demoInhoud: Partial<Record<Label, string>> = {
 export const demoWeek: DemoLes[][] = [
   [
     les(1, 'NE – DV – 4V2', '2.14', ['huiswerk']),
-    les(2, 'WB – KR – 4V2', '1.08'),
+    les(2, 'WB – KR – 4V2', '3.12', ['gewijzigd']),
     les(3, 'EN – SM – 4V2', '2.03', ['vervalt']),
     les(4, 'BI – VB – 4V2', 'B.12', ['so']),
     les(5, 'GS – JN – 4V2', '3.01', ['huiswerk']),
@@ -115,7 +115,7 @@ export const demoWeek: DemoLes[][] = [
   [
     les(1, 'SK – HF – 4V2', 'B.04'),
     les(2, 'FA – LM – 4V2', '2.11', ['huiswerk']),
-    les(3, 'NA – PT – 4V2', 'B.06'),
+    les(3, 'NA – PT – 4V2', 'B.08', ['gewijzigd']),
   ],
   [],
   [],

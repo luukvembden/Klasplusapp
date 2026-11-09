@@ -43,7 +43,7 @@ export interface RuweAfspraak {
   Lokalen?: { Naam: string }[];
   /** 1 huiswerk, 2 proefwerk, 3 tentamen, 4 SO, 5 mondeling. */
   InfoType?: number;
-  /** 4 en 5: vervallen/uitgevallen. */
+  /** 3 gewijzigd, 4 en 5 vervallen/uitgevallen, 9 verplaatst, 10 gewijzigd en verplaatst. */
   Status?: number;
   /** 7: KWT-uur (nog te controleren met echte gegevens). 13 is een gewone les. */
   Type?: number;
@@ -152,6 +152,8 @@ function labels(a: RuweAfspraak): Label[] {
   if (a.Type === 7) lijst.push('kwt');
   if (a.InfoType && infoLabels[a.InfoType]) lijst.push(infoLabels[a.InfoType]);
   if (a.Status === 4 || a.Status === 5) lijst.push('vervalt');
+  // Andere docent, ander lokaal of verplaatst: de school heeft de les aangepast.
+  else if (a.Status === 3 || a.Status === 9 || a.Status === 10) lijst.push('gewijzigd');
   return lijst;
 }
 
