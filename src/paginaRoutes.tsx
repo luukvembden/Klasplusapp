@@ -11,6 +11,7 @@ import { Instellingen } from './screens/Instellingen';
 import { Meer } from './screens/Meer';
 import { Berichten } from './screens/Berichten';
 import { BerichtScherm } from './screens/BerichtScherm';
+import { NieuwBericht } from './screens/NieuwBericht';
 import { Opdrachten } from './screens/Opdrachten';
 import { OpdrachtScherm } from './screens/OpdrachtScherm';
 import { Les } from './screens/Les';
@@ -39,6 +40,7 @@ export const paginaRoutes = (
     <Route path="afwezigheid/melden/nieuw" element={<NieuweMelding />} />
     <Route path="meer" element={<Meer />} />
     <Route path="meer/berichten" element={<Berichten />} />
+    <Route path="meer/berichten/nieuw" element={<NieuwBericht />} />
     <Route path="meer/berichten/:id" element={<BerichtScherm />} />
     <Route path="meer/opdrachten" element={<Opdrachten />} />
     <Route path="meer/opdrachten/:id" element={<OpdrachtScherm />} />

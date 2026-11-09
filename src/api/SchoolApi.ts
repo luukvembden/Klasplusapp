@@ -5,9 +5,11 @@ import type {
   Afwezigheid,
   Bericht,
   BerichtKort,
+  BerichtInvoer,
   BerichtMap,
   Bijlage,
   Cijfer,
+  Contact,
   Opdracht,
   OpdrachtKort,
   Profiel,
@@ -76,6 +78,10 @@ export interface SchoolApi {
   markeerGelezen(id: string): Promise<void>;
   /** Aantal ongelezen berichten in het postvak, voor het rode getal. */
   ongelezen(): Promise<number>;
+  /** Zoekt docenten en leerlingen aan wie je een bericht kunt sturen. */
+  zoekContacten(zoekterm: string): Promise<Contact[]>;
+  /** Verstuurt een bericht; daarna staat het bij Verzonden. */
+  verstuurBericht(bericht: BerichtInvoer): Promise<void>;
 
   /** Opdrachten van dit schooljaar. */
   opdrachten(): Promise<Resultaat<OpdrachtKort[]>>;

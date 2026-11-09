@@ -1,6 +1,7 @@
 import {
   demoAfwezigheden,
   demoBerichten,
+  demoContacten,
   demoVerzonden,
   demoCijfers,
   demoDocenten,
@@ -21,7 +22,7 @@ import { alleEigen, alsAfspraak, verwijderEigen, voegToe, werkBij } from '../lib
 import { lees, schrijf, verwijder } from '../lib/opslag';
 import { bewaarMelding, meldingenVan } from '../lib/meldingen';
 import type { SchoolApi } from './SchoolApi';
-import type { Afspraak, AfspraakDetail, Resultaat } from './types';
+import type { Afspraak, AfspraakDetail, Bericht, Resultaat } from './types';
 
 const SESSIE = 'sessie';
 /** Bij de demo als ouder: welk kind gekozen is. */
@@ -80,6 +81,11 @@ function lesOp(dag: Date, les: DemoLes): Afspraak {
     inhoudHtml: demoInhoud[les.labels.find((l) => l in demoInhoud)!] ?? null,
   };
 }
+
+/** Berichten die in de demo zijn verstuurd; ze komen bij Verzonden. */
+const VERSTUURD = 'demo.berichten.verstuurd';
+const verstuurd = () => lees<Bericht[]>(VERSTUURD) ?? [];
+const alleVerzonden = () => [...verstuurd(), ...demoVerzonden];
 
 /** Ids van berichten die in de demo zijn geopend. */
 const GELEZEN = 'demo.berichten.gelezen';
@@ -228,7 +234,7 @@ export const demoApi: SchoolApi = {
   async berichten(map = 'postvak') {
     await vertraging();
     return resultaat(
-      (map === 'verzonden' ? demoVerzonden : demoPostvak()).map((b) => ({
+      (map === 'verzonden' ? alleVerzonden() : demoPostvak()).map((b) => ({
         id: b.id,
         onderwerp: b.onderwerp,
         afzender: b.afzender,
@@ -243,7 +249,7 @@ export const demoApi: SchoolApi = {
 
   async bericht(id) {
     await vertraging(150);
-    const b = [...demoPostvak(), ...demoVerzonden].find((x) => x.id === id);
+    const b = [...demoPostvak(), ...alleVerzonden()].find((x) => x.id === id);
     if (!b) throw new Error('Bericht niet gevonden');
     return resultaat(b);
   },
@@ -255,6 +261,32 @@ export const demoApi: SchoolApi = {
 
   async ongelezen() {
     return demoPostvak().filter((b) => !b.gelezen).length;
+  },
+
+  async zoekContacten(zoekterm) {
+    await vertraging(150);
+    const term = zoekterm.trim().toLowerCase();
+    if (term.length < 2) return [];
+    return demoContacten.filter((c) => `${c.naam} ${c.extra ?? ''}`.toLowerCase().includes(term));
+  },
+
+  async verstuurBericht(bericht) {
+    await vertraging(400);
+    if (bericht.aan.length === 0) throw new Error('Kies minstens één ontvanger');
+    const nieuw: Bericht = {
+      id: `verstuurd-${Date.now()}`,
+      onderwerp: bericht.onderwerp.trim(),
+      afzender: demoProfiel.naam,
+      aan: bericht.aan.map((c) => c.naam),
+      verzondenOp: new Date().toISOString(),
+      gelezen: true,
+      heeftBijlagen: false,
+      belangrijk: false,
+      inhoudHtml: `<p>${bericht.tekst.trim().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>')}</p>`,
+      ontvangers: bericht.aan.map((c) => c.naam),
+      bijlagen: [],
+    };
+    schrijf(VERSTUURD, [nieuw, ...verstuurd()]);
   },
 
   async opdrachten() {

@@ -10,7 +10,9 @@ import type {
   Bericht,
   BerichtKort,
   Bijlage,
+  BerichtInvoer,
   Cijfer,
+  Contact,
   Kind,
   Label,
   Melding,
@@ -539,5 +541,49 @@ export function naarOpdracht(o: RuweOpdracht, versie: RuweOpdrachtVersie | null)
     bijlagen: (o.Bijlagen ?? []).map(naarOpdrachtBijlage),
     feedbackHtml: versie?.DocentOpmerking?.trim() ? versie.DocentOpmerking : null,
     feedbackBijlagen: (versie?.FeedbackBijlagen ?? []).map(naarOpdrachtBijlage),
+  };
+}
+
+// ---- Contacten en versturen ----
+
+export interface RuwContact {
+  id: number;
+  roepnaam?: string | null;
+  voorletters?: string | null;
+  tussenvoegsel?: string | null;
+  achternaam?: string | null;
+  code?: string | null;
+  /** "medewerker" of "leerling". */
+  type?: string | null;
+  klas?: string | null;
+}
+
+export function naarContact(c: RuwContact): Contact {
+  const voornaam = c.roepnaam?.trim() || c.voorletters?.trim();
+  const naam = [voornaam, c.tussenvoegsel?.trim(), c.achternaam?.trim()].filter(Boolean).join(' ') || c.code || 'Onbekend';
+  const soort = c.type === 'medewerker' ? 'docent' : c.type === 'leerling' ? 'leerling' : 'anders';
+  return { id: c.id, naam, soort, extra: (soort === 'docent' ? c.code : c.klas)?.trim() || null };
+}
+
+/** Tekst → HTML zoals de officiële app verstuurt: veilig gemaakt, regeleinden als <br>. */
+function tekstNaarHtml(tekst: string): string {
+  const veilig = tekst.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return veilig
+    .split(/\n{2,}/)
+    .map((alinea) => `<p>${alinea.replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
+/** Zoals MagisterAPIKt: ontvangers als personen, geen kopie, geen bijlagen. */
+export function naarRuwBericht(b: BerichtInvoer) {
+  return {
+    ontvangers: b.aan.map((c) => ({ id: c.id, type: 'persoon' })),
+    kopieOntvangers: [],
+    blindeKopieOntvangers: [],
+    heeftPrioriteit: false,
+    inhoud: tekstNaarHtml(b.tekst.trim()),
+    onderwerp: b.onderwerp.trim(),
+    verzendOptie: 'standaard',
+    bijlagen: [],
   };
 }

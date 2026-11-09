@@ -1,5 +1,5 @@
 // Nep-data voor de demo. Alle namen zijn verzonnen.
-import type { Afwezigheid, Bericht, Cijfer, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
+import type { Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
 import { nlMoment } from '../lib/datum';
 
 export const demoProfiel: Profiel = {
@@ -407,4 +407,20 @@ export const demoOpdrachten: Opdracht[] = [
     feedbackHtml: null,
     feedbackBijlagen: [],
   },
+];
+
+/** Mensen die je in de demo als ontvanger kunt kiezen. */
+export const demoContacten: Contact[] = [
+  { id: 101, naam: 'D. de Vries', soort: 'docent', extra: 'DV' },
+  { id: 102, naam: 'K. Rietveld', soort: 'docent', extra: 'KR' },
+  { id: 103, naam: 'S. Mulder', soort: 'docent', extra: 'SM' },
+  { id: 104, naam: 'V. Bakker', soort: 'docent', extra: 'VB' },
+  { id: 105, naam: 'J. Nijhuis', soort: 'docent', extra: 'JN' },
+  { id: 106, naam: 'B. Kok', soort: 'docent', extra: 'BK' },
+  { id: 107, naam: 'H. Fransen', soort: 'docent', extra: 'HF' },
+  { id: 108, naam: 'L. Meijer', soort: 'docent', extra: 'LM' },
+  { id: 109, naam: 'P. Terpstra', soort: 'docent', extra: 'PT' },
+  { id: 201, naam: 'Sem de Boer', soort: 'leerling', extra: '4V2' },
+  { id: 202, naam: 'Noa Visser', soort: 'leerling', extra: '4V2' },
+  { id: 203, naam: 'Daan Smit', soort: 'leerling', extra: '4V1' },
 ];

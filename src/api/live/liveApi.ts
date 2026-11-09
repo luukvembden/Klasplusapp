@@ -17,12 +17,14 @@ import {
   naarAfwezigheid,
   naarBericht,
   naarBerichtKort,
+  naarContact,
   naarCijfers,
   naarKind,
   naarMelding,
   naarOpdracht,
   naarOpdrachtKort,
   naarReden,
+  naarRuwBericht,
   naarRuwePersoonlijke,
   PERSOONLIJK,
   postvakIn,
@@ -34,6 +36,7 @@ import {
   type RuweAfwezigheid,
   type RuweAfspraak,
   type RuwBericht,
+  type RuwContact,
   type RuweBerichtBijlage,
   type RuweBerichtMap,
   type RuweOpdracht,
@@ -422,6 +425,18 @@ export const liveApi: SchoolApi = {
 
   async ongelezen() {
     return (await berichtenMap('postvak')).aantalOngelezen ?? 0;
+  },
+
+  async zoekContacten(zoekterm) {
+    const term = zoekterm.trim();
+    if (term.length < 2) return [];
+    const lijst = items(await haal<{ items?: RuwContact[] }>(`api/contacten/personen?q=${encodeURIComponent(term)}`));
+    return lijst.map(naarContact).slice(0, 30);
+  },
+
+  async verstuurBericht(bericht) {
+    if (bericht.aan.length === 0) throw new Error('Kies minstens één ontvanger');
+    await stuur('POST', 'api/berichten/berichten', naarRuwBericht(bericht));
   },
 
   async opdrachten() {

@@ -210,6 +210,23 @@ export interface Bericht extends BerichtKort {
   bijlagen: Bijlage[];
 }
 
+/** Iemand aan wie je een bericht kunt sturen. */
+export interface Contact {
+  id: number;
+  naam: string;
+  soort: 'docent' | 'leerling' | 'anders';
+  /** Docentcode of klas, om mensen met dezelfde naam uit elkaar te houden. */
+  extra: string | null;
+}
+
+/** Wat je invult voor een nieuw bericht. */
+export interface BerichtInvoer {
+  aan: Contact[];
+  onderwerp: string;
+  /** Gewone tekst; regeleinden blijven staan. */
+  tekst: string;
+}
+
 // ---- Opdrachten ----
 
 /** Open: nog in te leveren. Te laat: datum voorbij en niets ingeleverd. */

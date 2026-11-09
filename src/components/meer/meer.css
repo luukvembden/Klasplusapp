@@ -1,16 +1,14 @@
 /* Berichten en opdrachten (onder Meer). */
 
-/* Kop van Berichten: titel links, de knop naar de andere map rechts (zoals Gemiddeldes). */
-.berichtenkop {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
+/* Kop van Berichten: de knop naar de andere map rechtsboven, net als Gemiddeldes bij Cijfers (20px van boven). */
+.berichten__kop {
+  position: relative;
 }
 
-.berichtenkop .agendakop__vandaag {
-  flex: 0 0 auto;
-  margin-bottom: 2px;
+.berichten__wissel {
+  position: absolute;
+  top: calc(var(--veilig-boven) + 20px);
+  right: 20px;
 }
 
 /* Eén bericht in het postvak: stip voor ongelezen, afzender en datum, onderwerp. */
@@ -247,4 +245,105 @@
 .bijlagerij__grootte {
   font-size: 12px;
   color: var(--tekst-secundair);
+}
+
+/* Nieuw bericht: gekozen ontvangers als pilletjes, daaronder zoeken en de gevonden mensen. */
+.ontvangers {
+  padding-top: 10px;
+  padding-bottom: 6px;
+}
+
+.ontvangers__gekozen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 8px;
+}
+
+.ontvanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 4px 4px 11px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--groen-tekst) 14%, transparent);
+  color: var(--groen-tekst);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ontvanger__weg {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ontvangers__zoek {
+  width: 100%;
+  min-height: 42px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--tekst);
+  /* 16px: kleiner laat iOS inzoomen bij het typen. */
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ontvangers__zoek::placeholder {
+  color: var(--tekst-secundair);
+}
+
+.ontvangers__lijst {
+  border-top: 1px solid var(--lijn-zacht);
+}
+
+.ontvangers__keuze {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 46px;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--lijn-zacht);
+  background: transparent;
+  color: var(--tekst);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ontvangers__keuze:last-child {
+  border-bottom: none;
+}
+
+.ontvangers__naam {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ontvangers__extra {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--tekst-secundair);
+}
+
+.ontvangers__leeg {
+  margin: 0;
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--tekst-secundair);
+}
+
+.bericht-tekst {
+  min-height: 180px;
 }
