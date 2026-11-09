@@ -440,3 +440,14 @@
   font-weight: 700;
   cursor: default;
 }
+
+/* Uitleg boven de keuzes, bijvoorbeeld als je al aan het maximum zit. */
+.onderdeel__info {
+  margin: 0 0 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-kaart);
+  background: var(--kaart);
+  color: var(--tekst-zacht);
+  font-size: 14px;
+  line-height: 1.45;
+}

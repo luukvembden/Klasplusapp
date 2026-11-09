@@ -435,6 +435,7 @@ export const demoActiviteiten: Omit<Activiteit, 'ingeschreven'>[] = [
       '<p>Op de sportdag kies je één onderdeel. Neem sportkleding en een lunch mee. We verzamelen om 8:30 bij de sporthal.</p>',
     inschrijvenVan: dagenGeleden(5, 8),
     inschrijvenTot: dagenGeleden(-6, 23, 59),
+    maxKeuzes: 1,
   },
   {
     id: 'act-2',

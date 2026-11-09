@@ -269,10 +269,12 @@ export interface Activiteit {
   inschrijvenTot: string | null;
   /** Ben je voor minstens één onderdeel ingeschreven? Null als dat niet op te halen was. */
   ingeschreven: boolean | null;
+  /** Voor hoeveel onderdelen je je hoogstens mag inschrijven, als school dat heeft ingesteld. */
+  maxKeuzes?: number | null;
 }
 
 /** Een keuze binnen een activiteit (bijvoorbeeld "Museum" of "Sporthal"). */
-export interface ActiviteitOnderdeel extends Omit<Activiteit, 'ingeschreven'> {
+export interface ActiviteitOnderdeel extends Omit<Activiteit, 'ingeschreven' | 'maxKeuzes'> {
   activiteitId: string;
   maxDeelnemers: number | null;
   /** Hoeveel plekken er nog vrij zijn, als de school dat bijhoudt. */

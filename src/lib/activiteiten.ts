@@ -1,4 +1,5 @@
 import { beginVanDag, korteDatumMetJaar } from './datum';
+import { lees, schrijf } from './opslag';
 
 interface MetInschrijfperiode {
   inschrijvenVan: string | null;
@@ -36,3 +37,25 @@ export function inschrijfStand(a: MetInschrijfperiode, nu = new Date()): Inschri
   if (dagen === 1) return { open: true, tekst, label: { tekst: 'Nog 1 dag', soort: '' } };
   return { open: true, tekst, label: { tekst: `Nog ${dagen} dagen`, soort: '' } };
 }
+
+// ---- Hoeveel onderdelen je mag kiezen ----
+
+const GELEERD = 'activiteiten.max';
+
+/**
+ * Het maximum aantal keuzes: wat school meestuurt, of wat we leerden toen school een extra
+ * inschrijving weigerde terwijl je al ergens was ingeschreven.
+ */
+export function maxKeuzes(a: { id: string; maxKeuzes?: number | null } | undefined): number | null {
+  if (!a) return null;
+  return a.maxKeuzes ?? lees<Record<string, number>>(GELEERD)?.[a.id] ?? null;
+}
+
+/** School weigerde een extra inschrijving: dan is dit kennelijk het maximum. */
+export function onthoudMaxKeuzes(activiteitId: string, aantal: number) {
+  if (aantal < 1) return;
+  schrijf(GELEERD, { ...(lees<Record<string, number>>(GELEERD) ?? {}), [activiteitId]: aantal });
+}
+
+/** "één onderdeel", "2 onderdelen" */
+export const aantalOnderdelen = (n: number) => (n === 1 ? 'één onderdeel' : `${n} onderdelen`);

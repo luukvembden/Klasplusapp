@@ -622,11 +622,31 @@ export function naarActiviteit(a: RuweActiviteit): Activiteit {
     inschrijvenVan: a.StartInschrijfdatum ?? null,
     inschrijvenTot: a.EindeInschrijfdatum ?? null,
     ingeschreven: null,
+    maxKeuzes: maxKeuzesUit(a as unknown as Record<string, unknown>),
   };
 }
 
+/**
+ * Hoeveel onderdelen je mag kiezen. School kan dit per activiteit instellen; de precieze veldnaam
+ * is niet gedocumenteerd, dus zoeken we een getal als "MaxAantalOnderdelen" of "MaxAantalInschrijvingen"
+ * (en niet het maximum aantal deelnemers, dat bij een onderdeel hoort).
+ */
+function maxKeuzesUit(ruw: Record<string, unknown>): number | null {
+  for (const [sleutel, waarde] of Object.entries(ruw)) {
+    if (
+      typeof waarde === 'number' &&
+      waarde > 0 &&
+      /^max/i.test(sleutel) &&
+      /onderde|inschrijving|keuze/i.test(sleutel) &&
+      !/deelnemer|plaats/i.test(sleutel)
+    )
+      return waarde;
+  }
+  return null;
+}
+
 export function naarOnderdeel(o: RuwOnderdeel, activiteitId: string): ActiviteitOnderdeel {
-  const { ingeschreven: _, ...basis } = naarActiviteit(o);
+  const { ingeschreven: _, maxKeuzes: __, ...basis } = naarActiviteit(o);
   return {
     ...basis,
     titel: o.Titel?.trim() || 'Onderdeel',
