@@ -621,12 +621,14 @@ export function naarActiviteit(a: RuweActiviteit): Activiteit {
     detailsHtml: a.Details?.trim() || null,
     inschrijvenVan: a.StartInschrijfdatum ?? null,
     inschrijvenTot: a.EindeInschrijfdatum ?? null,
+    ingeschreven: null,
   };
 }
 
 export function naarOnderdeel(o: RuwOnderdeel, activiteitId: string): ActiviteitOnderdeel {
+  const { ingeschreven: _, ...basis } = naarActiviteit(o);
   return {
-    ...naarActiviteit(o),
+    ...basis,
     titel: o.Titel?.trim() || 'Onderdeel',
     activiteitId,
     maxDeelnemers: o.MaxAantalDeelnemers || null,

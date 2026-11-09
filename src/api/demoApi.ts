@@ -323,7 +323,13 @@ export const demoApi: SchoolApi = {
 
   async activiteiten() {
     await vertraging();
-    return resultaat(demoActiviteiten);
+    const eigen = inschrijvingen();
+    return resultaat(
+      demoActiviteiten.map((a) => ({
+        ...a,
+        ingeschreven: demoOnderdelen.some((o) => o.activiteitId === a.id && (eigen[o.id] ?? o.ingeschreven)),
+      })),
+    );
   },
 
   async onderdelen(activiteitId) {

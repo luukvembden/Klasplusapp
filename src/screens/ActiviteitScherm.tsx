@@ -15,6 +15,17 @@ import '../components/les/les.css';
 import '../components/meer/meer.css';
 import '../components/ui/ui.css';
 
+/** Wat we laten zien als in- of uitschrijven niet lukt: de uitleg van school, of een gewone zin. */
+function foutBijInschrijven(e: unknown, inschrijven: boolean): string {
+  const fout = e as { status?: number; uitleg?: string | null; message?: string };
+  if (fout?.uitleg) return fout.uitleg;
+  if (fout?.status === 400)
+    return inschrijven
+      ? 'School nam de inschrijving niet aan. Misschien ben je al ingeschreven voor een ander moment, of is dit net vol. Lukt het niet, schrijf je dan in via de schoolsite.'
+      : 'School nam het uitschrijven niet aan. Probeer het via de schoolsite.';
+  return fout?.message || 'Dat lukte niet. Probeer het later opnieuw.';
+}
+
 /** "Nog 12 van de 40 plekken vrij" */
 function plekken(o: ActiviteitOnderdeel): string | null {
   if (o.plekkenVrij === null) return o.maxDeelnemers ? `Maximaal ${o.maxDeelnemers} deelnemers` : null;
@@ -92,7 +103,7 @@ export function ActiviteitScherm() {
       await onderdelen.vernieuw();
       setGelukt(inschrijven ? `Je bent ingeschreven voor ${o.titel}.` : `Je bent uitgeschreven voor ${o.titel}.`);
     } catch (e) {
-      setFout(e instanceof Error && e.message ? e.message : 'Dat lukte niet. Probeer het later opnieuw.');
+      setFout(foutBijInschrijven(e, inschrijven));
     } finally {
       setBezig(null);
     }

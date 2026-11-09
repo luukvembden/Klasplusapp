@@ -427,7 +427,7 @@ export const demoContacten: Contact[] = [
 
 // ---- Activiteiten ----
 
-export const demoActiviteiten: Activiteit[] = [
+export const demoActiviteiten: Omit<Activiteit, 'ingeschreven'>[] = [
   {
     id: 'act-1',
     titel: 'Sportdag 4 vwo',

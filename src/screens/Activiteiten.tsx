@@ -19,7 +19,12 @@ function ActiviteitRij({ a }: { a: Activiteit }) {
         <span className="opdrachtrij__vak">{a.titel}</span>
         <span className="opdrachtrij__titel">{stand.tekst}</span>
       </span>
-      {stand.label && <span className={`statuslabel statuslabel--${stand.label.soort}`}>{stand.label.tekst}</span>}
+      {/* Al ingeschreven gaat voor op hoe lang je nog kunt inschrijven. */}
+      {a.ingeschreven ? (
+        <span className="statuslabel statuslabel--klaar">Ingeschreven</span>
+      ) : (
+        stand.label && <span className={`statuslabel${stand.label.soort ? ` statuslabel--${stand.label.soort}` : ''}`}>{stand.label.tekst}</span>
+      )}
     </Link>
   );
 }

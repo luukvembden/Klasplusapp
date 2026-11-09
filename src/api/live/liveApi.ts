@@ -468,7 +468,15 @@ export const liveApi: SchoolApi = {
   // Activiteiten: zoals MagisterJS (api/personen/{id}/activiteiten, onderdelen en inschrijvingen).
   async activiteiten() {
     const lijst = items(await haal<{ Items?: RuweActiviteit[] }>(`api/personen/${leerlingId()}/activiteiten`));
-    return resultaat(lijst.map(naarActiviteit));
+    // Per activiteit kijken of je al ergens bent ingeschreven, voor het groene label in de lijst.
+    const metStand = await Promise.all(
+      lijst.map(async (ruw) => {
+        const a = naarActiviteit(ruw);
+        const onderdelen = await this.onderdelen(a.id).catch(() => null);
+        return { ...a, ingeschreven: onderdelen ? onderdelen.data.some((o) => o.ingeschreven) : null };
+      }),
+    );
+    return resultaat(metStand);
   },
 
   async onderdelen(activiteitId) {

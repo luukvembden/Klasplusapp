@@ -267,16 +267,13 @@ export interface Activiteit {
   /** ISO-tijdstippen waartussen je je kunt inschrijven; null als de school ze niet invulde. */
   inschrijvenVan: string | null;
   inschrijvenTot: string | null;
+  /** Ben je voor minstens één onderdeel ingeschreven? Null als dat niet op te halen was. */
+  ingeschreven: boolean | null;
 }
 
 /** Een keuze binnen een activiteit (bijvoorbeeld "Museum" of "Sporthal"). */
-export interface ActiviteitOnderdeel {
-  id: string;
+export interface ActiviteitOnderdeel extends Omit<Activiteit, 'ingeschreven'> {
   activiteitId: string;
-  titel: string;
-  detailsHtml: string | null;
-  inschrijvenVan: string | null;
-  inschrijvenTot: string | null;
   maxDeelnemers: number | null;
   /** Hoeveel plekken er nog vrij zijn, als de school dat bijhoudt. */
   plekkenVrij: number | null;

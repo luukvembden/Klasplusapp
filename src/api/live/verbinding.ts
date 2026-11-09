@@ -45,6 +45,54 @@ async function vernieuw(): Promise<void> {
   return vernieuwen;
 }
 
+/**
+ * Fout van de schoolserver. `uitleg` is wat de school zelf terugschrijft (zoals waarom een ziekmelding
+ * niet mag), als dat gewone tekst is. Anders een korte Nederlandse zin; nooit "HTTP 400" op het scherm.
+ */
+export class SchoolFout extends Error {
+  constructor(
+    readonly status: number,
+    readonly uitleg: string | null,
+  ) {
+    super(uitleg ?? standaardUitleg(status));
+    this.name = 'SchoolFout';
+  }
+}
+
+function standaardUitleg(status: number): string {
+  if (status === 404) return 'Dit is niet (meer) te vinden bij school.';
+  if (status === 403) return 'Dit mag je school niet via de app laten doen.';
+  if (status >= 500) return 'De schoolserver doet het even niet. Probeer het later opnieuw.';
+  return 'Dat lukte niet. Probeer het later opnieuw.';
+}
+
+/** Zoekt in het antwoord naar een uitleg in gewone taal ("omschrijving", "Message", …). */
+function uitlegUit(tekst: string): string | null {
+  let data: unknown;
+  try {
+    data = JSON.parse(tekst);
+  } catch {
+    return null;
+  }
+  const kandidaten: unknown[] = [];
+  const zoek = (x: unknown, diepte: number) => {
+    if (diepte > 3 || !x) return;
+    if (typeof x === 'string') kandidaten.push(x);
+    else if (Array.isArray(x)) x.forEach((y) => zoek(y, diepte + 1));
+    else if (typeof x === 'object') {
+      const o = x as Record<string, unknown>;
+      for (const k of ['omschrijving', 'Omschrijving', 'message', 'Message', 'detail', 'Detail', 'errors', 'Errors', 'fouten'])
+        zoek(o[k], diepte + 1);
+    }
+  };
+  zoek(data, 0);
+  // Alleen echte zinnen, geen technische meldingen als "Bad Request" of een foutcode.
+  const zin = kandidaten
+    .map((k) => String(k).trim())
+    .find((k) => k.length > 3 && k.length < 300 && /\s/.test(k) && !/exception|bad request|error|^[A-Z_]+$/i.test(k));
+  return zin ?? null;
+}
+
 const wacht = (ms: number) => new Promise((klaar) => setTimeout(klaar, ms));
 
 type Methode = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -86,12 +134,8 @@ async function verzoek<T>(methode: Methode, pad: string, body?: unknown, poging 
   }
 
   if (!antwoord.ok) {
-    // Bij sommige fouten (zoals een ziekmelding die niet mag) legt de school in "omschrijving" uit waarom.
-    const uitleg = await antwoord
-      .json()
-      .then((d: { omschrijving?: string }) => d?.omschrijving)
-      .catch(() => undefined);
-    throw new Error(uitleg || `HTTP ${antwoord.status} bij ${methode} ${pad.split('?')[0]}`);
+    const tekst = await antwoord.text().catch(() => '');
+    throw new SchoolFout(antwoord.status, uitlegUit(tekst));
   }
   // Opslaan en verwijderen geven soms een leeg antwoord.
   const tekst = await antwoord.text();
