@@ -75,7 +75,7 @@ export function Instellingen() {
         Uitloggen
       </button>
 
-      <p className="instellingen__copyright">© 2026 Luuk van Embden</p>
+      <p className="instellingen__copyright">© 2026 Klas+</p>
     </div>
   );
 }
