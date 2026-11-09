@@ -450,6 +450,28 @@ export const demoActiviteiten: Omit<Activiteit, 'ingeschreven'>[] = [
     inschrijvenVan: dagenGeleden(40, 8),
     inschrijvenTot: dagenGeleden(20, 23, 59),
   },
+  // Elke soort label in de demo: laatste dag (rood), nog niet open, door school ingedeeld.
+  {
+    id: 'act-4',
+    titel: 'Kerstgala',
+    detailsHtml: '<p>Het gala is op de laatste vrijdag voor de kerstvakantie. Kies of je komt of helpt.</p>',
+    inschrijvenVan: dagenGeleden(14, 8),
+    inschrijvenTot: dagenGeleden(0, 23, 59),
+  },
+  {
+    id: 'act-5',
+    titel: 'Profielvoorlichting 4 vwo',
+    detailsHtml: '<p>Hoor van oud-leerlingen hoe hun studie bevalt. Inschrijven kan pas vanaf de datum hierboven.</p>',
+    inschrijvenVan: dagenGeleden(-3, 8),
+    inschrijvenTot: dagenGeleden(-12, 23, 59),
+  },
+  {
+    id: 'act-6',
+    titel: 'Werkweek Ardennen',
+    detailsHtml: '<p>De mentoren hebben iedereen in een groep ingedeeld.</p>',
+    inschrijvenVan: dagenGeleden(7, 8),
+    inschrijvenTot: dagenGeleden(-20, 23, 59),
+  },
 ];
 
 const onderdeel = (
@@ -483,7 +505,13 @@ export const demoOnderdelen: ActiviteitOnderdeel[] = [
   onderdeel('act-1', 'ond-1', 'Voetbal', '<p>Toernooi op het kunstgrasveld.</p>', 40, 12),
   onderdeel('act-1', 'ond-2', 'Klimmen', '<p>In de klimhal naast de sporthal.</p>', 20, 0),
   onderdeel('act-1', 'ond-3', 'Hardlopen', '<p>5 of 10 km door het park.</p>', null, null),
-  onderdeel('act-2', 'ond-4', 'Rondleiding Gouden Eeuw', null, 25, 4, true),
+  onderdeel('act-2', 'ond-4', 'Rondleiding Gouden Eeuw', null, 25, 4),
+  onderdeel('act-2', 'ond-4b', 'Rondleiding moderne kunst', null, 25, 1),
   onderdeel('act-3', 'ond-5', 'Deelnemen in een team', null, 32, 8, true),
   onderdeel('act-3', 'ond-6', 'Jury', '<p>Beoordeel de debatten samen met twee docenten.</p>', 6, 2),
+  onderdeel('act-4', 'ond-7', 'Ik kom naar het gala', null, 200, 37),
+  onderdeel('act-4', 'ond-8', 'Ik help bij de opbouw', '<p>Vrijdagmiddag vanaf 13:00 in de aula.</p>', 10, 0),
+  onderdeel('act-5', 'ond-9', 'Geneeskunde', null, 30, 30),
+  onderdeel('act-5', 'ond-10', 'Rechten', null, 30, 30),
+  onderdeel('act-6', 'ond-11', 'Groep 3: kanoën en hiken', null, 24, 0, true, true),
 ];
