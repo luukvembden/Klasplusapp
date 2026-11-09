@@ -11,6 +11,7 @@ import './components/ui/ui.css';
 import { registerSW } from 'virtual:pwa-register';
 import { api, isDemo } from './api';
 import { App } from './App';
+import { startNotificaties } from './lib/notificaties';
 
 // Offline werken als website. In de telefoon-app zitten de bestanden al in het pakket.
 if (isDemo) registerSW({ immediate: true });
@@ -26,6 +27,8 @@ api
       </StrictMode>,
     );
     verbergLaadscherm();
+    // Meldingen: achtergrondcontrole aanzetten en kijken of er iets nieuws is (alleen in de telefoon-app).
+    void startNotificaties().catch(() => undefined);
   });
 
 /** Het laadscherm uit index.html zacht laten verdwijnen zodra de app op het scherm staat. */

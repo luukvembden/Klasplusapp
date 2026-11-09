@@ -39,6 +39,13 @@ export function Privacy({ van = 'instellingen' }: { van?: 'meer' | 'instellingen
           of viewer van je telefoon. Berichten versturen en opdrachten inleveren kan niet in Klas+.
         </p>
 
+        <h2>Meldingen</h2>
+        <p>
+          Zet je meldingen aan, dan kijkt Klas+ zelf of er een nieuw cijfer is of een uur vervalt of wijzigt, en plant
+          het huiswerkherinneringen in. Dat gebeurt op je telefoon, als je de app opent en af en toe op de achtergrond.
+          Er is geen server die meekijkt of berichten stuurt; de meldingen komen van je eigen telefoon.
+        </p>
+
         <h2>Waar staan je gegevens?</h2>
         <p>
           Uitsluitend op dit toestel. Er is geen server van Klas+; jouw gegevens worden rechtstreeks van je school

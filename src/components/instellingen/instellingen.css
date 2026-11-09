@@ -334,3 +334,21 @@ button.instelrij {
   border-radius: 7px;
   box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.9);
 }
+
+/* Meldingen: naam met een korte uitleg eronder, rechts het vinkje. */
+.meldingrij {
+  padding: 8px 0;
+}
+
+.meldingrij__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.meldingrij__uitleg {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tekst-secundair);
+}

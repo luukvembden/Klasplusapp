@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, ExternalLink } from 'lucide-react';
 import { version } from '../../package.json';
 import { api } from '../api';
+import { MeldingenKiezer } from '../components/instellingen/MeldingenKiezer';
 import { AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
@@ -9,6 +10,7 @@ import { TerugLink } from '../components/ui/TerugLink';
 import { vergeetGeladen } from '../hooks/useLaden';
 import { wisEigenAfspraken } from '../lib/eigenAfspraken';
 import { herstelInstellingen } from '../lib/instellingen';
+import { kanNotificaties, wisNotificaties } from '../lib/notificaties';
 import { zetOngelezen } from '../lib/ongelezen';
 import { wisAlles } from '../lib/opslag';
 import { openExtern } from '../lib/tekst';
@@ -22,6 +24,7 @@ export function Instellingen() {
   const navigate = useNavigate();
 
   const uitloggen = async () => {
+    await wisNotificaties();
     await api.uitloggen();
     // Zoals de privacyverklaring belooft: alles van dit toestel weg, ook de voorkeuren.
     wisEigenAfspraken();
@@ -47,6 +50,19 @@ export function Instellingen() {
 
       <Sectie titel="Agenda">
         <AgendaWeergaveKiezer />
+      </Sectie>
+
+      <Sectie
+        titel="Meldingen"
+        nawoord={
+          <p className="instellingen__let-op">
+            {kanNotificaties
+              ? 'Klas+ kijkt zelf of er iets nieuws is: als je de app opent, en af en toe op de achtergrond. Hoe vaak dat mag, bepaalt je telefoon. Veeg je Klas+ helemaal weg, dan komen er geen meldingen tot je de app weer opent. Huiswerkherinneringen staan wel vast ingepland.'
+              : 'Meldingen werken alleen in de app op je telefoon, niet in de demo in de browser.'}
+          </p>
+        }
+      >
+        <MeldingenKiezer />
       </Sectie>
 
       <Sectie
