@@ -153,6 +153,12 @@ export function korteDatum(iso: string): string {
   return `${n.dag} ${MAANDEN_KORT[n.maand]}`;
 }
 
+/** "26 okt", of "26 okt 2025" als het niet dit jaar is. */
+export function korteDatumMetJaar(iso: string): string {
+  const n = nlTijd(new Date(iso));
+  return n.jaar === nlTijd(new Date()).jaar ? korteDatum(iso) : `${korteDatum(iso)} ${n.jaar}`;
+}
+
 /** ISO-weeknummer (week 1 bevat de eerste donderdag van het jaar), zoals scholen het gebruiken. */
 export function weekNummer(d: Date): number {
   const n = nlTijd(plusDagen(maandagVan(d), 3));

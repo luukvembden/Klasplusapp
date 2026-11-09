@@ -7,7 +7,7 @@ import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
-import { korteDatum } from '../lib/datum';
+import { korteDatumMetJaar } from '../lib/datum';
 import { metHoofdletter } from '../lib/tekst';
 import '../components/ui/ui.css';
 import '../components/cijfers/cijfers.css';
@@ -22,7 +22,7 @@ function OpdrachtRij({ o }: { o: OpdrachtKort }) {
         <span className="opdrachtrij__titel">
           {o.vak ? o.titel : ''}
           {o.vak && datum ? ' · ' : ''}
-          {datum ? korteDatum(datum) : ''}
+          {datum ? korteDatumMetJaar(datum) : ''}
         </span>
       </span>
       <OpdrachtLabel opdracht={o} />

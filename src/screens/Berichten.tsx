@@ -7,20 +7,20 @@ import { PaginaKop } from '../components/ui/PaginaKop';
 import { TerugLink } from '../components/ui/TerugLink';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
-import { korteDatum, plusDagen, tijd, zelfdeDag } from '../lib/datum';
+import { korteDatumMetJaar, plusDagen, tijd, zelfdeDag } from '../lib/datum';
 import { useOngelezen, zetOngelezen } from '../lib/ongelezen';
 import '../components/ui/ui.css';
 import '../components/cijfers/cijfers.css';
 import '../components/agenda/agenda.css';
 import '../components/meer/meer.css';
 
-/** Vandaag: "09:12"; gisteren: "gisteren"; anders "4 nov". */
+/** Vandaag: "09:12"; gisteren: "gisteren"; anders "4 nov", met jaartal als het niet dit jaar is. */
 function wanneer(iso: string): string {
   const d = new Date(iso);
   const nu = new Date();
   if (zelfdeDag(d, nu)) return tijd(d);
   if (zelfdeDag(d, plusDagen(nu, -1))) return 'gisteren';
-  return korteDatum(iso);
+  return korteDatumMetJaar(iso);
 }
 
 /** In Verzonden staat bij elk bericht aan wie het ging, in plaats van van wie. */
