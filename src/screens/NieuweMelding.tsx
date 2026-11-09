@@ -20,7 +20,7 @@ export function NieuweMelding() {
   if (!opties.data?.kanMelden) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar="/afwezigheid/melden" label="Meldingen" />
+        <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
         <p className="melding">{opties.fout ?? (opties.laden && !opties.data ? 'Bezig met laden…' : 'Afwezig melden kan niet voor dit account.')}</p>
       </div>
     );
@@ -97,14 +97,14 @@ function MeldFormulier({ opties }: { opties: MeldOpties }) {
       );
     }
     const gelukt = `${ouder ? naam : 'Je'} ${ouder ? 'is' : 'bent'} afwezig gemeld.`;
-    navigate('/afwezigheid/melden', { replace: true, state: { gelukt } });
+    navigate('/meer/afwezigheid/melden', { replace: true, state: { gelukt } });
   };
 
   // Bij de oude manier kan het op zaterdag helemaal niet.
   if (dagen && dagen.length === 0) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar="/afwezigheid/melden" label="Meldingen" />
+        <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
         <PaginaKop titel="Afwezigheid melden" />
         <p className="melding">In het weekend kun je niet afwezig melden. Vanaf zondag kan het weer voor maandag.</p>
       </div>
@@ -113,7 +113,7 @@ function MeldFormulier({ opties }: { opties: MeldOpties }) {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/afwezigheid/melden" label="Meldingen" />
+      <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
       <PaginaKop titel="Afwezigheid melden" />
 
       {opties.redenen.length > 0 && (

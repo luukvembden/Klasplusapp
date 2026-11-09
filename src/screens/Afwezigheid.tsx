@@ -2,12 +2,15 @@ import { Link } from 'react-router-dom';
 import { Plus, Search } from 'lucide-react';
 import { api, type Afwezigheid as AfwezigheidT } from '../api';
 import { AfwezigheidRij } from '../components/afwezigheid/AfwezigheidRij';
-import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
+import { OfflineRegel } from '../components/ui/OfflineRegel';
+import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
+import { TerugLink } from '../components/ui/TerugLink';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { maandTitel, nlTijd } from '../lib/datum';
 import '../components/agenda/agenda.css';
+import '../components/cijfers/cijfers.css';
 import '../components/huiswerk/huiswerk.css';
 import '../components/ui/ui.css';
 
@@ -35,18 +38,17 @@ export function Afwezigheid() {
   const klaar = geladen.data && !geladen.laden && !geladen.fout;
 
   return (
-    <div className="huiswerk">
-      <header className="agendakop">
-        <div className="agendakop__tekst">
-          <h1 className="agendakop__titel">Afwezigheid</h1>
-          <span className="agendakop__sub">{geladen.data ? samenvatting(lijst) : ' '}</span>
-        </div>
-      </header>
+    <div className="scherm">
+      <div className="pagina pagina--met-terug gemiddeldes__kop">
+        <TerugLink naar="/meer" label="Meer" />
+        <PaginaKop titel="Afwezigheid" sub={geladen.data ? samenvatting(lijst) : ' '} />
+        <OfflineRegel resultaat={geladen.data} />
+      </div>
 
       <div className="agenda__midden">
-        <div className={`huiswerk__lijst${magMelden ? ' huiswerk__lijst--met-plus' : ''}`} aria-busy={geladen.laden}>
+        <div className={`scherm__lijst${magMelden ? ' huiswerk__lijst--met-plus' : ''}`} aria-busy={geladen.laden}>
           <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
-            <div className="pagina">
+            <div className="pagina pagina--onder-kop">
               {geladen.fout && <p className="melding">{geladen.fout}</p>}
               {klaar && lijst.length === 0 && <p className="melding">Je bent dit schooljaar nog niet afwezig geweest.</p>}
               {[...perMaand.values()].map((maand) => (
@@ -63,7 +65,7 @@ export function Afwezigheid() {
         </div>
         {magMelden && (
           <Link
-            to="/afwezigheid/melden"
+            to="/meer/afwezigheid/melden"
             className="plusknop"
             aria-label={opties.kanMelden ? 'Afwezigheid melden' : 'Meldingen bekijken'}
           >
@@ -75,8 +77,6 @@ export function Afwezigheid() {
           </Link>
         )}
       </div>
-
-      <BijgewerktBalk resultaat={geladen.data} />
     </div>
   );
 }

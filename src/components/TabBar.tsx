@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, CalendarX, ChartNoAxesColumnIncreasing, Ellipsis, type LucideIcon } from 'lucide-react';
+import { BookOpen, Calendar, ChartNoAxesColumnIncreasing, Ellipsis, type LucideIcon } from 'lucide-react';
 import { useOngelezen, verversOngelezen } from '../lib/ongelezen';
 import './TabBar.css';
 
@@ -11,8 +11,7 @@ const tabs: Tab[] = [
   { pad: '/', label: 'Agenda', icoon: Calendar, actief: (p) => p === '/' || p.startsWith('/agenda') },
   { pad: '/huiswerk', label: 'Huiswerk', icoon: BookOpen, actief: (p) => p.startsWith('/huiswerk') },
   { pad: '/cijfers', label: 'Cijfers', icoon: ChartNoAxesColumnIncreasing, actief: (p) => p.startsWith('/cijfers') },
-  { pad: '/afwezigheid', label: 'Afwezigheid', icoon: CalendarX, actief: (p) => p.startsWith('/afwezigheid') },
-  // Meer: Berichten, Opdrachten, Privacy en Instellingen.
+  // Meer: Berichten, Opdrachten, Afwezigheid, Privacy en Instellingen.
   { pad: '/meer', label: 'Meer', icoon: Ellipsis, actief: (p) => p.startsWith('/meer') || p.startsWith('/instellingen') },
 ];
 

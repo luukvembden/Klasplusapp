@@ -53,7 +53,7 @@ export function AfwezigheidMelden() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/afwezigheid" label="Afwezigheid" />
+      <TerugLink naar="/meer/afwezigheid" label="Afwezigheid" />
       <PaginaKop titel="Meldingen" />
 
       {state?.gelukt && (
@@ -63,7 +63,7 @@ export function AfwezigheidMelden() {
       )}
 
       {opties.data?.kanMelden && (
-        <Link to="/afwezigheid/melden/nieuw" className="knop-primair afwezigheid__knop">
+        <Link to="/meer/afwezigheid/melden/nieuw" className="knop-primair afwezigheid__knop">
           Afwezigheid melden
           <ChevronRight size={20} strokeWidth={2.2} aria-hidden="true" />
         </Link>

@@ -19,8 +19,8 @@ import { LesInhoud } from './screens/LesInhoud';
 import { Privacy } from './screens/Privacy';
 import { AfspraakBewerken, NieuweAfspraak } from './screens/NieuweAfspraak';
 
-/** De vijf tabbladen. Een tab openen begint een nieuwe stapel pagina's. */
-export const TABS = new Set(['/', '/huiswerk', '/cijfers', '/afwezigheid', '/meer']);
+/** De vier tabbladen. Een tab openen begint een nieuwe stapel pagina's. */
+export const TABS = new Set(['/', '/huiswerk', '/cijfers', '/meer']);
 
 /** Alle schermen binnen de app (met tabbalk). AppLayout toont ze in lagen, zodat terugvegen de vorige laat zien. */
 export const paginaRoutes = (
@@ -35,18 +35,20 @@ export const paginaRoutes = (
     <Route path="cijfers" element={<Cijfers />} />
     <Route path="cijfers/gemiddeldes" element={<Gemiddeldes />} />
     <Route path="cijfers/calculator" element={<CijferCalculator />} />
-    <Route path="afwezigheid" element={<Afwezigheid />} />
-    <Route path="afwezigheid/melden" element={<AfwezigheidMelden />} />
-    <Route path="afwezigheid/melden/nieuw" element={<NieuweMelding />} />
-    <Route path="meer" element={<Meer />} />
+        <Route path="meer" element={<Meer />} />
     <Route path="meer/berichten" element={<Berichten />} />
     <Route path="meer/berichten/nieuw" element={<NieuwBericht />} />
     <Route path="meer/berichten/:id" element={<BerichtScherm />} />
     <Route path="meer/opdrachten" element={<Opdrachten />} />
     <Route path="meer/opdrachten/:id" element={<OpdrachtScherm />} />
+    <Route path="meer/afwezigheid" element={<Afwezigheid />} />
+    <Route path="meer/afwezigheid/melden" element={<AfwezigheidMelden />} />
+    <Route path="meer/afwezigheid/melden/nieuw" element={<NieuweMelding />} />
     <Route path="meer/privacy" element={<Privacy van="meer" />} />
     <Route path="instellingen" element={<Instellingen />} />
     <Route path="instellingen/privacy" element={<Privacy />} />
+    {/* Oude adressen (van voor Afwezigheid onder Meer kwam). */}
+    <Route path="afwezigheid/*" element={<Navigate to="/meer/afwezigheid" replace />} />
     <Route path="*" element={<Navigate to="/" replace />} />
   </>
 );
