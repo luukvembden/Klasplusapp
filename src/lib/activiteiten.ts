@@ -10,7 +10,9 @@ export interface InschrijfStand {
   open: boolean;
   /** "Inschrijven tot 15 nov", "Inschrijving gesloten op 2 okt" */
   tekst: string;
-  label?: { tekst: string; soort: '' | 'bijna' | 'laat' };
+  label?: { tekst: string; soort: '' | 'laat' };
+  /** De periode is voorbij. */
+  gesloten?: boolean;
 }
 
 const dagenTot = (iso: string) =>
@@ -21,11 +23,16 @@ export function inschrijfStand(a: MetInschrijfperiode, nu = new Date()): Inschri
   if (a.inschrijvenVan && new Date(a.inschrijvenVan) > nu)
     return { open: false, tekst: `Inschrijven vanaf ${korteDatumMetJaar(a.inschrijvenVan)}` };
   if (a.inschrijvenTot && new Date(a.inschrijvenTot) < nu)
-    return { open: false, tekst: `Inschrijving gesloten op ${korteDatumMetJaar(a.inschrijvenTot)}` };
+    return {
+      open: false,
+      tekst: `Inschrijving gesloten op ${korteDatumMetJaar(a.inschrijvenTot)}`,
+      gesloten: true,
+    };
   if (!a.inschrijvenTot) return { open: true, tekst: 'Inschrijven kan nu', label: { tekst: 'Open', soort: '' } };
   const dagen = dagenTot(a.inschrijvenTot);
   const tekst = `Inschrijven tot ${korteDatumMetJaar(a.inschrijvenTot)}`;
   if (dagen <= 0) return { open: true, tekst, label: { tekst: 'Laatste dag', soort: 'laat' } };
-  if (dagen === 1) return { open: true, tekst, label: { tekst: 'Nog 1 dag', soort: 'bijna' } };
-  return { open: true, tekst, label: { tekst: `Nog ${dagen} dagen`, soort: dagen <= 3 ? 'bijna' : '' } };
+  // Alleen de laatste dag valt op (rood); verder grijs, zodat groen voor "Ingeschreven" blijft.
+  if (dagen === 1) return { open: true, tekst, label: { tekst: 'Nog 1 dag', soort: '' } };
+  return { open: true, tekst, label: { tekst: `Nog ${dagen} dagen`, soort: '' } };
 }

@@ -452,6 +452,13 @@ export const demoActiviteiten: Omit<Activiteit, 'ingeschreven'>[] = [
   },
   // Elke soort label in de demo: laatste dag (rood), nog niet open, door school ingedeeld.
   {
+    id: 'act-7',
+    titel: 'Schaaktoernooi',
+    detailsHtml: '<p>Zes rondes in de mediatheek, tijdens de tussenuren.</p>',
+    inschrijvenVan: dagenGeleden(30, 8),
+    inschrijvenTot: dagenGeleden(9, 23, 59),
+  },
+  {
     id: 'act-4',
     titel: 'Kerstgala',
     detailsHtml: '<p>Het gala is op de laatste vrijdag voor de kerstvakantie. Kies of je komt of helpt.</p>',
@@ -509,6 +516,7 @@ export const demoOnderdelen: ActiviteitOnderdeel[] = [
   onderdeel('act-2', 'ond-4b', 'Rondleiding moderne kunst', null, 25, 1),
   onderdeel('act-3', 'ond-5', 'Deelnemen in een team', null, 32, 8, true),
   onderdeel('act-3', 'ond-6', 'Jury', '<p>Beoordeel de debatten samen met twee docenten.</p>', 6, 2),
+  onderdeel('act-7', 'ond-12', 'Meedoen', null, 16, 5),
   onderdeel('act-4', 'ond-7', 'Ik kom naar het gala', null, 200, 37),
   onderdeel('act-4', 'ond-8', 'Ik help bij de opbouw', '<p>Vrijdagmiddag vanaf 13:00 in de aula.</p>', 10, 0),
   onderdeel('act-5', 'ond-9', 'Geneeskunde', null, 30, 30),

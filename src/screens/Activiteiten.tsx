@@ -7,6 +7,7 @@ import { TerugLink } from '../components/ui/TerugLink';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { inschrijfStand } from '../lib/activiteiten';
+import { korteDatumMetJaar } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/cijfers/cijfers.css';
 import '../components/meer/meer.css';
@@ -17,11 +18,16 @@ function ActiviteitRij({ a }: { a: Activiteit }) {
     <Link to={`/meer/activiteiten/${encodeURIComponent(a.id)}`} className="opdrachtrij">
       <span className="opdrachtrij__tekst">
         <span className="opdrachtrij__vak">{a.titel}</span>
-        <span className="opdrachtrij__titel">{stand.tekst}</span>
+        <span className="opdrachtrij__titel">
+          {/* Gesloten: het rode label zegt het al, hier alleen de datum. */}
+          {stand.gesloten && a.inschrijvenTot ? `Sloot op ${korteDatumMetJaar(a.inschrijvenTot)}` : stand.tekst}
+        </span>
       </span>
       {/* Al ingeschreven gaat voor op hoe lang je nog kunt inschrijven. */}
       {a.ingeschreven ? (
         <span className="statuslabel statuslabel--klaar">Ingeschreven</span>
+      ) : stand.gesloten ? (
+        <span className="statuslabel statuslabel--laat">Inschrijving gesloten</span>
       ) : (
         stand.label && <span className={`statuslabel${stand.label.soort ? ` statuslabel--${stand.label.soort}` : ''}`}>{stand.label.tekst}</span>
       )}
