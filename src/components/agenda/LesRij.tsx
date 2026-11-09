@@ -26,13 +26,20 @@ function regels(a: Afspraak, modern: boolean): [string, string] {
   return [a.lokaal ? `${a.omschrijving} (${a.lokaal})` : a.omschrijving, tijd];
 }
 
-/** Eén les in de lijst: links het uurnummer in een vierkantje, dan twee regels tekst, rechts de labels. */
-export function LesRij({ afspraak }: { afspraak: Afspraak }) {
+/**
+ * Eén les in de lijst: links het uurnummer in een vierkantje, dan twee regels tekst, rechts de labels.
+ * `nu` (0 tot 1): waar in deze rij het lijntje van de huidige tijd staat; 0 is de bovenrand, 1 de onderrand.
+ */
+export function LesRij({ afspraak, nu }: { afspraak: Afspraak; nu?: number }) {
   const { agenda } = useInstellingen();
   const [titel, onder] = regels(afspraak, agenda === 'modern');
 
   return (
     <Link to={`/agenda/${encodeURIComponent(afspraak.id)}`} className="lesrij lesrij--link">
+      {nu !== undefined && (
+        // Helemaal boven of onder blijft het binnen de afgeronde kaart, zodat het bolletje niet wordt afgesneden.
+        <span className="nulijn" style={{ top: `clamp(5px, ${nu * 100}%, calc(100% - 5px))` }} aria-hidden="true" />
+      )}
       {/* Zonder lesuur (bijvoorbeeld een persoonlijke afspraak) blijft het vierkantje leeg, zodat alles netjes uitlijnt. */}
       <div
         className={`lesrij__uur${afspraak.lesuur ? '' : ' lesrij__uur--leeg'}`}

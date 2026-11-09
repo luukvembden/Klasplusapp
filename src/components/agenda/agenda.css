@@ -238,6 +238,33 @@
   border-bottom: none;
 }
 
+/* Lijntje van de huidige tijd (alleen vandaag), in de felle accentkleur met een bolletje links. */
+.lesrij--link {
+  position: relative;
+}
+
+.nulijn {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--groen-tekst);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.nulijn::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--groen-tekst);
+}
+
 /* Uurnummer in een gevuld vierkantje in de accentkleur, met het nummer in wit. */
 .lesrij__uur {
   width: 34px;
