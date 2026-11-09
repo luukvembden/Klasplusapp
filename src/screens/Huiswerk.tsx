@@ -30,6 +30,7 @@ export function Huiswerk() {
   // Via de tabbalk begint Huiswerk altijd op deze week; terug uit een opdracht blijft de week staan.
   const [week, zetWeek] = useState(() => maandagVan(new Date()));
   const kies = (d: Date) => zetWeek(maandagVan(d));
+  const dezeWeek = maandagVan(new Date());
 
   // Deze week plus de week ervoor en erna: bij het vegen staat de buurweek al klaar.
   const geladen = useLaden(() => api.afspraken(plusDagen(week, -7), plusDagen(week, 14)), [week.getTime()]);
@@ -73,6 +74,17 @@ export function Huiswerk() {
         </div>
         {/* Simpele weekwisselaar naast de titel, in de pil-stijl van de "Vandaag"-knop. */}
         <div className="agendakop__knoppen">
+          {/* Alleen in een andere week: rondje met het nummer van deze week, tik om terug te gaan. */}
+          {week.getTime() !== dezeWeek.getTime() && (
+            <button
+              type="button"
+              className="weekterug"
+              aria-label={`Terug naar deze week (week ${weekNummer(dezeWeek)})`}
+              onClick={() => zetWeek(dezeWeek)}
+            >
+              {weekNummer(dezeWeek)}
+            </button>
+          )}
           <div className="weekknop" aria-label={`Week ${weekNummer(week)}`}>
             <button type="button" className="weekknop__pijl" aria-label="Vorige week" onClick={() => kies(plusDagen(week, -7))}>
               <ChevronLeft size={18} strokeWidth={2.4} aria-hidden="true" />

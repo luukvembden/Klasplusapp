@@ -110,6 +110,26 @@
   color: var(--groen-tekst);
 }
 
+/* Rondje met het nummer van deze week, links van de weekknop; zelfde stijl als die knop. */
+.weekterug {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 50%;
+  background: var(--kaart);
+  box-shadow: var(--schaduw-kaart);
+  color: var(--groen-tekst);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
 .weekknop__pijl {
   width: 38px;
   height: 40px;
