@@ -113,7 +113,7 @@
 }
 
 .dagstrook__pijl {
-  width: 32px;
+  width: var(--dagstrook-pijl);
   height: var(--tik);
   flex: 0 0 auto;
   border: none;
@@ -470,7 +470,6 @@
 
 .weekrooster__raster {
   display: grid;
-  column-gap: 3px;
 }
 
 .weekrooster__dag--gekozen {
@@ -488,11 +487,11 @@
 .weekrooster__astijd {
   position: absolute;
   left: 0;
-  right: 4px;
+  right: 3px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  font-size: 9.5px;
+  font-size: 9px;
   line-height: 1.15;
   color: var(--tekst-secundair);
   font-variant-numeric: tabular-nums;
@@ -506,6 +505,8 @@
 
 .weekrooster__dag {
   position: relative;
+  /* Geen kolomafstand (dan schuift het t.o.v. de dagstrook); een kleine marge houdt de lessen los. */
+  margin: 0 1.5px;
   border-radius: 8px;
 }
 
@@ -514,7 +515,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 3px 4px;
+  padding: 3px 3px;
   overflow: hidden;
   border-radius: 7px;
   background: var(--kaart);
@@ -530,6 +531,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.weekles b.weekles__lang {
+  font-size: 10.5px;
+  letter-spacing: -0.02em;
 }
 
 .weekles span {

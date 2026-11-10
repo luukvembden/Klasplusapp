@@ -79,7 +79,9 @@ export function WeekRooster({ maandag, afspraken, gekozen }: Props) {
     if (!bekend || (bekend.uur === null && a.lesuur)) assen.set(m, { tijd: tijd(new Date(a.start)), uur: a.lesuur });
   }
 
-  const kolommen = { gridTemplateColumns: `30px repeat(${dagen.length}, minmax(0, 1fr))` };
+  // Zelfde indeling als de dagstrook erboven (pijl, zeven dagen, pijl), zodat elke kolom precies onder
+  // zijn dag staat. De tijden staan onder het linkerpijltje; onder za, zo en het rechterpijltje blijft het leeg.
+  const kolommen = { gridTemplateColumns: 'var(--dagstrook-pijl) repeat(7, minmax(0, 1fr)) var(--dagstrook-pijl)' };
 
   return (
     <div className="weekrooster">
@@ -122,7 +124,8 @@ export function WeekRooster({ maandag, afspraken, gekozen }: Props) {
                       a.lokaal ? `, ${a.lokaal}` : ''
                     }${vervalt ? ', vervalt' : gewijzigd ? ', gewijzigd' : ''}`}
                   >
-                    <b>{titel}</b>
+                    {/* Lange namen (K_WIS, K_VRIJ) iets kleiner, zodat ze in de smalle kolom passen. */}
+                    <b className={titel.length > 4 ? 'weekles__lang' : undefined}>{titel}</b>
                     {a.lokaal && <span>{a.lokaal}</span>}
                     {docent && <span>{docent}</span>}
                   </Link>
