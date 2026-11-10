@@ -45,7 +45,7 @@ function banen(lessen: Afspraak[]): Map<string, { baan: number; van: number }> {
 
 interface Props {
   maandag: Date;
-  /** Alle afspraken van deze week (ook die van het weekend). */
+  /** De afspraken van maandag tot en met vrijdag. */
   afspraken: Afspraak[];
   /** De gekozen dag uit de dagstrook; die kolom krijgt een iets donkerder vlak. */
   gekozen: Date;
@@ -58,10 +58,8 @@ interface Props {
  */
 export function WeekRooster({ maandag, afspraken, gekozen }: Props) {
   const getimed = afspraken.filter((a) => !a.heleDag);
-  // Ma–vr altijd; zaterdag en zondag alleen als daar iets staat.
-  const dagen = Array.from({ length: 7 }, (_, i) => plusDagen(maandag, i)).filter(
-    (d, i) => i < 5 || getimed.some((a) => zelfdeDag(new Date(a.start), d)),
-  );
+  // Maandag tot en met vrijdag; het weekend heeft een eigen lijst.
+  const dagen = Array.from({ length: 5 }, (_, i) => plusDagen(maandag, i));
   const perDag = dagen.map((d) =>
     getimed.filter((a) => zelfdeDag(new Date(a.start), d)).sort((a, b) => a.start.localeCompare(b.start)),
   );
