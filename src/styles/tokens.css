@@ -38,8 +38,6 @@
 
   --font: 'Figtree', system-ui, sans-serif;
   --tik: 44px;
-  /* Breedte van de pijltjes naast de dagstrook; de weekweergave lijnt daarop uit. */
-  --dagstrook-pijl: 32px;
   --radius-kaart: 14px;
   --radius-knop: 12px;
   /* Heel lichte schaduw: kaart lijkt net los van de achtergrond te zweven. */
