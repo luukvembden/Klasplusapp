@@ -60,38 +60,44 @@
   cursor: pointer;
 }
 
-.agendakop__kiezer {
-  position: relative;
+/* In de Agenda: schakelaar bovenaan, de knop Vandaag eronder. */
+.agendakop__knoppen--onder {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
 }
 
-.agendakop__icoon {
-  width: 48px;
-  height: 48px;
-  border: none;
-  border-radius: var(--radius-kaart);
+.agendakop__vandaag--klein {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* Schakelaar Dag/Week: twee knoppen in één pil, de gekozen is gevuld. */
+.agendakop__wissel {
+  display: flex;
+  padding: 3px;
+  border-radius: 999px;
   background: var(--kaart);
   box-shadow: var(--schaduw-kaart);
+}
+
+.agendakop__wissel button {
+  height: 34px;
+  padding: 0 13px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
   color: var(--groen-tekst);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-/* Onzichtbaar datumveld precies over het kalendericoon: de tik landt erop en opent de keuzelijst. */
-.agendakop__datumveld {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  opacity: 0;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  font-size: 16px; /* voorkomt inzoomen op iOS */
+.agendakop__wissel button[aria-pressed='true'] {
+  background: var(--groen-tekst);
+  color: var(--kaart);
 }
 
 /* Dagstrook */
@@ -419,7 +425,7 @@
 }
 
 /* Kalenderknop en "Vandaag"-knop: doorschijnend wit op de kleur, in plaats van een witte kaart. */
-.agendakop-vlak .agendakop__icoon,
+.agendakop-vlak .agendakop__wissel,
 .agendakop-vlak .agendakop__vandaag {
   background: color-mix(in srgb, var(--op-groen) 16%, transparent);
   box-shadow: none;
@@ -427,6 +433,15 @@
 }
 
 /* De dagstrook zit al in het blok: geen eigen vlak, en alles in wit. */
+.agendakop-vlak .agendakop__wissel button {
+  color: var(--op-groen);
+}
+
+.agendakop-vlak .agendakop__wissel button[aria-pressed='true'] {
+  background: var(--dag-rondje);
+  color: var(--dag-rondje-tekst);
+}
+
 .agendakop-vlak .dagstrook {
   margin: 0;
   padding: 0;

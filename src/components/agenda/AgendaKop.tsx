@@ -1,31 +1,24 @@
-import { useRef } from 'react';
-import { Calendar } from 'lucide-react';
-import { dagEnMaand, dagNaam, datumInZin, naarInvoer, vanInvoer, weekNummer, zelfdeDag } from '../../lib/datum';
+import { dagEnMaand, dagNaam, datumInZin, weekNummer, zelfdeDag } from '../../lib/datum';
+import { useInstellingen, wijzigInstellingen, type AgendaIndeling } from '../../lib/instellingen';
 import './agenda.css';
 
 interface Props {
   dag: Date;
-  onKies: (dag: Date) => void;
   onVandaag: () => void;
 }
 
+const INDELINGEN: { waarde: AgendaIndeling; naam: string }[] = [
+  { waarde: 'dag', naam: 'Dag' },
+  { waarde: 'week', naam: 'Week' },
+];
+
 /**
- * Kop van de Agenda: grote titel met datum en week eronder, rechts de knoppen.
+ * Kop van de Agenda: grote titel met datum en week eronder, rechts de schakelaar Dag/Week.
  * Op vandaag heet de titel "Vandaag"; op een andere dag de weekdag, met een knop terug naar vandaag.
  */
-export function AgendaKop({ dag, onKies, onVandaag }: Props) {
-  const datumVeld = useRef<HTMLInputElement>(null);
+export function AgendaKop({ dag, onVandaag }: Props) {
   const isVandaag = zelfdeDag(dag, new Date());
-
-  const openKiezer = () => {
-    const veld = datumVeld.current;
-    if (!veld) return;
-    try {
-      veld.showPicker();
-    } catch {
-      veld.focus();
-    }
-  };
+  const { indeling } = useInstellingen();
 
   return (
     <header className="agendakop">
@@ -36,33 +29,26 @@ export function AgendaKop({ dag, onKies, onVandaag }: Props) {
         </span>
       </div>
 
-      <div className="agendakop__knoppen">
+      <div className="agendakop__knoppen agendakop__knoppen--onder">
+        {/* Dag of Week; Klas+ onthoudt de keuze. */}
+        <div className="agendakop__wissel" role="group" aria-label="Weergave">
+          {INDELINGEN.map(({ waarde, naam }) => (
+            <button
+              key={waarde}
+              type="button"
+              aria-pressed={indeling === waarde}
+              onClick={() => wijzigInstellingen({ indeling: waarde })}
+            >
+              {naam}
+            </button>
+          ))}
+        </div>
+        {/* Op een andere dag: onder de schakelaar, zodat de titel ruimte houdt. */}
         {!isVandaag && (
-          <button type="button" className="agendakop__vandaag" onClick={onVandaag}>
+          <button type="button" className="agendakop__vandaag agendakop__vandaag--klein" onClick={onVandaag}>
             Vandaag
           </button>
         )}
-        {/*
-          Het onzichtbare datumveld ligt precies over het icoon. Een iPhone opent een datumkiezer alleen
-          als je er zelf op tikt, niet via een script; zo landt de tik direct op het veld.
-        */}
-        <div className="agendakop__kiezer">
-          <span className="agendakop__icoon" aria-hidden="true">
-            <Calendar size={22} strokeWidth={2} />
-          </span>
-          <input
-            ref={datumVeld}
-            type="date"
-            className="agendakop__datumveld"
-            aria-label="Kies datum"
-            onClick={openKiezer}
-            value={naarInvoer(dag)}
-            onChange={(e) => {
-              const gekozen = vanInvoer(e.target.value);
-              if (gekozen) onKies(gekozen);
-            }}
-          />
-        </div>
       </div>
     </header>
   );
