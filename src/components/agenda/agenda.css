@@ -238,15 +238,6 @@
   border-bottom: none;
 }
 
-/*
- * Lijntje van de huidige tijd (alleen vandaag), in de felle accentkleur. Het bolletje staat op het
- * midden van de uurvakjes (12px rand + de helft van 34px); links ervan de tijd, rechts de lijn.
- * De tijd steekt links buiten de kaart uit, daarom knipt de kaart niet meer af.
- */
-.agenda__kaart {
-  overflow: visible;
-}
-
 .agenda__kaart .lesrij:first-child {
   border-radius: var(--radius-kaart) var(--radius-kaart) 0 0;
 }
@@ -263,59 +254,10 @@
   position: relative;
 }
 
-.nulijn {
-  --nulijn-midden: 29px;
-  position: absolute;
-  left: var(--nulijn-midden);
-  right: 0;
-  height: 2px;
-  margin-top: -1px;
-  background: var(--groen-tekst);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.nulijn::before {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top: -4px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--groen-tekst);
-}
-
-/* De tijd links van het bolletje, op een vlakje in de kaartkleur zodat hij over een uurvakje leesbaar blijft. */
-.nulijn__tijd {
-  position: absolute;
-  right: calc(100% + 7px);
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 1px 3px;
-  border-radius: 4px;
-  background: var(--kaart);
-  color: var(--groen-tekst);
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-/* Voor het eerste uur net boven de kaart, na het laatste uur net onder de kaart. */
-.nulijn-buiten {
-  position: relative;
-  height: 0;
-  margin: 12px 12px 0 0;
-}
-
-.nulijn-buiten--boven {
-  margin: 2px 12px 12px 0;
-}
-
-.nulijn-buiten .nulijn__tijd {
-  background: var(--achtergrond);
+/* De les van nu: een lichte tint en een streepje in de accentkleur links. */
+.lesrij--nu {
+  background: var(--groen-licht);
+  box-shadow: inset 3px 0 0 var(--groen-tekst);
 }
 
 /* Uurnummer in een gevuld vierkantje in de accentkleur, met het nummer in wit. */
@@ -331,9 +273,6 @@
   color: var(--op-groen);
   font-size: 15px;
   font-weight: 700;
-  /* Het uurvakje heeft voorrang: het ligt altijd boven het nu-lijntje en de tijd. */
-  position: relative;
-  z-index: 3;
 }
 
 /* Geen lesuur (bijvoorbeeld een persoonlijke afspraak): een licht vierkantje, niet gevuld. */

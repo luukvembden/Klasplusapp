@@ -5,7 +5,6 @@ import { api, type Afspraak } from '../api';
 import { AgendaKop } from '../components/agenda/AgendaKop';
 import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
-import { NuLijn } from '../components/agenda/NuLijn';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
@@ -65,59 +64,28 @@ export function Agenda() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen zodra de week voor het eerst geladen is
   }, [weekGeladen]);
 
-  // De huidige tijd, elke halve minuut bijgewerkt, voor het lijntje bij vandaag.
+  // De huidige tijd, elke halve minuut bijgewerkt, om de les van nu uit te lichten.
   const [nu, setNu] = useState(() => Date.now());
   useEffect(() => {
     const klok = setInterval(() => setNu(Date.now()), 30_000);
     return () => clearInterval(klok);
   }, []);
 
-  /**
-   * Waar het nu-lijntje komt: in welke rij (id) en hoe ver daarin (0 = bovenrand, 1 = onderrand).
-   * Tijdens een les loopt het door die les heen; tussen twee lessen staat het op de grens;
-   * voor de eerste les "voor" (net boven de kaart), na de laatste "na" (net onder de kaart).
-   * Hele-dag-afspraken tellen niet mee.
-   */
-  const nuPlek = (lessen: Afspraak[]): { id: string; plek: number } | 'voor' | 'na' | null => {
-    const getimed = lessen.filter((a) => !a.heleDag);
-    if (getimed.length === 0) return null;
-    if (nu < new Date(getimed[0].start).getTime()) return 'voor';
-    for (const a of getimed) {
-      const start = new Date(a.start).getTime();
-      const einde = new Date(a.einde).getTime();
-      if (nu < start) return { id: a.id, plek: 0 };
-      if (nu < einde) return { id: a.id, plek: (nu - start) / Math.max(einde - start, 1) };
-    }
-    return 'na';
-  };
+  /** Is deze les nu aan de gang? Hele-dag-afspraken tellen niet mee. */
+  const isBezig = (a: Afspraak) =>
+    !a.heleDag && new Date(a.start).getTime() <= nu && nu < new Date(a.einde).getTime();
 
   /** De lessen van één dag, zoals in de lijst; ook voor de buurdagen in de schuifbaan. */
   const dagLijst = (d: Date) => {
     const lessen = lessenOp(d);
-    const lijn = zelfdeDag(d, new Date(nu)) ? nuPlek(lessen) : null;
     return (
       <>
-        {lijn === 'voor' && (
-          <div className="nulijn-buiten nulijn-buiten--boven">
-            <NuLijn nu={nu} top="0" />
-          </div>
-        )}
         {lessen.length > 0 && (
           <section className="agenda__kaart">
             {lessen.map((a) => (
-              <LesRij
-                key={a.id}
-                afspraak={a}
-                nu={lijn && typeof lijn === 'object' && lijn.id === a.id ? lijn.plek : undefined}
-                nuTijd={nu}
-              />
+              <LesRij key={a.id} afspraak={a} bezig={isBezig(a)} />
             ))}
           </section>
-        )}
-        {lijn === 'na' && (
-          <div className="nulijn-buiten">
-            <NuLijn nu={nu} top="0" />
-          </div>
         )}
         {weekGeladen && lessen.length === 0 && <p className="melding">Geen afspraken op deze dag.</p>}
       </>

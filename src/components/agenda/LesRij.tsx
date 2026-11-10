@@ -5,7 +5,6 @@ import { tijdvak } from '../../lib/datum';
 import { useInstellingen } from '../../lib/instellingen';
 import { metHoofdletter } from '../../lib/tekst';
 import { LesLabel } from './LesLabel';
-import { NuLijn } from './NuLijn';
 import './agenda.css';
 import '../les/les.css';
 
@@ -30,20 +29,18 @@ function regels(a: Afspraak, modern: boolean): [string, string] {
 
 /**
  * Eén les in de lijst: links het uurnummer in een vierkantje, dan twee regels tekst, rechts de labels.
- * `nu` (0 tot 1): hoe ver de les is; 0 is nog niet begonnen (lijntje op de bovenrand).
- * `nuTijd`: de huidige tijd (ms), die links van het bolletje staat.
+ * `bezig`: de les is nu aan de gang; dan krijgt de rij een lichte tint en een streepje links.
  */
-export function LesRij({ afspraak, nu, nuTijd }: { afspraak: Afspraak; nu?: number; nuTijd?: number }) {
+export function LesRij({ afspraak, bezig }: { afspraak: Afspraak; bezig?: boolean }) {
   const { agenda } = useInstellingen();
   const [titel, onder] = regels(afspraak, agenda === 'modern');
 
   return (
-    <Link to={`/agenda/${encodeURIComponent(afspraak.id)}`} className="lesrij lesrij--link">
-      {nu !== undefined && nuTijd !== undefined && (
-        // Nooit door de tekst: op de bovenrand (pauze ervoor), in de eerste helft van de les net boven
-        // de tekst, in de tweede helft net onder de tekst. Zo blijft het wel in het vak van de les.
-        <NuLijn nu={nuTijd} top={nu === 0 ? '0' : nu < 0.5 ? '4px' : 'calc(100% - 4px)'} />
-      )}
+    <Link
+      to={`/agenda/${encodeURIComponent(afspraak.id)}`}
+      className={`lesrij lesrij--link${bezig ? ' lesrij--nu' : ''}`}
+      aria-current={bezig ? 'time' : undefined}
+    >
       {/* Zonder lesuur (bijvoorbeeld een persoonlijke afspraak) blijft het vierkantje leeg, zodat alles netjes uitlijnt. */}
       <div
         className={`lesrij__uur${afspraak.lesuur ? '' : ' lesrij__uur--leeg'}`}
