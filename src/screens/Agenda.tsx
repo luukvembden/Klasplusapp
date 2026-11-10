@@ -7,13 +7,12 @@ import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
 import { WeekRooster } from '../components/agenda/WeekRooster';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
-import { Sectie } from '../components/ui/Sectie';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { useInstellingen } from '../lib/instellingen';
 import { useLaagZichtbaar } from '../lib/laag';
-import { beginVanDag, dagTitel, isWeekdag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
+import { beginVanDag, isWeekdag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/agenda/agenda.css';
 
@@ -105,30 +104,30 @@ export function Agenda() {
     );
   };
 
-  /** De werkweek (ma–vr) in één rooster; ook voor de buurweken in de schuifbaan. */
-  const weekLijst = (ma: Date) => {
-    const einde = plusDagen(ma, 5);
-    const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= ma && new Date(a.start) < einde);
+  /**
+   * Een blok in de weekweergave als rooster: de werkweek (ma–vr, vijf kolommen) of het weekend
+   * (za en zo, twee kolommen). Ook voor de buurblokken in de schuifbaan.
+   */
+  const roosterVan = (start: Date) => {
+    const weekend = !isWeekdag(start);
+    const dagen = Array.from({ length: weekend ? 2 : 5 }, (_, i) => plusDagen(start, i));
+    const einde = plusDagen(start, dagen.length);
+    const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= start && new Date(a.start) < einde);
     if (!weekGeladen && lessen.length === 0) return null;
-    return <WeekRooster maandag={ma} afspraken={lessen} gekozen={dag} />;
+    return (
+      <WeekRooster
+        dagen={dagen}
+        afspraken={lessen}
+        gekozen={dag}
+        leeg={weekend ? 'Geen afspraken in het weekend.' : 'Geen lessen in deze week.'}
+      />
+    );
   };
-
-  /** Zaterdag en zondag onder elkaar, elk als gewone lijst. */
-  const weekendLijst = (za: Date) => (
-    <div className="agenda__weekend">
-      {[za, plusDagen(za, 1)].map((d) => (
-        <Sectie key={d.getTime()} titel={dagTitel(d)}>
-          {dagLijst(d)}
-        </Sectie>
-      ))}
-    </div>
-  );
 
   // In de weekweergave wissel je tussen blokken: werkweek (ma–vr), weekend (za–zo), volgende werkweek.
   const isWeekend = (d: Date) => !isWeekdag(d);
   const blokStart = (d: Date) => (isWeekend(d) ? plusDagen(maandagVan(d), 5) : maandagVan(d));
   const blok = blokStart(dag);
-  const blokInhoud = (start: Date) => (isWeekend(start) ? weekendLijst(start) : weekLijst(start));
   const vorigBlok = (start: Date) => plusDagen(start, isWeekend(start) ? -5 : -2);
   const volgendBlok = (start: Date) => plusDagen(start, isWeekend(start) ? 2 : 5);
   /** Naar een ander blok: vandaag als die erin valt, anders de eerste dag ervan. */
@@ -154,9 +153,9 @@ export function Agenda() {
               // Vegen in de weekweergave: werkweek, weekend, volgende werkweek.
               <VeegCarrousel
                 sleutel={naarInvoer(blok)}
-                vorige={blokInhoud(vorigBlok(blok))}
-                huidige={blokInhoud(blok)}
-                volgende={blokInhoud(volgendBlok(blok))}
+                vorige={roosterVan(vorigBlok(blok))}
+                huidige={roosterVan(blok)}
+                volgende={roosterVan(volgendBlok(blok))}
                 onVorige={() => naarBlok(vorigBlok(blok))}
                 onVolgende={() => naarBlok(volgendBlok(blok))}
                 vlak={lijstVlak}

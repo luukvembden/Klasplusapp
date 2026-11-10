@@ -567,10 +567,3 @@
   color: var(--tekst-secundair);
   text-decoration: line-through;
 }
-
-/* Weekend in de weekweergave: zaterdag en zondag onder elkaar. */
-.agenda__weekend {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}

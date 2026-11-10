@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Afspraak } from '../../api';
-import { nlTijd, plusDagen, tijd, zelfdeDag } from '../../lib/datum';
+import { nlTijd, tijd, zelfdeDag } from '../../lib/datum';
 import './agenda.css';
 
 /** Zoveel pixels per minuut: een les van 50 minuten is dan 55px hoog. */
@@ -44,11 +44,14 @@ function banen(lessen: Afspraak[]): Map<string, { baan: number; van: number }> {
 }
 
 interface Props {
-  maandag: Date;
-  /** De afspraken van maandag tot en met vrijdag. */
+  /** De dagen die naast elkaar staan: maandag tot en met vrijdag, of zaterdag en zondag. */
+  dagen: Date[];
+  /** De afspraken van die dagen. */
   afspraken: Afspraak[];
   /** De gekozen dag uit de dagstrook; die kolom krijgt een iets donkerder vlak. */
   gekozen: Date;
+  /** Wat er staat als er niets is. */
+  leeg: string;
 }
 
 /**
@@ -56,15 +59,13 @@ interface Props {
  * als gat te zien zijn. Gewone lessen zijn wit, een gewijzigde les (ander lokaal, andere docent) heeft
  * de accentkleur en een vervallen les is doorgestreept. Tik op een les voor de lesinformatie.
  */
-export function WeekRooster({ maandag, afspraken, gekozen }: Props) {
+export function WeekRooster({ dagen, afspraken, gekozen, leeg }: Props) {
   const getimed = afspraken.filter((a) => !a.heleDag);
-  // Maandag tot en met vrijdag; het weekend heeft een eigen lijst.
-  const dagen = Array.from({ length: 5 }, (_, i) => plusDagen(maandag, i));
   const perDag = dagen.map((d) =>
     getimed.filter((a) => zelfdeDag(new Date(a.start), d)).sort((a, b) => a.start.localeCompare(b.start)),
   );
 
-  if (getimed.length === 0) return <p className="melding">Geen lessen in deze week.</p>;
+  if (getimed.length === 0) return <p className="melding">{leeg}</p>;
 
   const van = Math.min(...getimed.map((a) => minuutVanDag(a.start)));
   const tot = Math.max(...getimed.map((a) => Math.max(minuutVanDag(a.einde), minuutVanDag(a.start) + 15)));
@@ -123,6 +124,8 @@ export function WeekRooster({ maandag, afspraken, gekozen }: Props) {
                     }${vervalt ? ', vervalt' : gewijzigd ? ', gewijzigd' : ''}`}
                   >
                     <b>{titel}</b>
+                    {/* Zonder lesuur (eigen afspraak) de tijden erbij; die staan dan niet langs de rand. */}
+                    {!a.lesuur && <span>{tijd(new Date(a.start))} – {tijd(new Date(a.einde))}</span>}
                     {a.lokaal && <span>{a.lokaal}</span>}
                     {docent && <span>{docent}</span>}
                   </Link>
