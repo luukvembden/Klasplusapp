@@ -22,6 +22,10 @@ export interface Notificaties {
   huiswerk: boolean;
   /** Tijdstip van de huiswerkherinnering op de avond ervoor, "19:00". */
   huiswerkTijd: string;
+  /** Elke schooldag: je eerste les en wat er vervalt of gewijzigd is. */
+  ochtend: boolean;
+  /** Tijdstip van de ochtendmelding, "07:00". */
+  ochtendTijd: string;
 }
 
 export interface Instellingen {
@@ -40,7 +44,7 @@ const standaard: Instellingen = {
   agenda: 'modern',
   indeling: 'dag',
   kleur: 'groen',
-  notificaties: { cijfers: false, rooster: false, huiswerk: false, huiswerkTijd: '19:00' },
+  notificaties: { cijfers: false, rooster: false, huiswerk: false, huiswerkTijd: '19:00', ochtend: false, ochtendTijd: '07:00' },
 };
 
 function lees(): Instellingen {

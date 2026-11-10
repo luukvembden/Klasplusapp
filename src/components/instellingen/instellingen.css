@@ -352,3 +352,12 @@ button.instelrij {
   font-weight: 500;
   color: var(--tekst-secundair);
 }
+
+/* Meldingen: elke keuze met eventueel een tijd eronder; lijntjes tussen alle rijen, niet onder de laatste. */
+.meldinggroep > .instelrij:last-child {
+  border-bottom: 1px solid var(--lijn-zacht);
+}
+
+.meldinggroep:last-child > :last-child {
+  border-bottom: none;
+}

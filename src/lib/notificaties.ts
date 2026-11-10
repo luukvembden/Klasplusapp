@@ -8,6 +8,7 @@ import { api, type Afspraak } from '../api';
 import { beginVanDag, dagNaam, naarInvoer, plusDagen } from './datum';
 import { leesInstellingen } from './instellingen';
 import { lees, schrijf, verwijder } from './opslag';
+import { ochtendMelding } from './ochtendmelding';
 import { metHoofdletter } from './tekst';
 
 /** Alleen in de telefoon-app; in de browser (demo) kan het niet. */
@@ -19,6 +20,9 @@ const VOLGNUMMER = 'notificaties.volgnummer';
 /** Huiswerkherinneringen krijgen vaste nummers, zodat we ze steeds kunnen vervangen. */
 const HUISWERK_EERSTE = 5000;
 const HUISWERK_DAGEN = 8;
+/** Ochtendmeldingen ook met vaste nummers: vandaag en de dagen erna. */
+const OCHTEND_EERSTE = 6000;
+const OCHTEND_DAGEN = 8;
 
 /** Een uniek nummer per melding (Android wil een geheel getal). */
 function volgnummer(): number {
@@ -160,6 +164,41 @@ async function planHuiswerk(aan: boolean, tijdstip: string) {
   if (meldingen.length) await LocalNotifications.schedule({ notifications: meldingen });
 }
 
+// ---- Ochtendmelding ----
+
+const wisOchtend = () =>
+  LocalNotifications.cancel({ notifications: Array.from({ length: OCHTEND_DAGEN }, (_, i) => ({ id: OCHTEND_EERSTE + i })) });
+
+/**
+ * Plant voor elke dag met lessen een melding op het gekozen tijdstip, met de stand van nu. Elke keer
+ * dat Klas+ kijkt (openen, achtergrond) worden ze vervangen, zodat een latere wijziging erin komt.
+ */
+async function planOchtend(aan: boolean, tijdstip: string) {
+  if (!aan) return wisOchtend();
+  const vandaag = beginVanDag(new Date());
+  // Vanaf een week terug: daarmee ziet de app of docent of lokaal echt anders is dan normaal.
+  const resultaat = await api.afspraken(plusDagen(vandaag, -7), plusDagen(vandaag, OCHTEND_DAGEN));
+  await wisOchtend();
+  const [uur, minuut] = tijdstip.split(':').map(Number);
+  const meldingen = [];
+  for (let i = 0; i < OCHTEND_DAGEN; i++) {
+    const dag = plusDagen(vandaag, i);
+    const moment = new Date(dag);
+    moment.setHours(uur, minuut, 0, 0);
+    if (moment.getTime() <= Date.now()) continue;
+    const melding = ochtendMelding(resultaat.data.filter((a) => naarInvoer(new Date(a.start)) === naarInvoer(dag)));
+    if (!melding) continue;
+    meldingen.push({
+      id: OCHTEND_EERSTE + i,
+      title: melding.titel,
+      body: melding.tekst,
+      schedule: { at: moment, allowWhileIdle: true },
+      extra: { pad: '/' },
+    });
+  }
+  if (meldingen.length) await LocalNotifications.schedule({ notifications: meldingen });
+}
+
 // ---- Alles samen ----
 
 let bezig: Promise<void> | null = null;
@@ -182,6 +221,7 @@ export function controleerNu(altijd = false): Promise<void> {
     if (n.cijfers) await controleerCijfers().catch(() => undefined);
     if (n.rooster) await controleerRooster().catch(() => undefined);
     await planHuiswerk(n.huiswerk, n.huiswerkTijd).catch(() => undefined);
+    await planOchtend(n.ochtend, n.ochtendTijd).catch(() => undefined);
   })().finally(() => {
     bezig = null;
   });
@@ -192,7 +232,10 @@ export function controleerNu(altijd = false): Promise<void> {
 export async function wisNotificaties() {
   verwijder(GEZIENE_CIJFERS);
   verwijder(ROOSTER);
-  if (kanNotificaties) await wisHuiswerk().catch(() => undefined);
+  if (kanNotificaties) {
+    await wisHuiswerk().catch(() => undefined);
+    await wisOchtend().catch(() => undefined);
+  }
 }
 
 let gestart = false;
