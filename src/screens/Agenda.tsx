@@ -71,19 +71,27 @@ export function Agenda() {
     return () => clearInterval(klok);
   }, []);
 
-  /** Is deze les nu aan de gang? Hele-dag-afspraken tellen niet mee. */
-  const isBezig = (a: Afspraak) =>
-    !a.heleDag && new Date(a.start).getTime() <= nu && nu < new Date(a.einde).getTime();
+  /**
+   * Welke les is uitgelicht: de les die nu bezig is, of in een pauze of tussenuur de volgende les.
+   * Voor de eerste les en na de laatste niets. Hele-dag-afspraken tellen niet mee.
+   */
+  const uitgelicht = (lessen: Afspraak[]): string | null => {
+    const getimed = lessen.filter((a) => !a.heleDag);
+    if (getimed.length === 0 || nu < new Date(getimed[0].start).getTime()) return null;
+    const bezig = getimed.find((a) => new Date(a.start).getTime() <= nu && nu < new Date(a.einde).getTime());
+    return (bezig ?? getimed.find((a) => new Date(a.start).getTime() > nu))?.id ?? null;
+  };
 
   /** De lessen van één dag, zoals in de lijst; ook voor de buurdagen in de schuifbaan. */
   const dagLijst = (d: Date) => {
     const lessen = lessenOp(d);
+    const licht = zelfdeDag(d, new Date(nu)) ? uitgelicht(lessen) : null;
     return (
       <>
         {lessen.length > 0 && (
           <section className="agenda__kaart">
             {lessen.map((a) => (
-              <LesRij key={a.id} afspraak={a} bezig={isBezig(a)} />
+              <LesRij key={a.id} afspraak={a} bezig={a.id === licht} />
             ))}
           </section>
         )}
