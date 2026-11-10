@@ -145,7 +145,7 @@ const cijfer = (vak: Vak, omschrijving: string, datum: string, weging: number, w
 export const demoCijfers: Cijfer[] = [
   cijfer(vakken.ne, 'Spelling', '2026-09-30', 1, 6.8),
   cijfer(vakken.ne, 'Betoog', '2026-10-14', 2, 7.2),
-  cijfer(vakken.en, 'Woordjes unit 1', '2026-09-25', 1, 6.1),
+  cijfer(vakken.en, 'Woordjes unit 1', '2026-09-25', 1, 5.3),
   cijfer(vakken.en, 'Leesvaardigheid', '2026-10-09', 1, 5.2),
   cijfer(vakken.en, 'Grammatica', '2026-10-23', 1, 4.9),
   cijfer(vakken.wb, 'Hoofdstuk 2', '2026-10-02', 2, 6.3),
@@ -162,7 +162,7 @@ export const demoCijfers: Cijfer[] = [
   cijfer(vakken.bi, 'Hoofdstuk 2', '2026-09-22', 2, 6.9),
   cijfer(vakken.sk, 'Practicum zouten', '2026-09-24', 1, 7.1),
   cijfer(vakken.gs, 'Oudheid', '2026-09-17', 2, 6.2),
-  cijfer(vakken.en, 'Schrijfopdracht', '2026-09-11', 1, 6.8),
+  cijfer(vakken.en, 'Schrijfopdracht', '2026-09-11', 1, 5.6),
   cijfer(vakken.fa, 'Grammatica', '2026-09-15', 1, 5.4),
   cijfer(vakken.bi, 'Hoofdstuk 1', '2026-09-09', 2, 7.6),
 ];

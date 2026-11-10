@@ -194,3 +194,108 @@
   line-height: 1.4;
   color: var(--tekst);
 }
+
+/* Gemiddeldes: knop rechtsboven naar de Overgangscheck, op dezelfde plek als "Gemiddeldes" bij Cijfers. */
+.gemiddeldes__kop--met-knop {
+  position: relative;
+}
+
+.gemiddeldes__knop {
+  position: absolute;
+  top: calc(var(--veilig-boven) + 20px);
+  right: 20px;
+}
+
+/* Overgangscheck */
+.overgang__uitslag {
+  padding: 16px;
+  gap: 8px;
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+}
+
+.overgang__uitslag--niet {
+  background: color-mix(in srgb, var(--onvoldoende) 14%, var(--kaart));
+  color: var(--onvoldoende);
+}
+
+.overgang__kop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.overgang__tekst,
+.overgang__redenen {
+  margin: 0;
+  color: var(--tekst);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.overgang__redenen {
+  padding-left: 20px;
+}
+
+.overgang__vak {
+  display: grid;
+  grid-template-columns: 1fr auto 34px 34px;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--lijn-zacht);
+  font-size: 15px;
+}
+
+.overgang__vak:last-child {
+  border-bottom: none;
+}
+
+.overgang__naam {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.overgang__kern {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tekst-secundair);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.overgang__gem {
+  color: var(--tekst-secundair);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.overgang__rapport {
+  text-align: center;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.overgang__rapport--onv {
+  color: var(--onvoldoende);
+}
+
+.overgang__punten {
+  text-align: right;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.overgang__punten--min {
+  color: var(--onvoldoende);
+}
+
+.overgang__punten--plus {
+  color: var(--groen-tekst);
+}

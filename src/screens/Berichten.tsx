@@ -29,6 +29,7 @@ function BerichtRij({ b, verzonden }: { b: BerichtKort; verzonden: boolean }) {
   return (
     <Link
       to={`/meer/berichten/${encodeURIComponent(b.id)}`}
+      state={{ verzonden }}
       className={`berichtrij${b.gelezen ? "" : " berichtrij--ongelezen"}`}
     >
       <span

@@ -414,7 +414,7 @@ export interface RuweBerichtMap {
 export interface RuwBericht {
   id: number;
   onderwerp?: string;
-  afzender?: { naam?: string };
+  afzender?: { id?: number; naam?: string };
   verzondenOp?: string;
   isGelezen?: boolean;
   heeftBijlagen?: boolean;
@@ -477,6 +477,9 @@ export function naarBericht(b: RuwBericht, bijlagen: RuweBerichtBijlage[]): Beri
     inhoudHtml: b.inhoud?.trim() ? b.inhoud : null,
     ontvangers: namen,
     bijlagen: bijlagen.map(naarBerichtBijlage),
+    afzenderContact: b.afzender?.id
+      ? { id: b.afzender.id, naam: b.afzender.naam?.trim() || 'Afzender', soort: 'anders', extra: null }
+      : null,
   };
 }
 

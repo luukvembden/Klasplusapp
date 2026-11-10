@@ -345,7 +345,7 @@
 }
 
 .bericht-tekst {
-  min-height: 180px;
+  min-height: 260px;
 }
 
 /* Activiteiten: elk onderdeel een eigen kaart met de knop eronder. */
@@ -450,4 +450,33 @@
   color: var(--tekst-zacht);
   font-size: 14px;
   line-height: 1.45;
+}
+
+/* Onder een bericht: beantwoorden en doorsturen naast elkaar. */
+.berichtknoppen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.berichtknoppen .knop-secundair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  border: 1px solid var(--lijn);
+  border-radius: var(--radius-knop);
+  background: var(--kaart);
+  color: var(--tekst);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bericht-noot {
+  margin: 0 4px;
+  font-size: 13px;
+  color: var(--tekst-secundair);
 }

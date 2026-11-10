@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { VakRij } from '../components/cijfers/VakRij';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
@@ -7,6 +8,7 @@ import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useCijfers } from '../hooks/useCijfers';
 import { perVak } from '../lib/cijfers';
 import '../components/ui/ui.css';
+import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
 
 export function Gemiddeldes() {
@@ -16,8 +18,12 @@ export function Gemiddeldes() {
   return (
     <div className="scherm">
       {/* De titel blijft staan; alleen de lijst eronder veeg je omlaag om te vernieuwen, net als bij Cijfers. */}
-      <div className="pagina pagina--met-terug gemiddeldes__kop">
+      <div className="pagina pagina--met-terug gemiddeldes__kop gemiddeldes__kop--met-knop">
         <TerugLink naar="/cijfers" label="Cijfers" />
+        {/* Rechtsboven, in dezelfde knop als "Gemiddeldes" bij Cijfers. */}
+        <Link to="/cijfers/overgang" className="agendakop__vandaag agendakop__knoplink gemiddeldes__knop">
+          Overgang
+        </Link>
         <PaginaKop sub={sub} titel="Gemiddeldes" />
         <OfflineRegel resultaat={resultaat} />
       </div>

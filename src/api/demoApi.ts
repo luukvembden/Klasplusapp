@@ -261,7 +261,7 @@ export const demoApi: SchoolApi = {
     await vertraging(150);
     const b = [...demoPostvak(), ...alleVerzonden()].find((x) => x.id === id);
     if (!b) throw new Error('Bericht niet gevonden');
-    return resultaat(b);
+    return resultaat({ ...b, afzenderContact: demoContacten.find((c) => c.naam === b.afzender) ?? null });
   },
 
   async markeerGelezen(id) {

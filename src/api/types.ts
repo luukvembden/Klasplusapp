@@ -212,6 +212,8 @@ export interface Bericht extends BerichtKort {
   /** Ontvangers en kopie-ontvangers samen. */
   ontvangers: string[];
   bijlagen: Bijlage[];
+  /** De afzender als ontvanger voor een antwoord, als school die meestuurt. */
+  afzenderContact?: Contact | null;
 }
 
 /** Iemand aan wie je een bericht kunt sturen. */

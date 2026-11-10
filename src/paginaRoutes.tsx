@@ -6,6 +6,7 @@ import { NieuweMelding } from './screens/NieuweMelding';
 import { Cijfers } from './screens/Cijfers';
 import { Gemiddeldes } from './screens/Gemiddeldes';
 import { CijferCalculator } from './screens/CijferCalculator';
+import { Overgang } from './screens/Overgang';
 import { Huiswerk } from './screens/Huiswerk';
 import { Instellingen } from './screens/Instellingen';
 import { Meer } from './screens/Meer';
@@ -37,6 +38,7 @@ export const paginaRoutes = (
     <Route path="cijfers" element={<Cijfers />} />
     <Route path="cijfers/gemiddeldes" element={<Gemiddeldes />} />
     <Route path="cijfers/calculator" element={<CijferCalculator />} />
+    <Route path="cijfers/overgang" element={<Overgang />} />
         <Route path="meer" element={<Meer />} />
     <Route path="meer/berichten" element={<Berichten />} />
     <Route path="meer/berichten/nieuw" element={<NieuwBericht />} />

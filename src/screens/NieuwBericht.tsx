@@ -1,16 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { X } from 'lucide-react';
-import { api, type Contact } from '../api';
-import { Invoerrij } from '../components/les/Invoerrij';
-import { PaginaKop } from '../components/ui/PaginaKop';
-import { Sectie } from '../components/ui/Sectie';
-import { TerugLink } from '../components/ui/TerugLink';
-import '../components/les/les.css';
-import '../components/meer/meer.css';
-import '../components/ui/ui.css';
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
+import { api, type Contact } from "../api";
+import { Invoerrij } from "../components/les/Invoerrij";
+import { PaginaKop } from "../components/ui/PaginaKop";
+import { Sectie } from "../components/ui/Sectie";
+import { TerugLink } from "../components/ui/TerugLink";
+import type { Concept } from "../lib/berichten";
+import "../components/les/les.css";
+import "../components/meer/meer.css";
+import "../components/ui/ui.css";
 
-const soortTekst = { docent: 'Docent', leerling: 'Leerling', anders: '' } as const;
+const soortTekst = {
+  docent: "Docent",
+  leerling: "Leerling",
+  anders: "",
+} as const;
 
 /** Ontvangers zoeken terwijl je typt; pas na twee letters, en even wachten zodat niet elke toets een verzoek is. */
 function useZoekContacten(term: string) {
@@ -38,13 +43,28 @@ function useZoekContacten(term: string) {
   return { gevonden, bezig };
 }
 
-/** Nieuw bericht: ontvangers zoeken, onderwerp en tekst, versturen. Daarna terug naar Berichten. */
+/**
+ * Nieuw bericht: ontvangers zoeken, onderwerp en tekst, versturen. Daarna terug.
+ * Bij beantwoorden of doorsturen staan ontvanger, onderwerp en het oude bericht er al in.
+ */
 export function NieuwBericht() {
   const navigate = useNavigate();
-  const [aan, setAan] = useState<Contact[]>([]);
-  const [zoek, setZoek] = useState('');
-  const [onderwerp, setOnderwerp] = useState('');
-  const [tekst, setTekst] = useState('');
+  const concept = useLocation().state as Concept | null;
+  const [aan, setAan] = useState<Contact[]>(concept?.aan ?? []);
+  const [zoek, setZoek] = useState(concept?.zoek ?? "");
+  const [onderwerp, setOnderwerp] = useState(concept?.onderwerp ?? "");
+  const [tekst, setTekst] = useState(concept?.tekst ?? "");
+  const tekstVeld = useRef<HTMLTextAreaElement>(null);
+
+  // Antwoorden: meteen typen bovenaan, boven het oude bericht. Doorsturen: eerst een ontvanger kiezen.
+  useEffect(() => {
+    if (concept?.soort !== "antwoord" || !concept.aan.length) return;
+    const veld = tekstVeld.current;
+    if (!veld) return;
+    veld.focus();
+    veld.setSelectionRange(0, 0);
+    veld.scrollTop = 0;
+  }, [concept]);
   const [fout, setFout] = useState<string | null>(null);
   const [bezig, setBezig] = useState(false);
   const { gevonden, bezig: zoekt } = useZoekContacten(zoek);
@@ -52,13 +72,13 @@ export function NieuwBericht() {
 
   const kies = (c: Contact) => {
     setAan([...aan, c]);
-    setZoek('');
+    setZoek("");
   };
 
   const versturen = async () => {
-    if (aan.length === 0) return setFout('Kies minstens één ontvanger.');
-    if (!onderwerp.trim()) return setFout('Geef het bericht een onderwerp.');
-    if (!tekst.trim()) return setFout('Schrijf eerst iets in het bericht.');
+    if (aan.length === 0) return setFout("Kies minstens één ontvanger.");
+    if (!onderwerp.trim()) return setFout("Geef het bericht een onderwerp.");
+    if (!tekst.trim()) return setFout("Schrijf eerst iets in het bericht.");
     setBezig(true);
     setFout(null);
     try {
@@ -66,14 +86,27 @@ export function NieuwBericht() {
       navigate(-1);
     } catch (e) {
       setBezig(false);
-      setFout(`Versturen lukte niet. ${e instanceof Error ? e.message : ''}`.trim());
+      setFout(
+        `Versturen lukte niet. ${e instanceof Error ? e.message : ""}`.trim()
+      );
     }
   };
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/berichten" label="Berichten" />
-      <PaginaKop titel="Nieuw bericht" />
+      <TerugLink
+        naar="/meer/berichten"
+        label={concept ? "Bericht" : "Berichten"}
+      />
+      <PaginaKop
+        titel={
+          concept?.soort === "antwoord"
+            ? "Beantwoorden"
+            : concept?.soort === "doorsturen"
+            ? "Doorsturen"
+            : "Nieuw bericht"
+        }
+      />
 
       <Sectie titel="Aan">
         <section className="kaart ontvangers">
@@ -100,21 +133,41 @@ export function NieuwBericht() {
             type="text"
             enterKeyHint="search"
             autoComplete="off"
-            placeholder={aan.length ? 'Nog iemand toevoegen' : 'Zoek een docent of leerling'}
+            placeholder={
+              aan.length
+                ? "Nog iemand toevoegen"
+                : "Zoek een docent of leerling"
+            }
             aria-label="Ontvanger zoeken"
             value={zoek}
             onChange={(e) => setZoek(e.target.value)}
           />
           {zoek.trim().length >= 2 && (
-            <div className="ontvangers__lijst" role="listbox" aria-label="Gevonden">
+            <div
+              className="ontvangers__lijst"
+              role="listbox"
+              aria-label="Gevonden"
+            >
               {keuzes.map((c) => (
-                <button key={c.id} type="button" className="ontvangers__keuze" role="option" onClick={() => kies(c)}>
+                <button
+                  key={c.id}
+                  type="button"
+                  className="ontvangers__keuze"
+                  role="option"
+                  onClick={() => kies(c)}
+                >
                   <span className="ontvangers__naam">{c.naam}</span>
-                  <span className="ontvangers__extra">{[soortTekst[c.soort], c.extra].filter(Boolean).join(' · ')}</span>
+                  <span className="ontvangers__extra">
+                    {[soortTekst[c.soort], c.extra].filter(Boolean).join(" · ")}
+                  </span>
                 </button>
               ))}
-              {!zoekt && keuzes.length === 0 && <p className="ontvangers__leeg">Niemand gevonden.</p>}
-              {zoekt && keuzes.length === 0 && <p className="ontvangers__leeg">Zoeken…</p>}
+              {!zoekt && keuzes.length === 0 && (
+                <p className="ontvangers__leeg">Niemand gevonden.</p>
+              )}
+              {zoekt && keuzes.length === 0 && (
+                <p className="ontvangers__leeg">Zoeken…</p>
+              )}
             </div>
           )}
         </section>
@@ -134,6 +187,7 @@ export function NieuwBericht() {
         </section>
         <section className="kaart">
           <textarea
+            ref={tekstVeld}
             id="bericht-tekst"
             className="invoer-beschrijving bericht-tekst"
             placeholder="Typ je bericht"
@@ -144,10 +198,20 @@ export function NieuwBericht() {
         </section>
       </Sectie>
 
+      {concept?.hadBijlagen && (
+        <p className="bericht-noot">
+          De bijlagen van het oorspronkelijke bericht gaan niet mee.
+        </p>
+      )}
       {fout && <p className="melding">{fout}</p>}
 
-      <button type="button" className="knop-primair" onClick={versturen} disabled={bezig}>
-        {bezig ? 'Bezig met versturen…' : 'Versturen'}
+      <button
+        type="button"
+        className="knop-primair"
+        onClick={versturen}
+        disabled={bezig}
+      >
+        {bezig ? "Bezig met versturen…" : "Versturen"}
       </button>
     </div>
   );
