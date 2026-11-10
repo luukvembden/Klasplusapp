@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CircleAlert, CircleCheck } from "lucide-react";
 import { Invoerrij } from "../components/les/Invoerrij";
 import { OfflineRegel } from "../components/ui/OfflineRegel";
@@ -62,21 +62,15 @@ function Getal({
 export function Overgang() {
   const { cijfers, resultaat, fout } = useCijfers();
   const vakken = useMemo(() => (cijfers ? perVak(cijfers) : []), [cijfers]);
-  const [normen, setNormen] = useState<Normen | null>(null);
-
-  // Pas als de vakken er zijn: dan kunnen we de kernvakken raden.
-  useEffect(() => {
-    if (cijfers && !normen) setNormen(leesNormen(vakken));
-  }, [cijfers, vakken, normen]);
+  const [normen, setNormen] = useState<Normen>(leesNormen);
 
   const wijzig = (deel: Partial<Normen>) => {
-    if (!normen) return;
     const nieuw = { ...normen, ...deel };
     setNormen(nieuw);
     bewaarNormen(nieuw);
   };
 
-  const uitslag = normen ? bereken(vakken, normen) : null;
+  const uitslag = cijfers ? bereken(vakken, normen) : null;
 
   return (
     <div className="pagina pagina--met-terug">
@@ -89,7 +83,7 @@ export function Overgang() {
         <p className="melding">Nog geen cijfers om mee te rekenen.</p>
       )}
 
-      {uitslag && normen && uitslag.vakken.length > 0 && (
+      {uitslag && uitslag.vakken.length > 0 && (
         <>
           <section
             className={`kaart overgang__uitslag${
@@ -126,7 +120,6 @@ export function Overgang() {
                 <div key={v.overzicht.vak.code} className="overgang__vak">
                   <span className="overgang__naam">
                     {v.overzicht.vak.naam}
-                    {v.kern && <span className="overgang__kern">kernvak</span>}
                   </span>
                   <span className="overgang__gem">
                     {formatCijfer(v.gemiddelde)}
@@ -201,45 +194,9 @@ export function Overgang() {
                   ))}
                 </select>
               </Invoerrij>
-              <Invoerrij label="In kernvakken hoogstens" voor="norm-kern">
-                <Getal
-                  id="norm-kern"
-                  waarde={normen.maxTekortKern}
-                  van={0}
-                  tot={3}
-                  onKies={(n) => wijzig({ maxTekortKern: n })}
-                />
-              </Invoerrij>
             </section>
           </Sectie>
 
-          <Sectie titel="Kernvakken">
-            <section className="kaart">
-              {vakken
-                .filter((o) => o.gemiddelde !== null)
-                .map((o) => (
-                  <label
-                    key={o.vak.code}
-                    className="instelrij"
-                    htmlFor={`kern-${o.vak.code}`}
-                  >
-                    {o.vak.naam}
-                    <input
-                      id={`kern-${o.vak.code}`}
-                      type="checkbox"
-                      checked={normen.kernvakken.includes(o.vak.code)}
-                      onChange={(e) =>
-                        wijzig({
-                          kernvakken: e.target.checked
-                            ? [...normen.kernvakken, o.vak.code]
-                            : normen.kernvakken.filter((c) => c !== o.vak.code),
-                        })
-                      }
-                    />
-                  </label>
-                ))}
-            </section>
-          </Sectie>
         </>
       )}
     </div>

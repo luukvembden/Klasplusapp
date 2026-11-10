@@ -11,32 +11,22 @@ export interface Normen {
   /** Het laagste rapportcijfer dat nog mag (een 3 is vaak meteen niet bevorderd). */
   laagste: number;
   compensatie: Compensatie;
-  /** Vakcodes van de kernvakken; leeg = school heeft geen aparte regel. */
-  kernvakken: string[];
-  maxTekortKern: number;
 }
 
-export const STANDAARD_NORMEN: Omit<Normen, "kernvakken"> = {
+export const STANDAARD_NORMEN: Normen = {
   maxTekort: 2,
   laagste: 4,
   compensatie: "gemiddelde",
-  maxTekortKern: 1,
 };
 
 const SLEUTEL = "overgang.normen";
 
-/** Kernvakken raden aan de naam: Nederlands, Engels en wiskunde. */
-export const lijktKernvak = (naam: string) =>
-  /nederlands|engels|wiskunde/i.test(naam);
-
-export function leesNormen(vakken: VakOverzicht[]): Normen {
-  const bewaard = lees<Normen>(SLEUTEL);
-  if (bewaard) return { ...STANDAARD_NORMEN, ...bewaard };
+export function leesNormen(): Normen {
+  const bewaard = lees<Partial<Normen>>(SLEUTEL) ?? {};
   return {
-    ...STANDAARD_NORMEN,
-    kernvakken: vakken
-      .filter((o) => lijktKernvak(o.vak.naam))
-      .map((o) => o.vak.code),
+    maxTekort: bewaard.maxTekort ?? STANDAARD_NORMEN.maxTekort,
+    laagste: bewaard.laagste ?? STANDAARD_NORMEN.laagste,
+    compensatie: bewaard.compensatie ?? STANDAARD_NORMEN.compensatie,
   };
 }
 
@@ -54,7 +44,6 @@ export interface VakStand {
   tekort: number;
   /** Rapportcijfer − 6, als dat hoger is. */
   plus: number;
-  kern: boolean;
 }
 
 export interface Uitslag {
@@ -65,7 +54,6 @@ export interface Uitslag {
   /** Wat er goed gaat, kort. */
   samenvatting: string;
   tekort: number;
-  tekortKern: number;
   plus: number;
   gemiddeldeRapport: number | null;
 }
@@ -87,14 +75,10 @@ export function bereken(vakken: VakOverzicht[], normen: Normen): Uitslag {
         rapport,
         tekort: Math.max(0, 6 - rapport),
         plus: Math.max(0, rapport - 6),
-        kern: normen.kernvakken.includes(o.vak.code),
       };
     });
 
   const tekort = standen.reduce((s, v) => s + v.tekort, 0);
-  const tekortKern = standen
-    .filter((v) => v.kern)
-    .reduce((s, v) => s + v.tekort, 0);
   const plus = standen.reduce((s, v) => s + v.plus, 0);
   const gemiddeldeRapport = standen.length
     ? standen.reduce((s, v) => s + v.rapport, 0) / standen.length
@@ -111,12 +95,6 @@ export function bereken(vakken: VakOverzicht[], normen: Normen): Uitslag {
       normen.maxTekort === 0
         ? `Je hebt ${punten(tekort)}, en dat mag niet.`
         : `Je hebt ${punten(tekort)}; er mogen er hoogstens ${normen.maxTekort}.`
-    );
-  if (normen.kernvakken.length && tekortKern > normen.maxTekortKern)
-    redenen.push(
-      normen.maxTekortKern === 0
-        ? `In de kernvakken heb je ${punten(tekortKern)}, en daar mag je er geen hebben.`
-        : `In de kernvakken heb je ${punten(tekortKern)}; er mogen er hoogstens ${normen.maxTekortKern}.`
     );
   if (
     tekort > 0 &&
@@ -151,7 +129,6 @@ export function bereken(vakken: VakOverzicht[], normen: Normen): Uitslag {
     redenen,
     samenvatting,
     tekort,
-    tekortKern,
     plus,
     gemiddeldeRapport,
   };

@@ -261,13 +261,6 @@
   font-weight: 500;
 }
 
-.overgang__kern {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--tekst-secundair);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
 
 .overgang__gem {
   color: var(--tekst-secundair);
