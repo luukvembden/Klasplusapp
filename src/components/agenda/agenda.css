@@ -470,10 +470,18 @@
 
 .weekrooster__raster {
   display: grid;
-  column-gap: 3px;
+  column-gap: 6px;
 }
 
-.weekrooster__dag--gekozen {
+/*
+ * De gekozen dag: een grijs vlak dat aan alle kanten net iets voorbij de lessen steekt, zodat het als
+ * één rechte baan achter de kolom ligt in plaats van als losse stukjes tussen de lessen.
+ */
+.weekrooster__dag--gekozen::before {
+  content: '';
+  position: absolute;
+  inset: -4px -3px;
+  border-radius: 10px;
   background: color-mix(in srgb, var(--tekst) 7%, transparent);
 }
 
