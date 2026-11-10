@@ -1,4 +1,6 @@
 import { Navigate, Route } from 'react-router-dom';
+import { useInstellingen } from './lib/instellingen';
+import { Home } from './screens/Home';
 import { Agenda } from './screens/Agenda';
 import { Afwezigheid } from './screens/Afwezigheid';
 import { AfwezigheidMelden } from './screens/AfwezigheidMelden';
@@ -22,12 +24,19 @@ import { LesInhoud } from './screens/LesInhoud';
 import { Privacy } from './screens/Privacy';
 import { AfspraakBewerken, NieuweAfspraak } from './screens/NieuweAfspraak';
 
-/** De vier tabbladen. Een tab openen begint een nieuwe stapel pagina's. */
-export const TABS = new Set(['/', '/huiswerk', '/cijfers', '/meer']);
+/** De tabbladen (Home alleen als je met Home opstart). Een tab openen begint een nieuwe stapel pagina's. */
+export const TABS = new Set(['/home', '/', '/huiswerk', '/cijfers', '/meer']);
+
+/** Home bestaat alleen als je daarmee opstart; anders ga je naar de Agenda. */
+function HomeAlsGekozen() {
+  const { start } = useInstellingen();
+  return start === 'home' ? <Home /> : <Navigate to="/" replace />;
+}
 
 /** Alle schermen binnen de app (met tabbalk). AppLayout toont ze in lagen, zodat terugvegen de vorige laat zien. */
 export const paginaRoutes = (
   <>
+    <Route path="home" element={<HomeAlsGekozen />} />
     <Route index element={<Agenda />} />
     <Route path="agenda/nieuw" element={<NieuweAfspraak />} />
     <Route path="agenda/:id" element={<Les />} />
