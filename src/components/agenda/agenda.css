@@ -468,30 +468,11 @@
   gap: 6px;
 }
 
-.weekrooster__koppen,
 .weekrooster__raster {
   display: grid;
   column-gap: 3px;
 }
 
-.weekrooster__kop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 3px 0 4px;
-  border-radius: 10px;
-  font-size: 12px;
-  line-height: 1.2;
-  color: var(--tekst-secundair);
-}
-
-.weekrooster__kop b {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--tekst);
-}
-
-.weekrooster__kop--gekozen,
 .weekrooster__dag--gekozen {
   background: color-mix(in srgb, var(--tekst) 7%, transparent);
 }
