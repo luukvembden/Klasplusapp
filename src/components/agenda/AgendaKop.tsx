@@ -4,7 +4,6 @@ import './agenda.css';
 
 interface Props {
   dag: Date;
-  onVandaag: () => void;
 }
 
 const INDELINGEN: { waarde: AgendaIndeling; naam: string }[] = [
@@ -14,9 +13,9 @@ const INDELINGEN: { waarde: AgendaIndeling; naam: string }[] = [
 
 /**
  * Kop van de Agenda: grote titel met datum en week eronder, rechts de schakelaar Dag/Week.
- * Op vandaag heet de titel "Vandaag"; op een andere dag de weekdag, met een knop terug naar vandaag.
+ * Op vandaag heet de titel "Vandaag"; op een andere dag de weekdag.
  */
-export function AgendaKop({ dag, onVandaag }: Props) {
+export function AgendaKop({ dag }: Props) {
   const isVandaag = zelfdeDag(dag, new Date());
   const { indeling } = useInstellingen();
 
@@ -29,7 +28,7 @@ export function AgendaKop({ dag, onVandaag }: Props) {
         </span>
       </div>
 
-      <div className="agendakop__knoppen agendakop__knoppen--onder">
+      <div className="agendakop__knoppen">
         {/* Dag of Week; Klas+ onthoudt de keuze. */}
         <div className="agendakop__wissel" role="group" aria-label="Weergave">
           {INDELINGEN.map(({ waarde, naam }) => (
@@ -43,12 +42,6 @@ export function AgendaKop({ dag, onVandaag }: Props) {
             </button>
           ))}
         </div>
-        {/* Op een andere dag: onder de schakelaar, zodat de titel ruimte houdt. */}
-        {!isVandaag && (
-          <button type="button" className="agendakop__vandaag agendakop__vandaag--klein" onClick={onVandaag}>
-            Vandaag
-          </button>
-        )}
       </div>
     </header>
   );

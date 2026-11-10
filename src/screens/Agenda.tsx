@@ -116,7 +116,7 @@ export function Agenda() {
     <div className="agenda">
       {/* Kop en dagstrook samen in één gekleurd blok, met witte tekst en een witte cirkel om de gekozen dag. */}
       <div className="agendakop-vlak">
-        <AgendaKop dag={dag} onVandaag={() => setDag(beginVanDag(new Date()))} />
+        <AgendaKop dag={dag} />
         <DagStrook dag={dag} onKies={setDag} />
       </div>
 
