@@ -3,7 +3,7 @@ import { ChevronRight, ExternalLink } from 'lucide-react';
 import { version } from '../../package.json';
 import { api } from '../api';
 import { MeldingenKiezer } from '../components/instellingen/MeldingenKiezer';
-import { AgendaWeergaveKiezer, KleurKiezer, StartKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
+import { AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
@@ -46,18 +46,6 @@ export function Instellingen() {
 
       <Sectie titel="Kleur">
         <KleurKiezer />
-      </Sectie>
-
-      <Sectie
-        titel="Opstarten met"
-        nawoord={
-          <p className="instellingen__let-op">
-            Home laat in één scherm zien wat je nu hebt en wat er voor morgen klaar moet zijn. Kies je Agenda, dan
-            verdwijnt de Home-tab.
-          </p>
-        }
-      >
-        <StartKiezer />
       </Sectie>
 
       <Sectie titel="Agenda">

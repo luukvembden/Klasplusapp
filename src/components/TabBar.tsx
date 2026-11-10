@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, ChartNoAxesColumnIncreasing, Ellipsis, House, type LucideIcon } from 'lucide-react';
-import { useInstellingen } from '../lib/instellingen';
+import { BookOpen, Calendar, ChartNoAxesColumnIncreasing, Ellipsis, type LucideIcon } from 'lucide-react';
 import { useOngelezen, verversOngelezen } from '../lib/ongelezen';
 import './TabBar.css';
 
 /** `actief` bepaalt bij welke adressen de tab oplicht (ook de schermen eronder). */
 type Tab = { pad: string; label: string; icoon: LucideIcon; actief: (pad: string) => boolean };
 
-/** Alleen als je met Home opstart. */
-const homeTab: Tab = { pad: '/home', label: 'Home', icoon: House, actief: (p) => p === '/home' };
-
-const vasteTabs: Tab[] = [
+const tabs: Tab[] = [
   { pad: '/', label: 'Agenda', icoon: Calendar, actief: (p) => p === '/' || p.startsWith('/agenda') },
   { pad: '/huiswerk', label: 'Huiswerk', icoon: BookOpen, actief: (p) => p.startsWith('/huiswerk') },
   { pad: '/cijfers', label: 'Cijfers', icoon: ChartNoAxesColumnIncreasing, actief: (p) => p.startsWith('/cijfers') },
@@ -23,8 +19,6 @@ const vasteTabs: Tab[] = [
 export function TabBar({ naarTab }: { naarTab?: (pad: string) => boolean }) {
   const { pathname } = useLocation();
   const ongelezen = useOngelezen();
-  const { start } = useInstellingen();
-  const tabs = start === 'home' ? [homeTab, ...vasteTabs] : vasteTabs;
 
   // Het rode getal bij Meer: bij het openen van de app, als je terugkomt in de app, en elke 5 minuten.
   useEffect(() => {

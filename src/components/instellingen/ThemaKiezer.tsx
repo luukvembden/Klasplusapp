@@ -1,4 +1,4 @@
-import { useInstellingen, wijzigInstellingen, type AgendaWeergave, type Kleur, type Start, type Thema } from '../../lib/instellingen';
+import { useInstellingen, wijzigInstellingen, type AgendaWeergave, type Kleur, type Thema } from '../../lib/instellingen';
 import { Keuzeknoppen } from './Keuzeknoppen';
 
 const themas: { waarde: Thema; naam: string }[] = [
@@ -15,17 +15,6 @@ const agendaWeergaven: { waarde: AgendaWeergave; naam: string }[] = [
 export function ThemaKiezer() {
   const { thema } = useInstellingen();
   return <Keuzeknoppen label="Thema" keuzes={themas} gekozen={thema} onKies={(t) => wijzigInstellingen({ thema: t })} />;
-}
-
-const starten: { waarde: Start; naam: string }[] = [
-  { waarde: 'home', naam: 'Home' },
-  { waarde: 'agenda', naam: 'Agenda' },
-];
-
-/** Waar Klas+ opent. Kies je Agenda, dan verdwijnt de Home-tab. */
-export function StartKiezer() {
-  const { start } = useInstellingen();
-  return <Keuzeknoppen label="Opstarten met" keuzes={starten} gekozen={start} onKies={(s) => wijzigInstellingen({ start: s })} />;
 }
 
 /** Hoe de lessen in de Agenda er uitzien. */

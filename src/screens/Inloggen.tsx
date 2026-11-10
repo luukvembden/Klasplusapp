@@ -1,4 +1,3 @@
-import { leesInstellingen } from '../lib/instellingen';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { ExternalLink, Lock } from 'lucide-react';
@@ -12,7 +11,7 @@ export function Inloggen() {
   const [fout, setFout] = useState<string | null>(null);
   const [bezig, setBezig] = useState(false);
 
-  if (api.heeftSessie()) return <Navigate to={leesInstellingen().start === 'home' ? '/home' : '/'} replace />;
+  if (api.heeftSessie()) return <Navigate to="/" replace />;
 
   /** `alsOuder` alleen in de demo; met een echt account bepaalt de school of je ouder bent. */
   const inloggen = async (alsOuder = false) => {
@@ -21,7 +20,7 @@ export function Inloggen() {
     setBezig(true);
     try {
       await api.inloggen();
-      navigate(leesInstellingen().start === 'home' ? '/home' : '/', { replace: true });
+      navigate('/', { replace: true });
     } catch (e) {
       if (!(e instanceof InloggenAfgebroken)) {
         setFout(navigator.onLine ? 'Inloggen is niet gelukt. Probeer het opnieuw.' : 'Je bent offline.');
