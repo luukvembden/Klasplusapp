@@ -42,7 +42,7 @@
   padding: 0 5px;
   border-radius: 999px;
   border: 2px solid var(--kaart);
-  background: var(--onvoldoende);
+  background: #ff0000;
   color: #fff;
   font-size: 10px;
   font-weight: 800;
