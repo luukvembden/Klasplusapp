@@ -3,7 +3,7 @@ import { ChevronRight, ExternalLink } from 'lucide-react';
 import { version } from '../../package.json';
 import { api } from '../api';
 import { MeldingenKiezer } from '../components/instellingen/MeldingenKiezer';
-import { AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
+import { AgendaIndelingKiezer, AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
@@ -49,6 +49,7 @@ export function Instellingen() {
       </Sectie>
 
       <Sectie titel="Agenda">
+        <AgendaIndelingKiezer />
         <AgendaWeergaveKiezer />
       </Sectie>
 

@@ -5,10 +5,12 @@ import { api, type Afspraak } from '../api';
 import { AgendaKop } from '../components/agenda/AgendaKop';
 import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
+import { WeekRooster } from '../components/agenda/WeekRooster';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
+import { useInstellingen } from '../lib/instellingen';
 import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
@@ -33,6 +35,8 @@ export function Agenda() {
     gevraagdeDag = null;
   }, [zichtbaar]);
   const maandag = maandagVan(dag);
+  const { indeling } = useInstellingen();
+  const perWeek = indeling === 'week';
 
   // De week plus de week ervoor en erna in één keer ophalen: wisselen tussen dagen gaat dan direct,
   // en bij het vegen staat de buurdag (ook over de weekgrens) al klaar.
@@ -100,6 +104,14 @@ export function Agenda() {
     );
   };
 
+  /** De hele week in één rooster; ook voor de buurweken in de schuifbaan. */
+  const weekLijst = (ma: Date) => {
+    const einde = plusDagen(ma, 7);
+    const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= ma && new Date(a.start) < einde);
+    if (!weekGeladen && lessen.length === 0) return null;
+    return <WeekRooster maandag={ma} afspraken={lessen} gekozen={dag} />;
+  };
+
   return (
     <div className="agenda">
       {/* Kop en dagstrook samen in één gekleurd blok, met witte tekst en een witte cirkel om de gekozen dag. */}
@@ -113,15 +125,28 @@ export function Agenda() {
           <VegenOmTeVernieuwen onVernieuw={week.vernieuw}>
             {week.fout && <p className="melding">{week.fout}</p>}
             {/* Vegen over de lessen: naar links de volgende dag, naar rechts de vorige, en je ziet hem binnenschuiven. */}
-            <VeegCarrousel
-              sleutel={naarInvoer(dag)}
-              vorige={dagLijst(plusDagen(dag, -1))}
-              huidige={dagLijst(dag)}
-              volgende={dagLijst(plusDagen(dag, 1))}
-              onVorige={() => setDag(plusDagen(dag, -1))}
-              onVolgende={() => setDag(plusDagen(dag, 1))}
-              vlak={lijstVlak}
-            />
+            {perWeek ? (
+              // Vegen in de weekweergave: naar de vorige of volgende week.
+              <VeegCarrousel
+                sleutel={naarInvoer(maandag)}
+                vorige={weekLijst(plusDagen(maandag, -7))}
+                huidige={weekLijst(maandag)}
+                volgende={weekLijst(plusDagen(maandag, 7))}
+                onVorige={() => setDag(plusDagen(dag, -7))}
+                onVolgende={() => setDag(plusDagen(dag, 7))}
+                vlak={lijstVlak}
+              />
+            ) : (
+              <VeegCarrousel
+                sleutel={naarInvoer(dag)}
+                vorige={dagLijst(plusDagen(dag, -1))}
+                huidige={dagLijst(dag)}
+                volgende={dagLijst(plusDagen(dag, 1))}
+                onVorige={() => setDag(plusDagen(dag, -1))}
+                onVolgende={() => setDag(plusDagen(dag, 1))}
+                vlak={lijstVlak}
+              />
+            )}
           </VegenOmTeVernieuwen>
         </div>
 

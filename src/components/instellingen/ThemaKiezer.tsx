@@ -1,4 +1,4 @@
-import { useInstellingen, wijzigInstellingen, type AgendaWeergave, type Kleur, type Thema } from '../../lib/instellingen';
+import { useInstellingen, wijzigInstellingen, type AgendaIndeling, type AgendaWeergave, type Kleur, type Thema } from '../../lib/instellingen';
 import { Keuzeknoppen } from './Keuzeknoppen';
 
 const themas: { waarde: Thema; naam: string }[] = [
@@ -11,6 +11,24 @@ const agendaWeergaven: { waarde: AgendaWeergave; naam: string }[] = [
   { waarde: 'modern', naam: 'Modern' },
   { waarde: 'klassiek', naam: 'Klassiek' },
 ];
+
+const indelingen: { waarde: AgendaIndeling; naam: string }[] = [
+  { waarde: 'dag', naam: 'Dag' },
+  { waarde: 'week', naam: 'Week' },
+];
+
+/** Eén dag onder elkaar, of de hele week in één rooster. */
+export function AgendaIndelingKiezer() {
+  const { indeling } = useInstellingen();
+  return (
+    <Keuzeknoppen
+      label="Weergave"
+      keuzes={indelingen}
+      gekozen={indeling}
+      onKies={(i) => wijzigInstellingen({ indeling: i })}
+    />
+  );
+}
 
 export function ThemaKiezer() {
   const { thema } = useInstellingen();

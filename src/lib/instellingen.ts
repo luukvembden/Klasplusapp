@@ -7,6 +7,9 @@ export type Thema = 'licht' | 'donker' | 'systeem';
 /** Klassiek: "AK – KNNW – H5.AK4 (S252)" met de tijd eronder. Modern: vaknaam, en "tijd · lokaal · docent". */
 export type AgendaWeergave = 'klassiek' | 'modern';
 
+/** Dag: de lessen van één dag onder elkaar. Week: de hele week in één rooster. */
+export type AgendaIndeling = 'dag' | 'week';
+
 /** Accentkleur van de app; groen is de standaard. */
 export const KLEUREN = ['groen', 'blauw', 'roze'] as const;
 export type Kleur = (typeof KLEUREN)[number];
@@ -24,6 +27,7 @@ export interface Notificaties {
 export interface Instellingen {
   thema: Thema;
   agenda: AgendaWeergave;
+  indeling: AgendaIndeling;
   kleur: Kleur;
   notificaties: Notificaties;
 }
@@ -34,6 +38,7 @@ const standaard: Instellingen = {
   thema: 'systeem',
   // Nieuw in Klas+: Modern (vaknaam, en tijd · lokaal · docent). Wie al iets koos, houdt dat.
   agenda: 'modern',
+  indeling: 'dag',
   kleur: 'groen',
   notificaties: { cijfers: false, rooster: false, huiswerk: false, huiswerkTijd: '19:00' },
 };
