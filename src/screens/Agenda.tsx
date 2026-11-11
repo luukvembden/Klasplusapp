@@ -140,7 +140,11 @@ export function Agenda() {
       {/* Lichte kop zoals de andere tabbladen; in de dagweergave de dagen eronder. */}
       <div className="agendakop-vlak">
         {/* In de weekweergave geen dagkiezer: je veegt per week, en de dagen staan boven het rooster. */}
-        <AgendaKop dag={dag} bereik={perWeek ? [maandag, plusDagen(maandag, 4)] : undefined} />
+        <AgendaKop
+          dag={dag}
+          bereik={perWeek ? [maandag, plusDagen(maandag, 4)] : undefined}
+          onNaarNu={() => (perWeek ? naarWeek(maandagVan(new Date())) : setDag(beginVanDag(new Date())))}
+        />
         {/* De dagen staan in beide weergaven op dezelfde hoogte, direct onder de kop. */}
         {perWeek ? (
           <div className="agenda__weekkoppen">

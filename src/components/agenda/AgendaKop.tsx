@@ -6,6 +6,8 @@ interface Props {
   dag: Date;
   /** In de weekweergave: de eerste en laatste dag die je ziet (ma–vr, of za–zo). Dan heet de kop "Week 46". */
   bereik?: [Date, Date];
+  /** Nog een keer tikken op de gekozen weergave: terug naar vandaag (Dag) of deze week (Week). */
+  onNaarNu: () => void;
 }
 
 /** "9 – 13 november", of "30 november – 4 december" over een maandgrens. */
@@ -24,7 +26,7 @@ const INDELINGEN: { waarde: AgendaIndeling; naam: string }[] = [
  * Kop van de Agenda: grote titel met datum en week eronder, rechts de schakelaar Dag/Week.
  * Op vandaag heet de titel "Vandaag"; op een andere dag de weekdag.
  */
-export function AgendaKop({ dag, bereik }: Props) {
+export function AgendaKop({ dag, bereik, onNaarNu }: Props) {
   const isVandaag = zelfdeDag(dag, new Date());
   const { indeling } = useInstellingen();
 
@@ -53,14 +55,14 @@ export function AgendaKop({ dag, bereik }: Props) {
       </div>
 
       <div className="agendakop__knoppen">
-        {/* Dag of Week; Klas+ onthoudt de keuze. */}
+        {/* Dag of Week; Klas+ onthoudt de keuze. Tik je op de weergave die al aan staat, dan ga je naar vandaag. */}
         <div className="agendakop__wissel" role="group" aria-label="Weergave">
           {INDELINGEN.map(({ waarde, naam }) => (
             <button
               key={waarde}
               type="button"
               aria-pressed={indeling === waarde}
-              onClick={() => wijzigInstellingen({ indeling: waarde })}
+              onClick={() => (indeling === waarde ? onNaarNu() : wijzigInstellingen({ indeling: waarde }))}
             >
               {naam}
             </button>
