@@ -33,45 +33,66 @@ export function Inloggen() {
     <div className="app">
       <main className="app__inhoud">
         <div className="inloggen">
-          <div className="inloggen__intro">
-            {/* Het app-icoon zelf (K+ als paden), zodat inlogscherm en beginscherm hetzelfde logo tonen. */}
-            <img className="inloggen__logo" src="icoon.svg" alt="" width={64} height={64} />
-            <div>
-              <h1 className="inloggen__naam">Klas+</h1>
-              <p className="inloggen__uitleg">Je rooster, cijfers en huiswerk in één rustig overzicht.</p>
+          {/* Bovenin: een paar stukjes uit de app, als voorproefje. Verzonnen voorbeelden. */}
+          <div className="inloggen__kop" aria-hidden="true">
+            <div className="inloggen__zweef inloggen__zweef--les">
+              <span className="inloggen__uur">3</span>
+              <span>
+                <strong>Biologie</strong>
+                <span className="inloggen__sub">10:20 · 1.08 · nu bezig</span>
+              </span>
+            </div>
+            <div className="inloggen__zweef inloggen__zweef--leren">
+              <span className="inloggen__label">Leren</span>
+              <strong className="inloggen__tijd">19:00</strong>
+              <span className="inloggen__sub">SO Frans</span>
+            </div>
+            <div className="inloggen__zweef inloggen__zweef--melding">
+              <img src="icoon.svg" alt="" width={30} height={30} />
+              <span className="inloggen__meldtekst">
+                <span className="inloggen__wie">
+                  <span>KLAS+</span>
+                  <span>07:15</span>
+                </span>
+                <strong>Engels om 9:15 vervalt</strong>
+              </span>
             </div>
           </div>
 
-          <div className="inloggen__formulier">
-            <button type="button" className="knop-primair" onClick={() => inloggen()} disabled={bezig}>
-              {bezig ? 'Bezig met inloggen…' : 'Inloggen via je school'}
-              <ExternalLink size={18} strokeWidth={2.2} aria-hidden="true" />
-            </button>
-            {isDemo && (
-              <button type="button" className="inloggen__ouder" onClick={() => inloggen(true)} disabled={bezig}>
-                Demo bekijken als ouder
+          <div className="inloggen__onder">
+            <div className="inloggen__merk">
+              <img className="inloggen__logo" src="icoon.svg" alt="" width={40} height={40} />
+              <span className="inloggen__naam">Klas+</span>
+            </div>
+            <h1 className="inloggen__titel">Alles voor school. Eén overzicht.</h1>
+            <p className="inloggen__uitleg">Weekoverzicht, leren plannen, een ochtendmelding en nog veel meer.</p>
+
+            <div className="inloggen__ruimte" />
+
+            <div className="inloggen__formulier">
+              <button type="button" className="knop-primair" onClick={() => inloggen()} disabled={bezig}>
+                {bezig ? 'Bezig met inloggen…' : 'Inloggen via je school'}
+                <ExternalLink size={18} strokeWidth={2.2} aria-hidden="true" />
               </button>
-            )}
-            {fout && (
-              <p className="inloggen__klein inloggen__fout" role="alert">
-                {fout}
+              {isDemo && (
+                <button type="button" className="inloggen__ouder" onClick={() => inloggen(true)} disabled={bezig}>
+                  Demo bekijken als ouder
+                </button>
+              )}
+              {fout && (
+                <p className="inloggen__klein inloggen__fout" role="alert">
+                  {fout}
+                </p>
+              )}
+              <p className="inloggen__klein inloggen__slot">
+                <Lock size={14} strokeWidth={2.2} aria-hidden="true" />
+                <span>
+                  {isDemo
+                    ? 'Dit is de demo met verzonnen gegevens. Inloggen met je echte account kan alleen in de telefoon-app.'
+                    : 'Je logt in op de pagina van je school; Klas+ ziet je wachtwoord nooit. Onofficiële app, je gegevens blijven op je telefoon.'}
+                </span>
               </p>
-            )}
-            <p className="inloggen__klein">
-              {isDemo
-                ? 'Dit is de demo met verzonnen gegevens. Inloggen met je echte account kan alleen in de telefoon-app.'
-                : 'Op de volgende pagina kies je je school en log je in op de officiële inlogpagina. Klas+ ziet je wachtwoord nooit.'}
-            </p>
-          </div>
-
-          <div className="inloggen__ruimte" />
-
-          <div className="inloggen__let-op">
-            <Lock size={20} strokeWidth={2} aria-hidden="true" />
-            <p>
-              Onofficiële app, niet verbonden aan je schoolsysteem of de leverancier ervan. Je gegevens blijven
-              alleen op je telefoon.
-            </p>
+            </div>
           </div>
         </div>
       </main>

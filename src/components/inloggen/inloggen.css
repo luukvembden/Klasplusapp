@@ -1,52 +1,170 @@
+/* Inlogscherm: groene kop met een paar zwevende stukjes uit de app, daaronder naam, titel en de knop. */
 .inloggen {
   min-height: 100%;
-  /* Ontwerp: 96px boven, waarvan 40px statusbalk. */
-  padding: calc(var(--veilig-boven) + 56px) 24px calc(var(--veilig-onder) + 40px);
   display: flex;
   flex-direction: column;
-  gap: 32px;
 }
 
-.inloggen__intro {
+.inloggen__kop {
+  position: relative;
+  flex: 0 0 auto;
+  height: calc(var(--veilig-boven) + clamp(260px, 42dvh, 380px));
+  background: var(--kop);
+  overflow: hidden;
+}
+
+/* De zwevende kaartjes, verspreid over de kop en een tikje scheef. */
+.inloggen__zweef {
+  position: absolute;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--kaart);
+  color: var(--tekst);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+  font-size: 15px;
+  white-space: nowrap;
 }
 
-.inloggen__logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: var(--groen);
+.inloggen__zweef--les {
+  top: calc(var(--veilig-boven) + 10%);
+  left: -14px;
+  transform: rotate(-5deg);
+  padding-left: 30px;
+  padding-right: 22px;
+}
+
+.inloggen__zweef--leren {
+  top: calc(var(--veilig-boven) + 40%);
+  right: -18px;
+  transform: rotate(4deg);
+  padding-right: 32px;
+}
+
+.inloggen__zweef--melding {
+  bottom: 8%;
+  left: 24px;
+  right: 40px;
+  transform: rotate(-2deg);
+  border-radius: 20px;
+}
+
+.inloggen__zweef--melding img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex: 0 0 auto;
+}
+
+.inloggen__meldtekst {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inloggen__zweef strong {
+  display: block;
+  font-weight: 700;
+}
+
+.inloggen__uur {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--kop);
   color: var(--op-groen);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 800;
+}
+
+.inloggen__sub {
+  display: block;
+  font-size: 13px;
+  color: var(--tekst-secundair);
+}
+
+.inloggen__zweef--leren .inloggen__sub {
+  font-size: 15px;
+}
+
+.inloggen__label {
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: var(--groen);
+  color: var(--op-groen);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.inloggen__tijd {
+  color: var(--groen-tekst);
+  font-variant-numeric: tabular-nums;
+}
+
+.inloggen__wie {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tekst-secundair);
+}
+
+/* Onderste deel. */
+.inloggen__onder {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 24px calc(var(--veilig-onder) + 24px);
+}
+
+.inloggen__merk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inloggen__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
 }
 
 .inloggen__naam {
-  margin: 0 0 8px;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.inloggen__titel {
+  margin: 4px 0 0;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  text-wrap: balance;
 }
 
 .inloggen__uitleg {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.45;
   color: var(--tekst-secundair);
+}
+
+.inloggen__ruimte {
+  flex: 1 1 auto;
+  min-height: 12px;
 }
 
 .inloggen__formulier {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.inloggen__formulier .knop-primair {
-  margin-top: 8px;
 }
 
 .inloggen__klein {
@@ -56,34 +174,20 @@
   color: var(--tekst-secundair);
 }
 
+.inloggen__slot {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.inloggen__slot svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
 .inloggen__fout {
   color: var(--onvoldoende);
 }
-
-.inloggen__ruimte {
-  flex: 1 1 auto;
-}
-
-.inloggen__let-op {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  background: var(--groen-licht);
-  border-radius: var(--radius-knop);
-  padding: 14px;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.inloggen__let-op svg {
-  flex: 0 0 auto;
-  color: var(--groen-tekst);
-}
-
-.inloggen__let-op p {
-  margin: 0;
-}
-
 
 /* Alleen in de demo: dezelfde app bekijken zoals een ouder hem ziet. */
 .inloggen__ouder {
