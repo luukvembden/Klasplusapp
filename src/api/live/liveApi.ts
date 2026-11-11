@@ -22,6 +22,7 @@ import {
   naarContact,
   naarCijfers,
   naarKind,
+  naarLeermiddel,
   naarMelding,
   naarOpdracht,
   naarOpdrachtKort,
@@ -49,6 +50,7 @@ import {
   type RuwePeriode,
   type RuwCijfer,
   type RuwKind,
+  type RuwLeermiddel,
   type RuweMelding,
   type RuweMeldMogelijkheden,
   type RuweReden,
@@ -521,6 +523,28 @@ export const liveApi: SchoolApi = {
     const antwoord = await haal<{ location?: string }>(`${pad}${pad.includes('?') ? '&' : '?'}redirect_type=body`);
     if (!antwoord?.location) throw new Error('Kon de bijlage niet openen');
     openExtern(antwoord.location);
+  },
+
+  async leermiddelen() {
+    const lijst = items(await haal<{ Items?: RuwLeermiddel[] }>(`api/personen/${leerlingId()}/lesmateriaal`));
+    return resultaat(lijst.map(naarLeermiddel));
+  },
+
+  async openLeermiddel(leermiddel) {
+    const s = huidigeSessie();
+    if (!s || !leermiddel.link) throw new Error('Dit leermiddel heeft geen link om te openen');
+    // Een link naar de uitgever: gewoon openen.
+    if (/^https?:\/\//.test(leermiddel.link) && !leermiddel.link.startsWith(s.schoolUrl)) {
+      openExtern(leermiddel.link);
+      return;
+    }
+    // Via de schoolserver: die geeft (net als bij bijlagen) het adres bij de uitgever terug, met inlog.
+    const pad = zonderSlash(leermiddel.link.replace(s.schoolUrl, ''));
+    const antwoord = await haal<{ location?: string }>(`${pad}${pad.includes('?') ? '&' : '?'}redirect_type=body`).catch(
+      () => null,
+    );
+    if (antwoord?.location) openExtern(antwoord.location);
+    else openExtern(`${s.schoolUrl.replace(/\/$/, '')}/${pad}`);
   },
 
   schoolsite() {

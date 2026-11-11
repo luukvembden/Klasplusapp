@@ -180,6 +180,19 @@ export interface Cijfer {
 
 // ---- Berichten ----
 
+/** Een leermiddel dat de school voor je klaarzet: een digitale methode, werkboek of licentie. */
+export interface Leermiddel {
+  id: string;
+  /** "Getal & Ruimte 4 vwo deel 1" */
+  titel: string;
+  /** "Wiskunde B" */
+  vak: string | null;
+  /** "Noordhoff" */
+  uitgever: string | null;
+  /** Adres om de methode te openen (soms via de schoolserver, die doorstuurt naar de uitgever). */
+  link: string | null;
+}
+
 /** Een bijlage bij een bericht of opdracht. */
 export interface Bijlage {
   id: string;

@@ -1,4 +1,4 @@
-import {
+import { demoLeermiddelen,
   demoActiviteiten,
   demoAfwezigheden,
   demoOnderdelen,
@@ -350,6 +350,15 @@ export const demoApi: SchoolApi = {
     await vertraging(300);
     if (inschrijven && onderdeel.plekkenVrij === 0) throw new Error('Dit onderdeel is vol.');
     schrijf(INSCHRIJVINGEN, { ...inschrijvingen(), [onderdeel.id]: inschrijven });
+  },
+
+  async leermiddelen() {
+    await vertraging();
+    return resultaat(demoLeermiddelen);
+  },
+
+  async openLeermiddel() {
+    throw new Error('In de demo zijn de leermiddelen niet echt. Met een echt account opent de methode bij de uitgever.');
   },
 
   async openBijlage() {

@@ -1,4 +1,4 @@
-import type {
+import type { Leermiddel,
   Afspraak,
   AfspraakDetail,
   AfspraakInvoer,
@@ -96,6 +96,11 @@ export interface SchoolApi {
   onderdelen(activiteitId: string): Promise<Resultaat<ActiviteitOnderdeel[]>>;
   /** Inschrijven (true) of uitschrijven (false) voor een keuze. */
   schrijfIn(onderdeel: ActiviteitOnderdeel, inschrijven: boolean): Promise<void>;
+
+  /** Leermiddelen (digitale methodes) die de school voor je heeft klaargezet. */
+  leermiddelen(): Promise<Resultaat<Leermiddel[]>>;
+  /** Opent een leermiddel buiten de app, bij de uitgever. */
+  openLeermiddel(leermiddel: Leermiddel): Promise<void>;
 
   /** Opent een bijlage buiten de app (in de browser of viewer van het toestel). */
   openBijlage(bijlage: Bijlage): Promise<void>;

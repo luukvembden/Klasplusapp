@@ -1,5 +1,5 @@
 // Nep-data voor de demo. Alle namen zijn verzonnen.
-import type { Activiteit, ActiviteitOnderdeel, Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
+import type { Leermiddel, Activiteit, ActiviteitOnderdeel, Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
 import { nlMoment } from '../lib/datum';
 
 export const demoProfiel: Profiel = {
@@ -523,4 +523,14 @@ export const demoOnderdelen: ActiviteitOnderdeel[] = [
   onderdeel('act-5', 'ond-9', 'Geneeskunde', null, 30, 30),
   onderdeel('act-5', 'ond-10', 'Rechten', null, 30, 30),
   onderdeel('act-6', 'ond-11', 'Groep 3: kanoën en hiken', null, 24, 0, true, true),
+];
+
+/** Leermiddelen in de demo: digitale methodes per vak. */
+export const demoLeermiddelen: Leermiddel[] = [
+  { id: 'lm-1', titel: 'Getal & Ruimte 4 vwo B deel 1', vak: 'Wiskunde B', uitgever: 'Noordhoff', link: 'demo' },
+  { id: 'lm-2', titel: 'Stepping Stones 4 vwo', vak: 'Engels', uitgever: 'Noordhoff', link: 'demo' },
+  { id: 'lm-3', titel: 'Nieuw Nederlands 4 vwo', vak: 'Nederlands', uitgever: 'Noordhoff', link: 'demo' },
+  { id: 'lm-4', titel: 'Biologie voor jou 4 vwo', vak: 'Biologie', uitgever: 'Malmberg', link: 'demo' },
+  { id: 'lm-5', titel: 'Nova Scheikunde 4 vwo', vak: 'Scheikunde', uitgever: 'Malmberg', link: 'demo' },
+  { id: 'lm-6', titel: 'Grandes Lignes 4 vwo', vak: 'Frans', uitgever: 'Noordhoff', link: 'demo' },
 ];

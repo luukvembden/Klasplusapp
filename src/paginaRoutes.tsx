@@ -16,6 +16,7 @@ import { NieuwBericht } from './screens/NieuwBericht';
 import { Opdrachten } from './screens/Opdrachten';
 import { OpdrachtScherm } from './screens/OpdrachtScherm';
 import { AgendaExport } from './screens/AgendaExport';
+import { Leermiddelen } from './screens/Leermiddelen';
 import { LerenPlannen } from './screens/LerenPlannen';
 import { LeermomentScherm } from './screens/LeermomentScherm';
 import { Activiteiten } from './screens/Activiteiten';
@@ -51,6 +52,7 @@ export const paginaRoutes = (
     <Route path="meer/opdrachten" element={<Opdrachten />} />
     <Route path="meer/opdrachten/:id" element={<OpdrachtScherm />} />
     <Route path="meer/rooster-exporteren" element={<AgendaExport />} />
+    <Route path="meer/leermiddelen" element={<Leermiddelen />} />
     <Route path="meer/activiteiten" element={<Activiteiten />} />
     <Route path="meer/activiteiten/:id" element={<ActiviteitScherm />} />
     <Route path="meer/afwezigheid" element={<Afwezigheid />} />

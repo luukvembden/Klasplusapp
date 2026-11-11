@@ -2,7 +2,7 @@
 // Veldnamen komen uit de broncode van Gemairo; ze zijn niet officieel gedocumenteerd.
 import { nlTijd } from '../../lib/datum';
 import { metHoofdletter } from '../../lib/tekst';
-import type {
+import type { Leermiddel,
   Afspraak,
   AfspraakDetail,
   AfspraakInvoer,
@@ -668,5 +668,30 @@ export function naarOnderdeel(o: RuwOnderdeel, activiteitId: string): Activiteit
     kanInschrijven: !!o.IsOpInTeSchrijven,
     verplicht: !!o.IsVerplichtIngeschreven,
     bijlagen: (o.Bijlagen ?? []).map(naarOpdrachtBijlage),
+  };
+}
+
+// ---- Leermiddelen ----
+
+/** Zoals de schoolsite ze toont bij Leermiddelen (api/personen/{id}/lesmateriaal). */
+export interface RuwLeermiddel {
+  Id: number | string;
+  Titel?: string | null;
+  Uitgeverij?: string | null;
+  Vak?: { Code?: string | null; Omschrijving?: string | null } | null;
+  Url?: string | null;
+  Links?: { Rel?: string | null; Href?: string | null }[] | null;
+}
+
+export function naarLeermiddel(r: RuwLeermiddel): Leermiddel {
+  const links = r.Links ?? [];
+  const link =
+    links.find((l) => /content|url|link|open/i.test(l.Rel ?? ''))?.Href ?? r.Url ?? links.find((l) => l.Href)?.Href ?? null;
+  return {
+    id: String(r.Id),
+    titel: r.Titel?.trim() || 'Leermiddel',
+    vak: r.Vak?.Omschrijving?.trim() || r.Vak?.Code?.trim() || null,
+    uitgever: r.Uitgeverij?.trim() || null,
+    link,
   };
 }
