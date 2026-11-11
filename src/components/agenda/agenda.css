@@ -344,13 +344,13 @@
 .leslabel--proefwerk,
 .leslabel--tentamen,
 .leslabel--so,
-.leslabel--mondeling {
+.leslabel--mondeling,
+.leslabel--ingeschreven {
   --label-kleur: var(--groen-tekst);
   --label-sterkte: 24%;
   font-weight: 700;
 }
 
-.leslabel--ingeschreven,
 .leslabel--eigen {
   --label-kleur: var(--ingeschreven-tekst);
   --label-sterkte: 18%;
