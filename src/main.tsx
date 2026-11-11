@@ -13,6 +13,10 @@ import { api, isDemo } from './api';
 import { App } from './App';
 import { startNotificaties } from './lib/notificaties';
 
+// iOS: nooit inzoomen (ook niet met twee vingers of per ongeluk tijdens het typen). Tekstvelden zijn
+// overal minstens 16px, dus het automatisch inzoomen bij het aantikken gebeurt al niet.
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+
 // Offline werken als website. In de telefoon-app zitten de bestanden al in het pakket.
 if (isDemo) registerSW({ immediate: true });
 

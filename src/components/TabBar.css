@@ -52,3 +52,8 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Tijdens het typen weg: anders hangt hij op iOS boven het toetsenbord. */
+.tabbalk--typen {
+  display: none;
+}
