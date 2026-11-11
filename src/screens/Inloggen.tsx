@@ -89,7 +89,7 @@ export function Inloggen() {
                 <span>
                   {isDemo
                     ? 'Dit is de demo met verzonnen gegevens. Inloggen met je echte account kan alleen in de telefoon-app.'
-                    : 'Je logt in op de pagina van je school; Klas+ ziet je wachtwoord nooit. Onofficiële app, je gegevens blijven op je telefoon.'}
+                    : 'Je logt in op de pagina van je school; Klas+ ziet je wachtwoord nooit. Je gegevens blijven altijd op je eigen telefoon.'}
                 </span>
               </p>
             </div>
