@@ -352,25 +352,21 @@
 }
 
 .leslabel--eigen {
-  --label-kleur: var(--ingeschreven-tekst);
-  --label-sterkte: 18%;
+  --label-kleur: var(--groen-tekst);
 }
 
-/* Afwezigheid: groen als de school het goedkeurde, rood als dat niet zo is. */
+/* Afwezigheid: accentkleur als de school het goedkeurde, rood als dat niet zo is. */
 .leslabel--geoorloofd {
-  --label-kleur: var(--geoorloofd);
-  --label-sterkte: 16%;
+  --label-kleur: var(--groen-tekst);
 }
 
 .leslabel--ongeoorloofd {
   --label-kleur: var(--onvoldoende);
-  --label-sterkte: 16%;
 }
 
 /* Rood, zodat een vervallen les meteen opvalt. */
 .leslabel--vervalt {
   --label-kleur: var(--onvoldoende);
-  --label-sterkte: 16%;
 }
 
 /* Onderregel */
