@@ -602,3 +602,9 @@
   color: var(--tekst-secundair);
   text-decoration: line-through;
 }
+
+/* Weekweergave: het rooster mag bijna tot de randen, zodat de kolommen breder zijn. */
+.agenda__lijst--week {
+  padding-left: 6px;
+  padding-right: 8px;
+}

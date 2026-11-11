@@ -104,36 +104,24 @@ export function Agenda() {
     );
   };
 
-  /**
-   * Een blok in de weekweergave als rooster: de werkweek (ma–vr, vijf kolommen) of het weekend
-   * (za en zo, twee kolommen). Ook voor de buurblokken in de schuifbaan.
-   */
-  const roosterVan = (start: Date) => {
-    const weekend = !isWeekdag(start);
-    const dagen = Array.from({ length: weekend ? 2 : 5 }, (_, i) => plusDagen(start, i));
-    const einde = plusDagen(start, dagen.length);
-    const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= start && new Date(a.start) < einde);
+  /** De werkweek (ma–vr) als rooster; ook voor de buurweken in de schuifbaan. */
+  const roosterVan = (ma: Date) => {
+    const dagen = Array.from({ length: 5 }, (_, i) => plusDagen(ma, i));
+    const einde = plusDagen(ma, 5);
+    const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= ma && new Date(a.start) < einde);
     if (!weekGeladen && lessen.length === 0) return null;
-    return (
-      <WeekRooster
-        dagen={dagen}
-        afspraken={lessen}
-        gekozen={new Date()}
-        leeg={weekend ? 'Geen afspraken in het weekend.' : 'Geen lessen in deze week.'}
-      />
-    );
+    return <WeekRooster dagen={dagen} afspraken={lessen} gekozen={new Date()} leeg="Geen lessen in deze week." />;
   };
 
-  // In de weekweergave wissel je tussen blokken: werkweek (ma–vr), weekend (za–zo), volgende werkweek.
-  const isWeekend = (d: Date) => !isWeekdag(d);
-  const blokStart = (d: Date) => (isWeekend(d) ? plusDagen(maandagVan(d), 5) : maandagVan(d));
-  const blok = blokStart(dag);
-  const vorigBlok = (start: Date) => plusDagen(start, isWeekend(start) ? -5 : -2);
-  const volgendBlok = (start: Date) => plusDagen(start, isWeekend(start) ? 2 : 5);
-  /** Naar een ander blok: vandaag als die erin valt, anders de eerste dag ervan. */
-  const naarBlok = (start: Date) => {
+  // De weekweergave laat alleen werkweken zien: staat de Agenda op een zaterdag of zondag, dan de week erna.
+  useEffect(() => {
+    if (perWeek && !isWeekdag(dag)) setDag(plusDagen(maandagVan(dag), 7));
+  }, [perWeek, dag]);
+
+  /** Naar een andere week: vandaag als die erin valt, anders de maandag. */
+  const naarWeek = (ma: Date) => {
     const vandaag = beginVanDag(new Date());
-    setDag(blokStart(vandaag).getTime() === start.getTime() ? vandaag : start);
+    setDag(maandagVan(vandaag).getTime() === ma.getTime() && isWeekdag(vandaag) ? vandaag : ma);
   };
 
   return (
@@ -141,24 +129,24 @@ export function Agenda() {
       {/* Kop en dagstrook samen in één gekleurd blok, met witte tekst en een witte cirkel om de gekozen dag. */}
       <div className="agendakop-vlak">
         {/* In de weekweergave geen dagkiezer: je veegt per week, en de dagen staan boven het rooster. */}
-        <AgendaKop dag={dag} bereik={perWeek ? [blok, plusDagen(blok, isWeekend(blok) ? 1 : 4)] : undefined} />
+        <AgendaKop dag={dag} bereik={perWeek ? [maandag, plusDagen(maandag, 4)] : undefined} />
         {!perWeek && <DagStrook dag={dag} onKies={setDag} />}
       </div>
 
       <div className="agenda__midden">
-        <div className="agenda__lijst" ref={lijstVlak} aria-busy={week.laden}>
+        <div className={`agenda__lijst${perWeek ? ' agenda__lijst--week' : ''}`} ref={lijstVlak} aria-busy={week.laden}>
           <VegenOmTeVernieuwen onVernieuw={week.vernieuw}>
             {week.fout && <p className="melding">{week.fout}</p>}
             {/* Vegen over de lessen: naar links de volgende dag, naar rechts de vorige, en je ziet hem binnenschuiven. */}
             {perWeek ? (
-              // Vegen in de weekweergave: werkweek, weekend, volgende werkweek.
+              // Vegen in de weekweergave: naar de vorige of volgende week.
               <VeegCarrousel
-                sleutel={naarInvoer(blok)}
-                vorige={roosterVan(vorigBlok(blok))}
-                huidige={roosterVan(blok)}
-                volgende={roosterVan(volgendBlok(blok))}
-                onVorige={() => naarBlok(vorigBlok(blok))}
-                onVolgende={() => naarBlok(volgendBlok(blok))}
+                sleutel={naarInvoer(maandag)}
+                vorige={roosterVan(plusDagen(maandag, -7))}
+                huidige={roosterVan(maandag)}
+                volgende={roosterVan(plusDagen(maandag, 7))}
+                onVorige={() => naarWeek(plusDagen(maandag, -7))}
+                onVolgende={() => naarWeek(plusDagen(maandag, 7))}
                 vlak={lijstVlak}
               />
             ) : (
