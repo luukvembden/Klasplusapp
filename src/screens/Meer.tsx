@@ -48,11 +48,11 @@ export function Meer() {
 
       <section className="kaart">
         <MeerRij naar="/meer/berichten" icoon={Mail} naam="Berichten" teller={ongelezen} />
+        <MeerRij naar="/meer/afwezigheid" icoon={CalendarX} naam="Afwezigheid" />
         <MeerRij naar="/meer/opdrachten" icoon={ClipboardList} naam="Opdrachten" />
         <MeerRij naar="/meer/activiteiten" icoon={PartyPopper} naam="Activiteiten" />
-        <MeerRij naar="/meer/leermiddelen" icoon={Library} naam="Leermiddelen" />
         <MeerRij naar="/meer/studiewijzers" icoon={Signpost} naam="Studiewijzers" />
-        <MeerRij naar="/meer/afwezigheid" icoon={CalendarX} naam="Afwezigheid" />
+        <MeerRij naar="/meer/leermiddelen" icoon={Library} naam="Leermiddelen" />
         <MeerRij naar="/meer/rooster-exporteren" icoon={CalendarArrowDown} naam="Rooster exporteren" />
       </section>
 
