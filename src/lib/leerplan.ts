@@ -93,7 +93,31 @@ export function lesLink(a: Afspraak): string {
 
 /** "Leren voor proefwerk Wiskunde B" */
 export const lerenTitel = (p: Pick<Leerplan, 'soort' | 'vak'>) =>
-  `Leren voor ${p.soort === 'SO' ? 'SO' : p.soort.toLowerCase()} ${p.vak}`;
+  `${LEREN_VOORVOEGSEL}${p.soort === 'SO' ? 'SO' : p.soort.toLowerCase()} ${p.vak}`;
+
+/** Titels van leermomenten beginnen zo; zo herkent Klas+ ze ook als ze van de schoolsite komen. */
+export const LEREN_VOORVOEGSEL = 'Leren voor ';
+
+/**
+ * De afspraken van school, klaar voor de Agenda: een leermoment dat Klas+ zelf al toont (zelfde titel en
+ * begintijd, of een bekend id) valt weg, zodat het niet dubbel staat. Een ander leermoment van de
+ * schoolsite (bijvoorbeeld van een ander toestel) houdt het label Leren in plaats van Persoonlijk.
+ */
+export function metLeermomenten(vanSchool: Afspraak[], alle: Record<string, Leerplan>): Afspraak[] {
+  const eigen = leerAfspraken(alle);
+  const ids = schoolIdsVan(alle);
+  const dubbel = (a: Afspraak) =>
+    ids.has(a.id) ||
+    eigen.some((l) => l.omschrijving === a.omschrijving && Math.abs(new Date(l.start).getTime() - new Date(a.start).getTime()) < 60_000);
+  const school = vanSchool
+    .filter((a) => !(a.labels.includes('eigen') && a.omschrijving.startsWith(LEREN_VOORVOEGSEL) && dubbel(a)) && !ids.has(a.id))
+    .map((a) =>
+      a.labels.includes('eigen') && a.omschrijving.startsWith(LEREN_VOORVOEGSEL)
+        ? { ...a, labels: ['leren' as const] }
+        : a,
+    );
+  return [...school, ...eigen];
+}
 
 /** Afspraken op school die bij een leerplan horen; die toont de Agenda niet dubbel. */
 export const schoolIdsVan = (alle: Record<string, Leerplan>) =>

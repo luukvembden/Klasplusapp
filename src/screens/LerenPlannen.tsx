@@ -66,7 +66,6 @@ export function LerenPlannen() {
   const [herinnering, setHerinnering] = useState(bestaand?.herinnering ?? true);
   // Een ouder kan geen afspraken in de agenda van het kind zetten.
   const kanOpSchool = !api.isOuder();
-  const [opSchool, setOpSchool] = useState(bestaand?.opSchool ?? kanOpSchool);
   const [bezig, setBezig] = useState(false);
   const [tijden, setTijden] = useState<Record<string, Omit<Leermoment, 'datum'>>>(() =>
     Object.fromEntries((bestaand?.momenten ?? []).map(({ datum, ...rest }) => [datum, rest])),
@@ -107,7 +106,8 @@ export function LerenPlannen() {
       duur,
       momenten,
       herinnering,
-      opSchool: kanOpSchool && opSchool,
+      // Altijd ook in de schoolagenda (behalve voor een ouder).
+      opSchool: kanOpSchool,
       schoolIds: bestaand?.schoolIds ?? [],
     };
     // Eerst op dit toestel bewaren, zodat er niets verloren gaat als de school niet bereikbaar is.
@@ -265,23 +265,6 @@ export function LerenPlannen() {
               />
             </label>
           </section>
-
-          {kanOpSchool && (
-            <section className="kaart">
-              <label className="instelrij meldingrij" htmlFor="leren-school">
-                <span className="meldingrij__tekst">
-                  <span>Ook in de schoolagenda</span>
-                  <span className="meldingrij__uitleg">Als persoonlijke afspraak, zodat je het ook op de schoolsite ziet</span>
-                </span>
-                <input
-                  id="leren-school"
-                  type="checkbox"
-                  checked={opSchool}
-                  onChange={(e) => setOpSchool(e.target.checked)}
-                />
-              </label>
-            </section>
-          )}
 
           {melding && <p className="melding">{melding}</p>}
 
