@@ -649,3 +649,13 @@
 .weekrooster__kop--gekozen b {
   color: var(--groen-tekst);
 }
+
+/* Vast kader zonder lessen: dunne lijnen bij 08:00, 12:00, 16:00 en 20:00. */
+.weekrooster__lijn {
+  position: absolute;
+  left: 30px;
+  right: 22px;
+  height: 1px;
+  background: var(--lijn);
+  pointer-events: none;
+}

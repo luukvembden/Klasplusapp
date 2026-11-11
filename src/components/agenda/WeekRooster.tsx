@@ -9,6 +9,8 @@ import './agenda.css';
 const PX_PER_MINUUT = 1.1;
 /** Zo lang is een gewone les; ook de hoogte van een blok in de late rij. */
 const LES_MINUTEN = 50;
+/** Zonder lessen: zo hoog is één vak van vier uur in het vaste kader (08–12, 12–16, 16–20, 20–24). */
+const KADER_VAK_PX = 150;
 
 const minuutVanDag = (iso: string) => {
   const n = nlTijd(new Date(iso));
@@ -117,9 +119,18 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
   const normaal = getimed.filter((a) => !isLaat(a));
   const laat = getimed.filter(isLaat);
 
-  const van = Math.min(...normaal.map((a) => minuutVanDag(a.start)));
-  const tot = Math.max(...normaal.map((a) => Math.max(minuutVanDag(a.einde), minuutVanDag(a.start) + 15)));
-  const y = (minuut: number) => (minuut - van) * PX_PER_MINUUT;
+  // Geen enkele les in dit blok (weekend, vakantie): een vast kader van 08:00 tot 24:00 in vier vakken van
+  // vier uur, zodat iets om 19:00 ook echt 's avonds staat en niet helemaal bovenaan.
+  const kader = school.length === 0;
+  const eerste = Math.min(...normaal.map((a) => minuutVanDag(a.start)));
+  const van = kader ? Math.min(8 * 60, Math.floor(eerste / 60) * 60) : eerste;
+  const tot = kader
+    ? 24 * 60
+    : Math.max(...normaal.map((a) => Math.max(minuutVanDag(a.einde), minuutVanDag(a.start) + 15)));
+  const schaal = kader ? KADER_VAK_PX / (4 * 60) : PX_PER_MINUUT;
+  const y = (minuut: number) => (minuut - van) * schaal;
+  // De grenzen van de vakken in het kader: 08:00, 12:00, 16:00 en 20:00 (en eerder als er iets vroegs is).
+  const grenzen = kader ? [...(van < 8 * 60 ? [van] : []), 8 * 60, 12 * 60, 16 * 60, 20 * 60] : [];
   const RIJ = LES_MINUTEN * PX_PER_MINUUT;
   const laatTijden = [...new Set(laat.map((a) => minuutVanDag(a.start)))].sort((p, q) => p - q);
   const laatY = (minuut: number) => y(tot) + RIJ + laatTijden.indexOf(minuut) * RIJ;
@@ -135,7 +146,8 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
 
   // Links langs de rand: het lesuur en de begintijd, één keer per begintijd die in de week voorkomt.
   const assen = new Map<number, { tijd: string; uur: number | null; top: number }>();
-  for (const a of getimed) {
+  for (const m of grenzen) assen.set(m, { tijd: `${String(Math.floor(m / 60)).padStart(2, '0')}:00`, uur: null, top: y(m) });
+  for (const a of kader ? [] : getimed) {
     const m = minuutVanDag(a.start);
     const bekend = assen.get(m);
     const top = isLaat(a) ? laatY(m) : y(m);
@@ -147,6 +159,9 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
   return (
     <div className="weekrooster">
       <div className="weekrooster__raster" style={{ ...kolommen, height: hoogte }}>
+        {grenzen.map((m) => (
+          <span key={`lijn-${m}`} className="weekrooster__lijn" style={{ top: y(m) }} aria-hidden="true" />
+        ))}
         <div className="weekrooster__as" aria-hidden="true">
           {[...assen].map(([m, { tijd: t, uur, top }]) => (
             <span key={m} className="weekrooster__astijd" style={{ top }}>
