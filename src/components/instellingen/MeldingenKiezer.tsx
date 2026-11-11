@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInstellingen, wijzigInstellingen, type Notificaties } from '../../lib/instellingen';
-import { controleerNu, kanNotificaties, vraagToestemming } from '../../lib/notificaties';
+import {
+  controleerNu,
+  kanNotificaties,
+  meldingStatus,
+  stuurTestmelding,
+  vraagPreciezeTijd,
+  vraagToestemming,
+  type MeldingStatus,
+} from '../../lib/notificaties';
+import { datumEnTijd } from '../../lib/datum';
 import { Invoerrij } from '../les/Invoerrij';
 import '../les/les.css';
 import './instellingen.css';
@@ -22,6 +31,18 @@ const tijden = {
 export function MeldingenKiezer() {
   const { notificaties: n } = useInstellingen();
   const [fout, setFout] = useState<string | null>(null);
+  const [status, setStatus] = useState<MeldingStatus | null>(null);
+  const [test, setTest] = useState<string | null>(null);
+  const ververs = () => void meldingStatus().then(setStatus);
+
+  // Status bij openen, en opnieuw als je terugkomt uit de instellingen van de telefoon.
+  useEffect(() => {
+    ververs();
+    const opZicht = () => document.visibilityState === 'visible' && ververs();
+    document.addEventListener('visibilitychange', opZicht);
+    return () => document.removeEventListener('visibilitychange', opZicht);
+  }, []);
+  const iets = n.cijfers || n.rooster || n.huiswerk || n.ochtend;
 
   const zet = async (wijziging: Partial<Notificaties>) => {
     setFout(null);
@@ -70,6 +91,58 @@ export function MeldingenKiezer() {
         })}
       </section>
       {fout && <p className="melding">{fout}</p>}
+
+      {/* Hoe staat het ervoor: toestemming, precieze tijd (Android), laatste keer gekeken, en een test. */}
+      {kanNotificaties && status && (
+        <section className="kaart">
+          <div className="instelrij instelrij--vast">
+            <span>Toestemming van je telefoon</span>
+            <span className="instelrij__waarde">{status.toestemming ? 'Aan' : 'Uit'}</span>
+          </div>
+          {status.preciezeTijd !== null && (
+            <button
+              type="button"
+              className="instelrij"
+              onClick={() => void vraagPreciezeTijd().then(ververs)}
+              disabled={status.preciezeTijd}
+            >
+              <span className="meldingrij__tekst">
+                <span>Op de precieze tijd</span>
+                <span className="meldingrij__uitleg">
+                  {status.preciezeTijd
+                    ? 'Ochtend- en huiswerkmeldingen komen op tijd'
+                    : 'Staat uit: je telefoon kan ze uitstellen. Tik om aan te zetten.'}
+                </span>
+              </span>
+              <span className="instelrij__waarde">{status.preciezeTijd ? 'Aan' : 'Zet aan'}</span>
+            </button>
+          )}
+          {iets && (
+            <div className="instelrij instelrij--vast">
+              <span>Laatst gekeken</span>
+              <span className="instelrij__waarde">
+                {status.laatste
+                  ? `${datumEnTijd(status.laatste.op)}${status.laatste.achtergrond ? ' (achtergrond)' : ''}`
+                  : 'Nog niet'}
+              </span>
+            </div>
+          )}
+          <button
+            type="button"
+            className="instelrij"
+            onClick={() => {
+              setTest(null);
+              stuurTestmelding()
+                .then(() => setTest('Over 5 seconden komt er een testmelding. Zet de app gerust weg.'))
+                .catch((e: unknown) => setTest(e instanceof Error ? e.message : 'De testmelding is niet gelukt.'))
+                .finally(ververs);
+            }}
+          >
+            <span>Stuur testmelding</span>
+          </button>
+        </section>
+      )}
+      {test && <p className="instellingen__let-op">{test}</p>}
     </>
   );
 }

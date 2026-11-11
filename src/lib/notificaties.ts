@@ -15,6 +15,13 @@ import { metHoofdletter } from './tekst';
 export const kanNotificaties = Capacitor.isNativePlatform();
 
 const GEZIENE_CIJFERS = 'notificaties.cijfers';
+/** Wanneer Klas+ voor het laatst heeft gekeken, en of dat op de achtergrond was. */
+const LAATSTE = 'notificaties.laatste';
+/**
+ * Android: een eigen kanaal met hoge prioriteit, zodat meldingen bovenin verschijnen en geluid maken
+ * (het standaardkanaal van de plugin staat op een lagere stand). iOS negeert dit.
+ */
+const KANAAL = 'klasplus';
 const ROOSTER = 'notificaties.rooster';
 const VOLGNUMMER = 'notificaties.volgnummer';
 /** Huiswerkherinneringen krijgen vaste nummers, zodat we ze steeds kunnen vervangen. */
@@ -50,6 +57,7 @@ async function stuur(meldingen: { titel: string; tekst: string; pad: string }[])
       id: volgnummer(),
       title: m.titel,
       body: m.tekst,
+      channelId: KANAAL,
       extra: { pad: m.pad },
     })),
   });
@@ -161,6 +169,7 @@ async function planHuiswerk(aan: boolean, tijdstip: string) {
       title: `Huiswerk voor ${i === 1 ? 'morgen' : dagNaam(dag)}`,
       body: [...new Set(lijst)].join(', '),
       schedule: { at: moment, allowWhileIdle: true },
+      channelId: KANAAL,
       extra: { pad: '/huiswerk' },
     });
   }
@@ -196,6 +205,7 @@ async function planOchtend(aan: boolean, tijdstip: string) {
       title: melding.titel,
       body: melding.tekst,
       schedule: { at: moment, allowWhileIdle: true },
+      channelId: KANAAL,
       extra: { pad: '/' },
     });
   }
@@ -224,7 +234,7 @@ let laatste = 0;
  * Kijkt naar alles wat aan staat. Hooguit één keer tegelijk, en bij terugkomen in de app niet vaker
  * dan eens per 10 minuten (`altijd` slaat die wachttijd over, voor de achtergrond en na een instelling).
  */
-export function controleerNu(altijd = false): Promise<void> {
+export function controleerNu(altijd = false, opAchtergrond = false): Promise<void> {
   if (!kanNotificaties || !api.heeftSessie()) return Promise.resolve();
   if (bezig) return bezig;
   if (!altijd && Date.now() - laatste < 10 * 60_000) return Promise.resolve();
@@ -239,6 +249,7 @@ export function controleerNu(altijd = false): Promise<void> {
     await planHuiswerk(n.huiswerk, n.huiswerkTijd).catch(() => undefined);
     await planOchtend(n.ochtend, n.ochtendTijd).catch(() => undefined);
     await planLeren().catch(() => undefined);
+    schrijf(LAATSTE, { op: new Date().toISOString(), achtergrond: opAchtergrond });
   })().finally(() => {
     bezig = null;
   });
@@ -267,6 +278,17 @@ export async function startNotificaties() {
   if (!kanNotificaties || gestart) return;
   gestart = true;
 
+  if (Capacitor.getPlatform() === 'android') {
+    await LocalNotifications.createChannel({
+      id: KANAAL,
+      name: 'Klas+',
+      description: 'Nieuwe cijfers, roosterwijzigingen en herinneringen',
+      importance: 4,
+      visibility: 1,
+      vibration: true,
+    }).catch(() => undefined);
+  }
+
   await LocalNotifications.addListener('localNotificationActionPerformed', (actie) => {
     const pad = actie.notification.extra?.pad;
     if (typeof pad === 'string') window.location.hash = `#${pad}`;
@@ -278,14 +300,14 @@ export async function startNotificaties() {
 
   await BackgroundFetch.configure(
     {
-      minimumFetchInterval: 30,
+      minimumFetchInterval: 15,
       stopOnTerminate: false,
       startOnBoot: true,
       enableHeadless: false,
       requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
     },
     async (taak) => {
-      await controleerNu(true).catch(() => undefined);
+      await controleerNu(true, true).catch(() => undefined);
       BackgroundFetch.finish(taak);
     },
     async (taak) => {
@@ -294,4 +316,54 @@ export async function startNotificaties() {
   ).catch(() => undefined);
 
   void controleerNu(true);
+}
+
+// ---- Status en testen (Instellingen › Meldingen) ----
+
+export interface MeldingStatus {
+  /** Mag Klas+ meldingen tonen? */
+  toestemming: boolean;
+  /** Android: mogen meldingen op de precieze tijd komen? null op iPhone (daar altijd). */
+  preciezeTijd: boolean | null;
+  /** Wanneer Klas+ voor het laatst keek, en of dat op de achtergrond was. */
+  laatste: { op: string; achtergrond: boolean } | null;
+}
+
+export async function meldingStatus(): Promise<MeldingStatus> {
+  const laatste = lees<{ op: string; achtergrond: boolean }>(LAATSTE);
+  if (!kanNotificaties) return { toestemming: false, preciezeTijd: null, laatste };
+  const toestemming = (await LocalNotifications.checkPermissions()).display === 'granted';
+  let preciezeTijd: boolean | null = null;
+  if (Capacitor.getPlatform() === 'android') {
+    preciezeTijd = await LocalNotifications.checkExactNotificationSetting()
+      .then((s) => s.exact_alarm === 'granted')
+      .catch(() => null);
+  }
+  return { toestemming, preciezeTijd, laatste };
+}
+
+/**
+ * Android 12 en nieuwer: zonder deze toestemming mag de telefoon een ingeplande melding (ochtend,
+ * huiswerk) uitstellen, soms lang. Opent het scherm in de instellingen van de telefoon.
+ */
+export async function vraagPreciezeTijd(): Promise<void> {
+  if (Capacitor.getPlatform() !== 'android') return;
+  await LocalNotifications.changeExactNotificationSetting();
+}
+
+/** Een melding over vijf seconden, om te zien of meldingen aankomen. */
+export async function stuurTestmelding(): Promise<void> {
+  if (!kanNotificaties) throw new Error('Meldingen werken alleen in de app op je telefoon.');
+  if (!(await vraagToestemming())) throw new Error('Klas+ mag nog geen meldingen sturen.');
+  await LocalNotifications.schedule({
+    notifications: [
+      {
+        id: volgnummer(),
+        title: 'Testmelding',
+        body: 'Meldingen van Klas+ komen aan.',
+        channelId: KANAAL,
+        schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true },
+      },
+    ],
+  });
 }

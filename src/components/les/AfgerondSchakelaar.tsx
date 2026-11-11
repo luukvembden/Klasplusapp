@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { api } from '../../api';
+import { controleerNu } from '../../lib/notificaties';
 import '../instellingen/instellingen.css';
 import './les.css';
 
@@ -24,6 +25,8 @@ export function AfgerondSchakelaar({ id, afgerond, onWijzig }: Props) {
     setFout(null);
     try {
       await api.zetAfgerond(id, nieuw);
+      // Afgevinkt huiswerk hoeft geen herinnering meer (en weer aangezet wel): opnieuw inplannen.
+      void controleerNu(true);
     } catch (e) {
       onWijzig(!nieuw);
       setFout(
