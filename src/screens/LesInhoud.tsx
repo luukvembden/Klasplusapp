@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import type { Label } from '../api';
 import { AfgerondSchakelaar } from '../components/les/AfgerondSchakelaar';
 import { GegevenRij } from '../components/les/GegevenRij';
 import { BijlagenLijst } from '../components/meer/BijlagenLijst';
@@ -16,8 +17,14 @@ import '../components/les/les.css';
 import '../components/agenda/agenda.css';
 import '../components/leren/leren.css';
 
+/**
+ * TIJDELIJK, om te testen: ook bij huiswerk kun je leren plannen, zodat je zonder toetsen kunt zien of
+ * leermomenten op de schoolsite komen. Zet dit weer op false voordat het echt uitkomt.
+ */
+const TEST_OOK_HUISWERK = true;
+
 /** Bij deze soorten kun je leren plannen. */
-const TOETSEN = ['proefwerk', 'tentamen', 'so', 'mondeling'] as const;
+const TOETSEN: Label[] = ['proefwerk', 'tentamen', 'so', 'mondeling', ...(TEST_OOK_HUISWERK ? (['huiswerk'] as Label[]) : [])];
 
 const terugNaar = {
   les: (id: string) => ({ naar: `/agenda/${encodeURIComponent(id)}`, label: 'Les' }),
