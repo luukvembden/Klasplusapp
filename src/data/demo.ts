@@ -1,5 +1,5 @@
 // Nep-data voor de demo. Alle namen zijn verzonnen.
-import type { Leermiddel, Activiteit, ActiviteitOnderdeel, Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
+import type { Studiewijzer, Leermiddel, Activiteit, ActiviteitOnderdeel, Afwezigheid, Bericht, Cijfer, Contact, Label, Melding, Opdracht, Profiel, Reden, Vak } from '../api/types';
 import { nlMoment } from '../lib/datum';
 
 export const demoProfiel: Profiel = {
@@ -533,4 +533,66 @@ export const demoLeermiddelen: Leermiddel[] = [
   { id: 'lm-4', titel: 'Biologie voor jou 4 vwo', vak: 'Biologie', uitgever: 'Malmberg', link: 'demo' },
   { id: 'lm-5', titel: 'Nova Scheikunde 4 vwo', vak: 'Scheikunde', uitgever: 'Malmberg', link: 'demo' },
   { id: 'lm-6', titel: 'Grandes Lignes 4 vwo', vak: 'Frans', uitgever: 'Noordhoff', link: 'demo' },
+];
+
+/** Studiewijzers in de demo: twee vakken, per week een onderdeel. */
+export const demoStudiewijzers: Studiewijzer[] = [
+  {
+    id: 'sw-1',
+    titel: 'Wiskunde B · periode 2',
+    van: '2026-11-09',
+    tot: '2027-01-29',
+    vakken: ['wisB'],
+    onderdelen: [
+      {
+        id: 'sw-1-1',
+        titel: 'Week 46 · Hoofdstuk 3 Differentiëren',
+        omschrijvingHtml: '<p>Lees 3.1 en 3.2. Maak opgave 1 t/m 18.</p><p>Bekijk de uitlegvideo voor de les van donderdag.</p>',
+        van: '2026-11-09',
+        tot: '2026-11-13',
+        bronnen: [{ id: 'swb-1', naam: 'Uitleg differentiëren.pdf', grootte: 412_000, bron: '' }],
+      },
+      {
+        id: 'sw-1-2',
+        titel: 'Week 47 · Kettingregel',
+        omschrijvingHtml: '<p>Paragraaf 3.3 en 3.4, opgave 19 t/m 40. Vrijdag oefentoets in de les.</p>',
+        van: '2026-11-16',
+        tot: '2026-11-20',
+        bronnen: [],
+      },
+      {
+        id: 'sw-1-3',
+        titel: 'Week 48 · Proefwerk hoofdstuk 3',
+        omschrijvingHtml: '<p>Proefwerk over het hele hoofdstuk. Rekenmachine mag.</p>',
+        van: '2026-11-23',
+        tot: '2026-11-27',
+        bronnen: [{ id: 'swb-2', naam: 'Oefenproefwerk H3.pdf', grootte: 280_000, bron: '' }],
+      },
+    ],
+  },
+  {
+    id: 'sw-2',
+    titel: 'Engels · leesdossier',
+    van: '2026-10-26',
+    tot: '2026-12-18',
+    vakken: ['en'],
+    onderdelen: [
+      {
+        id: 'sw-2-1',
+        titel: 'Boek kiezen',
+        omschrijvingHtml: '<p>Kies een boek van de lijst en laat het voor 20 november goedkeuren.</p>',
+        van: '2026-10-26',
+        tot: '2026-11-20',
+        bronnen: [{ id: 'swb-3', naam: 'Boekenlijst 4 vwo.pdf', grootte: 96_000, bron: '' }],
+      },
+      {
+        id: 'sw-2-2',
+        titel: 'Verslag inleveren',
+        omschrijvingHtml: '<p>Lever je verslag (600 woorden) in via Opdrachten.</p>',
+        van: '2026-11-23',
+        tot: '2026-12-18',
+        bronnen: [],
+      },
+    ],
+  },
 ];

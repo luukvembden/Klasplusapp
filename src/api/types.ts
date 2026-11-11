@@ -193,6 +193,33 @@ export interface Leermiddel {
   link: string | null;
 }
 
+/** Een studiewijzer: de planning die een docent voor een vak en periode maakt. */
+export interface StudiewijzerKort {
+  id: string;
+  titel: string;
+  /** ISO-datums van de periode, als bekend. */
+  van: string | null;
+  tot: string | null;
+  /** Vakcodes, bijvoorbeeld ["wisB"]. */
+  vakken: string[];
+}
+
+/** Eén onderdeel (vaak een week of hoofdstuk) van een studiewijzer. */
+export interface StudiewijzerOnderdeel {
+  id: string;
+  titel: string;
+  /** Wat de docent erbij schreef, als HTML van de school. */
+  omschrijvingHtml: string | null;
+  van: string | null;
+  tot: string | null;
+  /** Bestanden en links die de docent erbij zette. */
+  bronnen: Bijlage[];
+}
+
+export interface Studiewijzer extends StudiewijzerKort {
+  onderdelen: StudiewijzerOnderdeel[];
+}
+
 /** Een bijlage bij een bericht of opdracht. */
 export interface Bijlage {
   id: string;

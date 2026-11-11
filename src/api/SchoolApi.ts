@@ -1,4 +1,4 @@
-import type { Leermiddel,
+import type { Studiewijzer, StudiewijzerKort, Leermiddel,
   Afspraak,
   AfspraakDetail,
   AfspraakInvoer,
@@ -96,6 +96,11 @@ export interface SchoolApi {
   onderdelen(activiteitId: string): Promise<Resultaat<ActiviteitOnderdeel[]>>;
   /** Inschrijven (true) of uitschrijven (false) voor een keuze. */
   schrijfIn(onderdeel: ActiviteitOnderdeel, inschrijven: boolean): Promise<void>;
+
+  /** Studiewijzers van dit moment (de planning per vak die docenten maken). */
+  studiewijzers(): Promise<Resultaat<StudiewijzerKort[]>>;
+  /** Eén studiewijzer met de onderdelen en hun bronnen. */
+  studiewijzer(id: string): Promise<Resultaat<Studiewijzer>>;
 
   /** Leermiddelen (digitale methodes) die de school voor je heeft klaargezet. */
   leermiddelen(): Promise<Resultaat<Leermiddel[]>>;

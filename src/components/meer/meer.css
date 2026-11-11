@@ -537,3 +537,42 @@
   font-size: 14px;
   line-height: 1.45;
 }
+
+/* ---------- Studiewijzer ---------- */
+.studiewijzer {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.studiewijzer__onderdeel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.studiewijzer__kop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 4px;
+}
+
+.studiewijzer__titel {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tekst);
+}
+
+.studiewijzer__periode {
+  margin: -4px 4px 0;
+  font-size: 13px;
+  color: var(--tekst-secundair);
+}
+
+a.bijlagerij {
+  text-decoration: none;
+  color: inherit;
+}

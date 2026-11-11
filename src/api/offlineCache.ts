@@ -84,6 +84,8 @@ export function metOfflineCache(bron: SchoolApi): SchoolApi {
 
     activiteiten: () => metCache('activiteiten', () => bron.activiteiten()),
     leermiddelen: () => metCache('leermiddelen', () => bron.leermiddelen()),
+    studiewijzers: () => metCache('studiewijzers', () => bron.studiewijzers()),
+    studiewijzer: (id) => metCache(`studiewijzer.${id}`, () => bron.studiewijzer(id)),
     onderdelen: (id) => metCache(`activiteit.${id}`, () => bron.onderdelen(id)),
   };
 }

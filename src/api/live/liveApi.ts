@@ -22,6 +22,8 @@ import {
   naarContact,
   naarCijfers,
   naarKind,
+  naarStudiewijzerKort,
+  naarStudiewijzerOnderdeel,
   naarLeermiddel,
   naarMelding,
   naarOpdracht,
@@ -50,6 +52,8 @@ import {
   type RuwePeriode,
   type RuwCijfer,
   type RuwKind,
+  type RuweStudiewijzer,
+  type RuwStudiewijzerOnderdeel,
   type RuwLeermiddel,
   type RuweMelding,
   type RuweMeldMogelijkheden,
@@ -523,6 +527,29 @@ export const liveApi: SchoolApi = {
     const antwoord = await haal<{ location?: string }>(`${pad}${pad.includes('?') ? '&' : '?'}redirect_type=body`);
     if (!antwoord?.location) throw new Error('Kon de bijlage niet openen');
     openExtern(antwoord.location);
+  },
+
+  async studiewijzers() {
+    // Zoals de schoolsite: de studiewijzers die vandaag gelden.
+    const vandaag = naarInvoer(new Date());
+    const lijst = items(
+      await haal<{ Items?: RuweStudiewijzer[] }>(`api/leerlingen/${leerlingId()}/studiewijzers?peildatum=${vandaag}`),
+    );
+    return resultaat(lijst.map(naarStudiewijzerKort));
+  },
+
+  async studiewijzer(id) {
+    const pad = `api/leerlingen/${leerlingId()}/studiewijzers/${encodeURIComponent(id)}`;
+    const ruw = await haal<RuweStudiewijzer>(pad);
+    const onderdelen = items(ruw.Onderdelen as { Items?: RuwStudiewijzerOnderdeel[] } | RuwStudiewijzerOnderdeel[]);
+    // De bronnen staan pas in de details van elk onderdeel; lukt dat niet, dan zonder bronnen.
+    const volledig = await Promise.all(
+      onderdelen.map((o) =>
+        haal<RuwStudiewijzerOnderdeel>(`${pad}/onderdelen/${encodeURIComponent(String(o.Id))}`).catch(() => o),
+      ),
+    );
+    volledig.sort((a, b) => (a.Volgnummer ?? 0) - (b.Volgnummer ?? 0));
+    return resultaat({ ...naarStudiewijzerKort(ruw), onderdelen: volledig.map(naarStudiewijzerOnderdeel) });
   },
 
   async leermiddelen() {

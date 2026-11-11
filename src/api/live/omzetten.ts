@@ -2,7 +2,7 @@
 // Veldnamen komen uit de broncode van Gemairo; ze zijn niet officieel gedocumenteerd.
 import { nlTijd } from '../../lib/datum';
 import { metHoofdletter } from '../../lib/tekst';
-import type { Leermiddel,
+import type { StudiewijzerKort, StudiewijzerOnderdeel, Leermiddel,
   Afspraak,
   AfspraakDetail,
   AfspraakInvoer,
@@ -693,5 +693,48 @@ export function naarLeermiddel(r: RuwLeermiddel): Leermiddel {
     vak: r.Vak?.Omschrijving?.trim() || r.Vak?.Code?.trim() || null,
     uitgever: r.Uitgeverij?.trim() || null,
     link,
+  };
+}
+
+// ---- Studiewijzers ----
+
+/** Een studiewijzer in de lijst (api/leerlingen/{id}/studiewijzers). */
+export interface RuweStudiewijzer {
+  Id: number | string;
+  Titel?: string | null;
+  Van?: string | null;
+  TotEnMet?: string | null;
+  VakCodes?: string[] | null;
+  Onderdelen?: { Items?: RuwStudiewijzerOnderdeel[] } | RuwStudiewijzerOnderdeel[] | null;
+}
+
+export interface RuwStudiewijzerOnderdeel {
+  Id: number | string;
+  Titel?: string | null;
+  Omschrijving?: string | null;
+  Van?: string | null;
+  TotEnMet?: string | null;
+  Volgnummer?: number | null;
+  Bronnen?: { Id: number; Naam?: string; Grootte?: number; Uri?: string | null; Links?: RuweHoofdLink[] }[] | null;
+}
+
+export function naarStudiewijzerKort(r: RuweStudiewijzer): StudiewijzerKort {
+  return {
+    id: String(r.Id),
+    titel: r.Titel?.trim() || 'Studiewijzer',
+    van: r.Van ?? null,
+    tot: r.TotEnMet ?? null,
+    vakken: (r.VakCodes ?? []).filter(Boolean),
+  };
+}
+
+export function naarStudiewijzerOnderdeel(r: RuwStudiewijzerOnderdeel): StudiewijzerOnderdeel {
+  return {
+    id: String(r.Id),
+    titel: r.Titel?.trim() || 'Onderdeel',
+    omschrijvingHtml: r.Omschrijving?.trim() ? r.Omschrijving : null,
+    van: r.Van ?? null,
+    tot: r.TotEnMet ?? null,
+    bronnen: (r.Bronnen ?? []).map((b) => naarOpdrachtBijlage({ Id: b.Id, Naam: b.Naam, Grootte: b.Grootte, Url: b.Uri ?? null, Links: b.Links ?? undefined })),
   };
 }

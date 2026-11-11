@@ -1,4 +1,4 @@
-import { demoLeermiddelen,
+import { demoStudiewijzers, demoLeermiddelen,
   demoActiviteiten,
   demoAfwezigheden,
   demoOnderdelen,
@@ -350,6 +350,18 @@ export const demoApi: SchoolApi = {
     await vertraging(300);
     if (inschrijven && onderdeel.plekkenVrij === 0) throw new Error('Dit onderdeel is vol.');
     schrijf(INSCHRIJVINGEN, { ...inschrijvingen(), [onderdeel.id]: inschrijven });
+  },
+
+  async studiewijzers() {
+    await vertraging();
+    return resultaat(demoStudiewijzers.map(({ onderdelen: _o, ...kort }) => kort));
+  },
+
+  async studiewijzer(id) {
+    await vertraging();
+    const sw = demoStudiewijzers.find((s) => s.id === id);
+    if (!sw) throw new Error('Deze studiewijzer bestaat niet (meer).');
+    return resultaat(sw);
   },
 
   async leermiddelen() {
