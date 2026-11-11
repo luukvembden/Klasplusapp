@@ -1,5 +1,6 @@
 import { useInstellingen, wijzigInstellingen, type AgendaWeergave, type Kleur, type Thema } from '../../lib/instellingen';
 import { Keuzeknoppen } from './Keuzeknoppen';
+import type { Regio } from '../../lib/vakanties';
 
 const themas: { waarde: Thema; naam: string }[] = [
   { waarde: 'licht', naam: 'Licht' },
@@ -11,6 +12,25 @@ const agendaWeergaven: { waarde: AgendaWeergave; naam: string }[] = [
   { waarde: 'modern', naam: 'Modern' },
   { waarde: 'klassiek', naam: 'Klassiek' },
 ];
+
+const regios: { waarde: Regio; naam: string }[] = [
+  { waarde: 'noord', naam: 'Noord' },
+  { waarde: 'midden', naam: 'Midden' },
+  { waarde: 'zuid', naam: 'Zuid' },
+];
+
+/** De regio van je school, voor de schoolvakanties. */
+export function RegioKiezer() {
+  const { regio } = useInstellingen();
+  return (
+    <Keuzeknoppen<Regio | ''>
+      label="Schoolregio"
+      keuzes={regios}
+      gekozen={regio}
+      onKies={(r) => wijzigInstellingen({ regio: r })}
+    />
+  );
+}
 
 export function ThemaKiezer() {
   const { thema } = useInstellingen();

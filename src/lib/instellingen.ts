@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import type { Regio } from './vakanties';
 
 // Voorkeuren van de leerling. Ze blijven op het toestel en gaan nergens heen.
 
@@ -32,6 +33,8 @@ export interface Instellingen {
   thema: Thema;
   agenda: AgendaWeergave;
   indeling: AgendaIndeling;
+  /** Schoolregio voor de vakanties (noord, midden, zuid); leeg zolang je niets koos. */
+  regio: Regio | '';
   kleur: Kleur;
   notificaties: Notificaties;
 }
@@ -43,6 +46,7 @@ const standaard: Instellingen = {
   // Nieuw in Klas+: Modern (vaknaam, en tijd · lokaal · docent). Wie al iets koos, houdt dat.
   agenda: 'modern',
   indeling: 'dag',
+  regio: '',
   kleur: 'groen',
   notificaties: { cijfers: false, rooster: false, huiswerk: false, huiswerkTijd: '19:00', ochtend: false, ochtendTijd: '07:00' },
 };

@@ -361,3 +361,11 @@ button.instelrij {
 .meldinggroep:last-child > :last-child {
   border-bottom: none;
 }
+
+/* Onderin Meer: klein, grijs regeltje met het aftellen naar de vakantie. */
+.meer__vakantie {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--tekst-secundair);
+}

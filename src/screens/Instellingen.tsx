@@ -3,7 +3,7 @@ import { ChevronRight, ExternalLink } from 'lucide-react';
 import { version } from '../../package.json';
 import { api } from '../api';
 import { MeldingenKiezer } from '../components/instellingen/MeldingenKiezer';
-import { AgendaWeergaveKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
+import { AgendaWeergaveKiezer, RegioKiezer, KleurKiezer, ThemaKiezer } from '../components/instellingen/ThemaKiezer';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
@@ -52,6 +52,17 @@ export function Instellingen() {
 
       <Sectie titel="Agenda">
         <AgendaWeergaveKiezer />
+      </Sectie>
+
+      <Sectie
+        titel="Schoolregio"
+        nawoord={
+          <p className="instellingen__let-op">
+            Voor de schoolvakanties. Welke regio je school is, vind je op rijksoverheid.nl bij schoolvakanties.
+          </p>
+        }
+      >
+        <RegioKiezer />
       </Sectie>
 
       <Sectie

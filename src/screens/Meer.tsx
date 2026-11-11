@@ -4,7 +4,9 @@ import { api } from '../api';
 import { ProfielKaart } from '../components/instellingen/ProfielKaart';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { useLaden, vergeetGeladen } from '../hooks/useLaden';
+import { useInstellingen } from '../lib/instellingen';
 import { useOngelezen } from '../lib/ongelezen';
+import { vakantieRegel } from '../lib/vakanties';
 import '../components/instellingen/instellingen.css';
 
 /** Eén regel in Meer: icoontje in een gevuld vakje, naam, eventueel een rood getal, pijltje. */
@@ -29,6 +31,8 @@ function MeerRij({ naar, icoon: Icoon, naam, teller }: { naar: string; icoon: Lu
 export function Meer() {
   const profiel = useLaden(() => api.profiel(), []);
   const ongelezen = useOngelezen();
+  const { regio } = useInstellingen();
+  const vakantie = vakantieRegel(regio);
 
   return (
     <div className="pagina pagina--instellingen">
@@ -53,6 +57,9 @@ export function Meer() {
       <section className="kaart">
         <MeerRij naar="/instellingen" icoon={Settings} naam="Instellingen" />
       </section>
+
+      {/* Een klein extraatje: aftellen naar de volgende schoolvakantie (regio kies je in Instellingen). */}
+      {vakantie && <p className="meer__vakantie">{vakantie}</p>}
     </div>
   );
 }
