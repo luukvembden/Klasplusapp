@@ -82,9 +82,10 @@
   cursor: pointer;
 }
 
+/* Gekozen weergave: zelfde kleur als de uurvakjes in de lessenlijst, in licht en donker. */
 .agendakop__wissel button[aria-pressed='true'] {
-  background: var(--groen-tekst);
-  color: var(--kaart);
+  background: var(--kop);
+  color: var(--op-groen);
 }
 
 /* Dagstrook */
