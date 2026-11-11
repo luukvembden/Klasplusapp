@@ -141,7 +141,9 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
     if (isLaat(a)) return { top: laatY(minuutVanDag(a.start)) + 1, hoogte: RIJ - 2 };
     const s = minuutVanDag(a.start);
     const e = minuutVanDag(a.einde);
-    return { top: y(s) + 1, hoogte: Math.max(y(e) - y(s) - 2, 18) };
+    // In het vaste kader is een uur maar klein; een afspraak blijft daar minstens zo hoog als een les,
+    // zodat titel en tijd goed leesbaar zijn. Hij begint wel op de echte tijd.
+    return { top: y(s) + 1, hoogte: Math.max(y(e) - y(s) - 2, kader ? RIJ - 2 : 18) };
   };
 
   // Links langs de rand: het lesuur en de begintijd, één keer per begintijd die in de week voorkomt.
