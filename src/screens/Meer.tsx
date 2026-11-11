@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CalendarArrowDown, CalendarX, PartyPopper, ChevronRight, ClipboardList, Mail, Settings, ShieldCheck, type LucideIcon } from 'lucide-react';
+import { CalendarArrowDown, CalendarX, PartyPopper, ChevronRight, ClipboardList, Mail, Settings, type LucideIcon } from 'lucide-react';
 import { api } from '../api';
 import { ProfielKaart } from '../components/instellingen/ProfielKaart';
 import { PaginaKop } from '../components/ui/PaginaKop';
@@ -48,7 +48,6 @@ export function Meer() {
         <MeerRij naar="/meer/activiteiten" icoon={PartyPopper} naam="Activiteiten" />
         <MeerRij naar="/meer/afwezigheid" icoon={CalendarX} naam="Afwezigheid" />
         <MeerRij naar="/meer/rooster-exporteren" icoon={CalendarArrowDown} naam="Rooster exporteren" />
-        <MeerRij naar="/meer/privacy" icoon={ShieldCheck} naam="Privacy" />
       </section>
 
       <section className="kaart">
