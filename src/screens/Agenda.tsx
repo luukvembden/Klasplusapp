@@ -84,14 +84,18 @@ export function Agenda() {
   }, []);
 
   /**
-   * Welke les is uitgelicht: de les die nu bezig is, of in een pauze of tussenuur de volgende les.
-   * Voor de eerste les en na de laatste niets. Hele-dag-afspraken tellen niet mee.
+   * Welke les is uitgelicht: de les (of afspraak) die nu bezig is, of anders de volgende als die binnen
+   * een kwartier begint. Zo kleurt een pauze de volgende les, maar 's middags niet al iets van 19:00.
+   * Hele-dag-afspraken tellen niet mee.
    */
   const uitgelicht = (lessen: Afspraak[]): string | null => {
     const getimed = lessen.filter((a) => !a.heleDag);
-    if (getimed.length === 0 || nu < new Date(getimed[0].start).getTime()) return null;
     const bezig = getimed.find((a) => new Date(a.start).getTime() <= nu && nu < new Date(a.einde).getTime());
-    return (bezig ?? getimed.find((a) => new Date(a.start).getTime() > nu))?.id ?? null;
+    if (bezig) return bezig.id;
+    const volgende = getimed
+      .filter((a) => new Date(a.start).getTime() > nu)
+      .sort((x, y) => x.start.localeCompare(y.start))[0];
+    return volgende && new Date(volgende.start).getTime() - nu <= 15 * 60_000 ? volgende.id : null;
   };
 
   /** De lessen van één dag, zoals in de lijst; ook voor de buurdagen in de schuifbaan. */

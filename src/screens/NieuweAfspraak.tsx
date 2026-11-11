@@ -90,11 +90,29 @@ function AfspraakFormulier({ bestaand, startdag }: { bestaand?: Bestaand; startd
   const [fout, setFout] = useState<string | null>(null);
   const [bezig, setBezig] = useState(false);
 
-  const kiesBegin = (waarde: string) => {
-    setBeginDatum(waarde);
-    // Einde mag niet vóór het begin liggen.
-    if (waarde && eindDatum < waarde) setEindDatum(waarde);
+  /**
+   * Een ander begin: het einde schuift mee, zodat de afspraak even lang blijft. Was hij een uur
+   * (19:00–20:00) en begint hij nu om 20:00, dan eindigt hij om 21:00; ook over middernacht heen.
+   */
+  const verschuifBegin = (datum: string, tijdstip: string) => {
+    const oudBegin = vanInvoer(beginDatum) && beginTijd ? opMoment(beginDatum, beginTijd) : null;
+    const oudEinde = vanInvoer(eindDatum) && eindTijd ? opMoment(eindDatum, eindTijd) : null;
+    setBeginDatum(datum);
+    setBeginTijd(tijdstip);
+    if (!vanInvoer(datum) || !tijdstip) return;
+    if (heleDag) {
+      // Bij een hele dag alleen de datums: evenveel dagen als eerst.
+      const dagen = oudBegin && oudEinde ? Math.round((vanInvoer(eindDatum)!.getTime() - vanInvoer(beginDatum)!.getTime()) / 86_400_000) : 0;
+      setEindDatum(naarInvoer(plusDagen(vanInvoer(datum)!, Math.max(dagen, 0))));
+      return;
+    }
+    const duur = oudBegin && oudEinde && oudEinde > oudBegin ? oudEinde.getTime() - oudBegin.getTime() : 60 * 60_000;
+    const nieuwEinde = new Date(opMoment(datum, tijdstip).getTime() + duur);
+    setEindDatum(naarInvoer(nieuwEinde));
+    setEindTijd(tijd(nieuwEinde));
   };
+
+  const kiesBegin = (waarde: string) => verschuifBegin(waarde, beginTijd);
 
   const opslaan = async () => {
     if (!titel.trim()) return setFout('Geef de afspraak een titel.');
@@ -179,7 +197,7 @@ function AfspraakFormulier({ bestaand, startdag }: { bestaand?: Bestaand; startd
           {!heleDag && (
             <>
               <Invoerrij label="Begintijd" voor="begintijd">
-                <input id="begintijd" type="time" className="invoerrij__veld" value={beginTijd} onChange={(e) => setBeginTijd(e.target.value)} />
+                <input id="begintijd" type="time" className="invoerrij__veld" value={beginTijd} onChange={(e) => verschuifBegin(beginDatum, e.target.value)} />
               </Invoerrij>
               <Invoerrij label="Eindtijd" voor="eindtijd">
                 <input id="eindtijd" type="time" className="invoerrij__veld" value={eindTijd} onChange={(e) => setEindTijd(e.target.value)} />
