@@ -247,10 +247,9 @@
   position: relative;
 }
 
-/* De les van nu: een lichte tint en een streepje in de accentkleur links. */
+/* De les van nu: een lichte tint in de accentkleur. */
 .lesrij--nu {
   background: var(--groen-licht);
-  box-shadow: inset 3px 0 0 var(--groen-tekst);
 }
 
 /* Uurnummer in een gevuld vierkantje in de accentkleur, met het nummer in wit. */

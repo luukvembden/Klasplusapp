@@ -29,7 +29,7 @@ function regels(a: Afspraak, modern: boolean): [string, string] {
 
 /**
  * Eén les in de lijst: links het uurnummer in een vierkantje, dan twee regels tekst, rechts de labels.
- * `bezig`: de les van nu (of in de pauze de volgende); dan krijgt de rij een lichte tint en een streepje links.
+ * `bezig`: de les van nu (of in de pauze de volgende); dan krijgt de rij een lichte tint.
  */
 export function LesRij({ afspraak, bezig }: { afspraak: Afspraak; bezig?: boolean }) {
   const { agenda } = useInstellingen();
