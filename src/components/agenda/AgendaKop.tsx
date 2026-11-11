@@ -1,4 +1,4 @@
-import { dagEnMaand, dagNaam, datumInZin, nlTijd, weekNummer, zelfdeDag } from '../../lib/datum';
+import { dagEnMaand, dagNaam, datumInZin, maandagVan, nlTijd, weekNummer, zelfdeDag } from '../../lib/datum';
 import { useInstellingen, wijzigInstellingen, type AgendaIndeling } from '../../lib/instellingen';
 import './agenda.css';
 
@@ -33,8 +33,14 @@ export function AgendaKop({ dag, bereik }: Props) {
       <div className="agendakop__tekst">
         {bereik ? (
           <>
-            <h1 className="agendakop__titel">Week {weekNummer(bereik[0])}</h1>
-            <span className="agendakop__sub">{bereikTekst(bereik)}</span>
+            {/* De huidige week heet "Deze week"; het weeknummer staat dan achter de datums. */}
+            <h1 className="agendakop__titel">
+              {zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date())) ? 'Deze week' : `Week ${weekNummer(bereik[0])}`}
+            </h1>
+            <span className="agendakop__sub">
+              {bereikTekst(bereik)}
+              {zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date())) && ` · Week ${weekNummer(bereik[0])}`}
+            </span>
           </>
         ) : (
           <>
