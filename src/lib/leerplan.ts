@@ -30,6 +30,10 @@ export interface Leerplan {
   momenten: Leermoment[];
   /** Melding op het tijdstip van elk leermoment. */
   herinnering: boolean;
+  /** Ook als persoonlijke afspraak in de schoolagenda. */
+  opSchool?: boolean;
+  /** De ids van die afspraken op school, om ze later bij te werken of weg te halen. */
+  schoolIds?: string[];
 }
 
 const SLEUTEL = 'leerplannen';
@@ -90,6 +94,10 @@ export function lesLink(a: Afspraak): string {
 /** "Leren voor proefwerk Wiskunde B" */
 export const lerenTitel = (p: Pick<Leerplan, 'soort' | 'vak'>) =>
   `Leren voor ${p.soort === 'SO' ? 'SO' : p.soort.toLowerCase()} ${p.vak}`;
+
+/** Afspraken op school die bij een leerplan horen; die toont de Agenda niet dubbel. */
+export const schoolIdsVan = (alle: Record<string, Leerplan>) =>
+  new Set(Object.values(alle).flatMap((p) => p.schoolIds ?? []));
 
 /** De leermomenten van alle plannen als afspraken, zodat de Agenda ze tussen de lessen kan zetten. */
 export function leerAfspraken(alle: Record<string, Leerplan>): Afspraak[] {

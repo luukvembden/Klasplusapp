@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { api } from '../api';
+import { vergeetGeladen } from '../hooks/useLaden';
+import { haalVanSchool, zetOpSchool } from '../lib/leerplanSchool';
 import { Getalwiel } from '../components/leren/Getalwiel';
 import { Invoerrij } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
@@ -61,6 +64,10 @@ export function LerenPlannen() {
   const [dagen, setDagen] = useState(bestaand?.dagen ?? 5);
   const [duur, setDuur] = useState(bestaand?.duur ?? 45);
   const [herinnering, setHerinnering] = useState(bestaand?.herinnering ?? true);
+  // Een ouder kan geen afspraken in de agenda van het kind zetten.
+  const kanOpSchool = !api.isOuder();
+  const [opSchool, setOpSchool] = useState(bestaand?.opSchool ?? kanOpSchool);
+  const [bezig, setBezig] = useState(false);
   const [tijden, setTijden] = useState<Record<string, Omit<Leermoment, 'datum'>>>(() =>
     Object.fromEntries((bestaand?.momenten ?? []).map(({ datum, ...rest }) => [datum, rest])),
   );
@@ -91,7 +98,7 @@ export function LerenPlannen() {
       setMelding('Zet minstens één dag aan.');
       return;
     }
-    bewaarLeerplan({
+    const plan = {
       toetsId: id,
       vak: metHoofdletter(a.vak ?? a.omschrijving),
       soort: soortVan(a),
@@ -100,15 +107,38 @@ export function LerenPlannen() {
       duur,
       momenten,
       herinnering,
-    });
+      opSchool: kanOpSchool && opSchool,
+      schoolIds: bestaand?.schoolIds ?? [],
+    };
+    // Eerst op dit toestel bewaren, zodat er niets verloren gaat als de school niet bereikbaar is.
+    bewaarLeerplan(plan);
+    setBezig(true);
+    setMelding(null);
+    let gelukt = true;
+    try {
+      const ids = plan.opSchool ? await zetOpSchool(plan, plan.schoolIds) : (await haalVanSchool(plan.schoolIds), []);
+      bewaarLeerplan({ ...plan, schoolIds: ids });
+    } catch (e) {
+      gelukt = false;
+      setMelding(
+        `Je plan staat in Klas+, maar niet in de schoolagenda: ${e instanceof Error ? e.message : 'de school gaf een fout'}. Probeer het later nog eens.`,
+      );
+    } finally {
+      setBezig(false);
+    }
+    vergeetGeladen();
     if (herinnering && kanNotificaties) await vraagToestemming();
     void controleerNu(true);
-    terug();
+    if (gelukt) terug();
   };
 
-  const wis = () => {
+  const wis = async () => {
+    setBezig(true);
+    await haalVanSchool(bestaand?.schoolIds ?? []);
     verwijderLeerplan(id);
+    vergeetGeladen();
     void controleerNu(true);
+    setBezig(false);
     terug();
   };
 
@@ -236,13 +266,30 @@ export function LerenPlannen() {
             </label>
           </section>
 
+          {kanOpSchool && (
+            <section className="kaart">
+              <label className="instelrij meldingrij" htmlFor="leren-school">
+                <span className="meldingrij__tekst">
+                  <span>Ook in de schoolagenda</span>
+                  <span className="meldingrij__uitleg">Als persoonlijke afspraak, zodat je het ook op de schoolsite ziet</span>
+                </span>
+                <input
+                  id="leren-school"
+                  type="checkbox"
+                  checked={opSchool}
+                  onChange={(e) => setOpSchool(e.target.checked)}
+                />
+              </label>
+            </section>
+          )}
+
           {melding && <p className="melding">{melding}</p>}
 
-          <button type="button" className="knop-primair" onClick={opslaan}>
-            {bestaand ? 'Plan bijwerken' : 'Plan opslaan'}
+          <button type="button" className="knop-primair" onClick={opslaan} disabled={bezig}>
+            {bezig ? 'Bezig…' : bestaand ? 'Plan bijwerken' : 'Plan opslaan'}
           </button>
           {bestaand && (
-            <button type="button" className="knop-verwijderen" onClick={wis}>
+            <button type="button" className="knop-verwijderen" onClick={wis} disabled={bezig}>
               Plan verwijderen
             </button>
           )}

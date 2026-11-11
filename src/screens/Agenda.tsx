@@ -11,7 +11,7 @@ import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { useInstellingen } from '../lib/instellingen';
-import { leerAfspraken, useLeerplannen } from '../lib/leerplan';
+import { leerAfspraken, schoolIdsVan, useLeerplannen } from '../lib/leerplan';
 import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, isWeekdag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
@@ -45,7 +45,11 @@ export function Agenda() {
   const weekGeladen = week.data && !week.laden && !week.fout;
   // Leermomenten uit je leerplannen staan tussen de lessen (alleen op dit toestel).
   const plannen = useLeerplannen();
-  const alleAfspraken = useMemo(() => [...(week.data?.data ?? []), ...leerAfspraken(plannen)], [week.data, plannen]);
+  // Staat een leermoment ook als persoonlijke afspraak op school, dan alleen de versie van Klas+ (die opent het plan).
+  const alleAfspraken = useMemo(() => {
+    const opSchool = schoolIdsVan(plannen);
+    return [...(week.data?.data ?? []).filter((a) => !opSchool.has(a.id)), ...leerAfspraken(plannen)];
+  }, [week.data, plannen]);
   // Vegen kan over de hele lijst, ook het lege stuk eronder tot aan de balk (het plusje ligt erbuiten).
   const lijstVlak = useRef<HTMLDivElement>(null);
 
