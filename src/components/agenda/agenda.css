@@ -390,74 +390,71 @@
 }
 
 /*
- * Agenda: kop en dagstrook samen in één gekleurd blok (de accentkleur), met witte tekst.
- * Alleen hier; Huiswerk houdt zijn lichte week-strook. De gekozen dag is een witte cirkel.
+ * Agenda: lichte kop zoals bij Huiswerk en Cijfers (geen gekleurd blok meer), met daaronder in de
+ * dagweergave de dagen in dezelfde stijl als boven het weekrooster: grijs vlakje om de gekozen dag,
+ * vandaag met een nummer in de accentkleur, het weekend iets lichter, grijze pijltjes opzij.
  */
 .agendakop-vlak {
   flex: 0 0 auto;
-  /* Rechthoekig en tot de randen: vult de breedte en loopt bovenin door onder de statusbalk. */
-  padding: calc(var(--veilig-boven) + 14px) 16px 10px;
-  background: var(--kop);
-  color: var(--op-groen);
+  padding: calc(var(--veilig-boven) + 16px) 16px 6px;
 }
 
-/* De kop staat nu in het blok: geen eigen rand of statusbalk-ruimte meer nodig. */
 .agendakop-vlak .agendakop {
-  padding: 0 4px 10px;
-}
-
-.agendakop-vlak .agendakop__sub {
-  color: color-mix(in srgb, var(--op-groen) 78%, transparent);
-}
-
-/* Kalenderknop en "Vandaag"-knop: doorschijnend wit op de kleur, in plaats van een witte kaart. */
-.agendakop-vlak .agendakop__wissel,
-.agendakop-vlak .agendakop__vandaag {
-  background: color-mix(in srgb, var(--op-groen) 16%, transparent);
-  box-shadow: none;
-  color: var(--op-groen);
-}
-
-/* De dagstrook zit al in het blok: geen eigen vlak, en alles in wit. */
-.agendakop-vlak .agendakop__wissel button {
-  color: var(--op-groen);
-}
-
-.agendakop-vlak .agendakop__wissel button[aria-pressed='true'] {
-  background: var(--dag-rondje);
-  color: var(--dag-rondje-tekst);
+  padding: 0 4px 12px;
 }
 
 .agendakop-vlak .dagstrook {
   margin: 0;
   padding: 0;
   background: transparent;
-  color: var(--op-groen);
 }
 
-.agendakop-vlak .dagstrook__pijl,
-.agendakop-vlak .dagstrook__dag,
-.agendakop-vlak .dagstrook__nr {
-  color: var(--op-groen);
+.agendakop-vlak .dagstrook__pijl {
+  color: var(--tekst-secundair);
+}
+
+.agendakop-vlak .dagstrook__dag {
+  min-height: 0;
+  margin: 0 1px;
+  padding: 3px 0 4px;
+  border-radius: 10px;
+  gap: 0;
 }
 
 .agendakop-vlak .dagstrook__kort {
-  color: color-mix(in srgb, var(--op-groen) 72%, transparent);
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--tekst-secundair);
 }
 
-/* Gekozen dag: witte cirkel met het nummer in de accentkleur. */
+.agendakop-vlak .dagstrook__nr {
+  width: auto;
+  height: auto;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--tekst);
+}
+
+.agendakop-vlak .dagstrook__dag--weekend {
+  opacity: 0.55;
+}
+
+.agendakop-vlak .dagstrook__dag--vandaag .dagstrook__nr {
+  color: var(--groen-tekst);
+}
+
+.agendakop-vlak .dagstrook__dag[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--tekst) 7%, transparent);
+}
+
 .agendakop-vlak .dagstrook__dag[aria-pressed='true'] .dagstrook__nr {
-  background: var(--dag-rondje);
-  color: var(--dag-rondje-tekst);
+  background: none;
+  color: var(--tekst);
 }
 
-/* De weekstrook (Huiswerk) in het blok: tekst wit. */
-.agendakop-vlak .weekstrook__week {
-  color: var(--op-groen);
-}
-
-.agendakop-vlak .weekstrook__bereik {
-  color: color-mix(in srgb, var(--op-groen) 72%, transparent);
+.agendakop-vlak .dagstrook__dag--vandaag[aria-pressed='true'] .dagstrook__nr {
+  color: var(--groen-tekst);
 }
 
 /* ---------- Weekweergave: de hele week in één raster, op tijd ---------- */

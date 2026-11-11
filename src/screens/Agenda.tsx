@@ -126,7 +126,7 @@ export function Agenda() {
 
   return (
     <div className="agenda">
-      {/* Kop en dagstrook samen in één gekleurd blok, met witte tekst en een witte cirkel om de gekozen dag. */}
+      {/* Lichte kop zoals de andere tabbladen; in de dagweergave de dagen eronder. */}
       <div className="agendakop-vlak">
         {/* In de weekweergave geen dagkiezer: je veegt per week, en de dagen staan boven het rooster. */}
         <AgendaKop dag={dag} bereik={perWeek ? [maandag, plusDagen(maandag, 4)] : undefined} />

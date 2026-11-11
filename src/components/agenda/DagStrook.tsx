@@ -20,11 +20,15 @@ export function DagStrook({ dag, onKies }: Props) {
       <div className="dagstrook__dagen">
         {dagen.map((d) => {
           const actief = zelfdeDag(d, dag);
+          const weekdag = nlTijd(d).weekdag;
+          const soort = `${zelfdeDag(d, new Date()) ? ' dagstrook__dag--vandaag' : ''}${
+            weekdag === 0 || weekdag === 6 ? ' dagstrook__dag--weekend' : ''
+          }`;
           return (
             <button
               key={naarInvoer(d)}
               type="button"
-              className="dagstrook__dag"
+              className={`dagstrook__dag${soort}`}
               aria-pressed={actief}
               aria-label={dagTitel(d)}
               onClick={() => onKies(d)}
