@@ -8,7 +8,7 @@ import { api, type Afspraak } from '../api';
 import { beginVanDag, dagNaam, naarInvoer, plusDagen } from './datum';
 import { leesInstellingen } from './instellingen';
 import { lees, schrijf, verwijder } from './opslag';
-import { alleLeerplannen, lerenTitel } from './leerplan';
+import { alleLeerplannen, isMaken, lerenTitel, notitieVan } from './leerplan';
 import { ochtendMelding } from './ochtendmelding';
 import { opMoment } from '../components/les/Invoerrij';
 import { metHoofdletter } from './tekst';
@@ -221,7 +221,9 @@ async function planLeren() {
       meldingen.push({
         id: LEREN_EERSTE + meldingen.length,
         title: lerenTitel(p),
-        body: `${p.soort} op ${dagNaam(new Date(p.toetsStart)).toLowerCase()}. Je had ${p.duur} minuten gepland.`,
+        body:
+          notitieVan(p, m) ||
+          `${isMaken(p) ? 'Huiswerk' : p.soort} voor ${dagNaam(new Date(p.toetsStart)).toLowerCase()}. Je had ${p.duur} minuten gepland.`,
         schedule: { at: moment, allowWhileIdle: true },
         extra: { pad: `/leren/${encodeURIComponent(p.toetsId)}` },
       });

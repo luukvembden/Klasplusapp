@@ -1,4 +1,5 @@
 import { api, type AfspraakDetail, type Label } from '../api';
+import { zonderKlasPlusRegel } from '../lib/leerplan';
 import { htmlNaarTekst } from '../lib/tekst';
 import { useLaden } from './useLaden';
 
@@ -24,6 +25,10 @@ export function useAfspraak(id: string) {
   return {
     ...toestand,
     afspraak,
-    tekst: afspraak?.inhoudHtml ? htmlNaarTekst(afspraak.inhoudHtml) : null,
+    // "Ingezet met Klas+." staat alleen voor de schoolsite in een eigen afspraak; in Klas+ niet tonen.
+    tekst: (() => {
+      const html = afspraak?.labels.includes('eigen') ? zonderKlasPlusRegel(afspraak.inhoudHtml) : afspraak?.inhoudHtml;
+      return html ? htmlNaarTekst(html) : null;
+    })(),
   };
 }

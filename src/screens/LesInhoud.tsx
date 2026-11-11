@@ -17,14 +17,7 @@ import '../components/les/les.css';
 import '../components/agenda/agenda.css';
 import '../components/leren/leren.css';
 
-/**
- * TIJDELIJK, om te testen: ook bij huiswerk kun je leren plannen, zodat je zonder toetsen kunt zien of
- * leermomenten op de schoolsite komen. Zet dit weer op false voordat het echt uitkomt.
- */
-const TEST_OOK_HUISWERK = true;
-
-/** Bij deze soorten kun je leren plannen. */
-const TOETSEN: Label[] = ['proefwerk', 'tentamen', 'so', 'mondeling', ...(TEST_OOK_HUISWERK ? (['huiswerk'] as Label[]) : [])];
+const TOETSEN: Label[] = ['proefwerk', 'tentamen', 'so', 'mondeling'];
 
 const terugNaar = {
   les: (id: string) => ({ naar: `/agenda/${encodeURIComponent(id)}`, label: 'Les' }),
@@ -39,17 +32,20 @@ export function LesInhoud({ van }: { van: keyof typeof terugNaar }) {
   const [gewijzigd, setGewijzigd] = useState<boolean | null>(null);
   const afgerond = gewijzigd ?? a?.afgerond ?? false;
 
-  const isToets = !!a && TOETSEN.some((l) => a.labels.includes(l)) && new Date(a.start).getTime() > Date.now();
+  // Bij een toets plan je leren, bij huiswerk plan je wanneer je het maakt. Alleen als het nog moet komen.
+  const komt = !!a && new Date(a.start).getTime() > Date.now();
+  const isToets = komt && TOETSEN.some((l) => a!.labels.includes(l));
+  const isHuiswerk = komt && !isToets && a!.labels.includes('huiswerk');
 
   return (
     <div className="pagina pagina--met-terug lesinhoud--met-knop">
       <TerugLink naar={terug.naar} label={terug.label} />
-      {isToets && (
+      {(isToets || isHuiswerk) && a && (
         <Link
           to={`/leren/${encodeURIComponent(a.id)}`}
           className="agendakop__vandaag agendakop__knoplink lesinhoud__knop"
         >
-          {leerplanVoor(a.id) ? 'Leerplan' : 'Plan leren'}
+          {isToets ? (leerplanVoor(a.id) ? 'Leerplan' : 'Plan leren') : leerplanVoor(a.id) ? 'Planning' : 'Inplannen'}
         </Link>
       )}
       <PaginaKop

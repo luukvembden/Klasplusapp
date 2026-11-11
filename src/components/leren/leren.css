@@ -103,17 +103,38 @@
   cursor: default;
 }
 
-/* Een dag: vinkje, naam van de dag, tijd rechts. */
+/* Een dag in het plan: de regel met vinkje en tijd, en eventueel de notitie eronder. */
+.leren__dagblok {
+  border-bottom: 1px solid var(--lijn-zacht);
+}
+
+.leren__dagblok:last-child {
+  border-bottom: none;
+}
+
 .leren__dag {
   display: flex;
   align-items: center;
   gap: 12px;
   min-height: 52px;
-  border-bottom: 1px solid var(--lijn-zacht);
 }
 
-.leren__dag:last-child {
-  border-bottom: none;
+.leren__notitie {
+  display: block;
+  width: calc(100% - 44px);
+  margin: -4px 0 12px 44px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--invoer-rand);
+  border-radius: 10px;
+  background: var(--achtergrond);
+  color: var(--tekst);
+  font: inherit;
+  font-size: 15px;
+}
+
+.leren__notitie::placeholder {
+  color: var(--tekst-secundair);
 }
 
 .leren__dagnaam {

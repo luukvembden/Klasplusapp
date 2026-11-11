@@ -1,7 +1,7 @@
 import { api } from '../api';
 import { opMoment } from '../components/les/Invoerrij';
 import { beginVanDag, plusDagen } from './datum';
-import { lerenTitel, type Leerplan } from './leerplan';
+import { KLAS_PLUS_REGEL, lerenTitel, notitieVan, type Leerplan } from './leerplan';
 
 // Leermomenten ook als persoonlijke afspraak in de schoolagenda, zodat ze op de schoolsite en in de
 // officiële app staan. Klas+ onthoudt welke afspraken bij het plan horen, om ze later te kunnen
@@ -20,32 +20,33 @@ export async function zetOpSchool(plan: Leerplan, oudeIds: string[]): Promise<st
   await haalVanSchool(oudeIds);
   const momenten = plan.momenten
     .filter((m) => m.aan)
-    .map((m) => opMoment(m.datum, m.tijd))
-    .filter((d) => d.getTime() > Date.now());
+    .map((m) => ({ start: opMoment(m.datum, m.tijd), notitie: notitieVan(plan, m) }))
+    .filter((m) => m.start.getTime() > Date.now());
   if (momenten.length === 0) return [];
 
   const titel = lerenTitel(plan);
-  for (const start of momenten) {
+  for (const { start, notitie } of momenten) {
     await api.maakAfspraak({
       titel,
       heleDag: false,
       start: start.toISOString(),
       einde: new Date(start.getTime() + plan.duur * 60_000).toISOString(),
       locatie: '',
-      beschrijving: `Ingepland met Klas+ voor ${plan.soort === 'SO' ? 'de SO' : `het ${plan.soort.toLowerCase()}`} ${plan.vak}.`,
+      // Bovenaan je eigen notitie, dan een witregel, dan dat het met Klas+ is ingezet.
+      beschrijving: notitie ? `${notitie}\n\n${KLAS_PLUS_REGEL}` : KLAS_PLUS_REGEL,
     });
   }
 
   // De school geeft bij het maken geen id terug; zoek de nieuwe afspraken op titel en begintijd.
-  const eerste = beginVanDag(momenten[0]);
-  const laatste = plusDagen(beginVanDag(momenten[momenten.length - 1]), 1);
+  const eerste = beginVanDag(momenten[0].start);
+  const laatste = plusDagen(beginVanDag(momenten[momenten.length - 1].start), 1);
   const lijst = (await api.afspraken(eerste, laatste)).data;
   return lijst
     .filter(
       (a) =>
         a.labels.includes('eigen') &&
         a.omschrijving === titel &&
-        momenten.some((m) => Math.abs(new Date(a.start).getTime() - m.getTime()) < 60_000),
+        momenten.some((m) => Math.abs(new Date(a.start).getTime() - m.start.getTime()) < 60_000),
     )
     .map((a) => a.id);
 }

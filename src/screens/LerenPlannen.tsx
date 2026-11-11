@@ -56,13 +56,16 @@ export function LerenPlannen() {
   const lagen = useLagen();
   const bestaand = leerplanVoor(id);
 
+  // Bij huiswerk plan je wanneer je het maakt; bij een toets wanneer je leert.
+  const maken = !!a && soortVan(a) === 'Huiswerk';
   const toetsDag = a ? beginVanDag(new Date(a.start)) : null;
   const vandaag = beginVanDag(new Date());
   const ruimte = toetsDag ? Math.round((toetsDag.getTime() - vandaag.getTime()) / 86_400_000) : 0;
   const max = Math.min(MAX_DAGEN, ruimte);
 
-  const [dagen, setDagen] = useState(bestaand?.dagen ?? 5);
-  const [duur, setDuur] = useState(bestaand?.duur ?? 45);
+  const [dagen, setDagen] = useState<number | null>(bestaand?.dagen ?? null);
+  const [duur, setDuur] = useState<number | null>(bestaand?.duur ?? null);
+  const [notities, setNotities] = useState(bestaand?.notities ?? false);
   const [herinnering, setHerinnering] = useState(bestaand?.herinnering ?? true);
   // Een ouder kan geen afspraken in de agenda van het kind zetten.
   const kanOpSchool = !api.isOuder();
@@ -73,13 +76,17 @@ export function LerenPlannen() {
   const [alle, setAlle] = useState(STANDAARD_TIJD);
   const [melding, setMelding] = useState<string | null>(null);
 
-  // Past de toets niet in het gekozen aantal dagen (bijvoorbeeld over 3 dagen), dan zoveel als er zijn.
+  // Nog niets gekozen: bij huiswerk standaard de dag ervoor en een half uur, bij een toets 5 dagen en 45 minuten.
+  const gekozenDagen = dagen ?? (maken ? 1 : 5);
+  const gekozenDuur = duur ?? (maken ? 30 : 45);
+
+  // Past het niet in het gekozen aantal dagen (bijvoorbeeld een toets over 3 dagen), dan zoveel als er zijn.
   useEffect(() => {
-    if (max > 0 && dagen > max) setDagen(max);
-  }, [max, dagen]);
+    if (max > 0 && gekozenDagen > max) setDagen(max);
+  }, [max, gekozenDagen]);
 
   const kiesDagen = useCallback((n: number) => setDagen(n), []);
-  const datums = toetsDag ? datumsVoor(toetsDag, Math.min(dagen, Math.max(max, 1))) : [];
+  const datums = toetsDag ? datumsVoor(toetsDag, Math.min(gekozenDagen, Math.max(max, 1))) : [];
   const momentVan = (datum: string) => tijden[datum] ?? { tijd: alle, aan: true };
   const zet = (datum: string, deel: Partial<Omit<Leermoment, 'datum'>>) =>
     setTijden((t) => ({ ...t, [datum]: { ...momentVan(datum), ...deel } }));
@@ -102,9 +109,10 @@ export function LerenPlannen() {
       vak: metHoofdletter(a.vak ?? a.omschrijving),
       soort: soortVan(a),
       toetsStart: a.start,
-      dagen,
-      duur,
+      dagen: gekozenDagen,
+      duur: gekozenDuur,
       momenten,
+      notities,
       herinnering,
       // Altijd ook in de schoolagenda (behalve voor een ouder).
       opSchool: kanOpSchool,
@@ -145,16 +153,23 @@ export function LerenPlannen() {
   return (
     <div className="pagina pagina--met-terug">
       <TerugLink naar={`/huiswerk/${encodeURIComponent(id)}`} label="Terug" />
-      <PaginaKop sub={a ? `${soortVan(a)} · ${metHoofdletter(a.vak ?? a.omschrijving)}` : ' '} titel="Leren plannen" />
+      <PaginaKop
+        sub={a ? `${soortVan(a)} · ${metHoofdletter(a.vak ?? a.omschrijving)}` : ' '}
+        titel={maken ? 'Huiswerk inplannen' : 'Leren plannen'}
+      />
       {fout && <p className="melding">{fout}</p>}
       {a && (
         <p className="leren__toets">
-          Toets op {dagTitel(new Date(a.start)).toLowerCase()}
+          {maken ? 'Huiswerk voor' : 'Toets op'} {dagTitel(new Date(a.start)).toLowerCase()}
           {a.lesuur ? `, ${a.lesuur}e uur` : ''} om {tijd(new Date(a.start))}
         </p>
       )}
 
-      {a && max < 1 && <p className="melding">Deze toets is vandaag of al geweest; er valt niets meer te plannen.</p>}
+      {a && max < 1 && (
+        <p className="melding">
+          {maken ? 'Dit huiswerk is voor vandaag' : 'Deze toets is vandaag'} of al geweest; er valt niets meer te plannen.
+        </p>
+      )}
 
       {a && max >= 1 && (
         <>
@@ -165,7 +180,7 @@ export function LerenPlannen() {
                   key={s.naam}
                   type="button"
                   className="leren__chip"
-                  aria-pressed={dagen === s.dagen}
+                  aria-pressed={gekozenDagen === s.dagen}
                   disabled={s.dagen > max}
                   onClick={() => setDagen(s.dagen)}
                 >
@@ -176,7 +191,7 @@ export function LerenPlannen() {
             <Getalwiel
               id="leren-dagen"
               label="Aantal dagen van tevoren"
-              waarde={Math.min(dagen, max)}
+              waarde={Math.min(gekozenDagen, max)}
               van={1}
               tot={max}
               eenheid={(n) => (n === 1 ? 'dag' : 'dagen')}
@@ -205,13 +220,28 @@ export function LerenPlannen() {
                   }}
                 />
               </Invoerrij>
+              <label className="instelrij meldingrij" htmlFor="leren-notities">
+                <span className="meldingrij__tekst">
+                  <span>Notitie per dag</span>
+                  <span className="meldingrij__uitleg">
+                    Wat je die dag gaat {maken ? 'maken' : 'leren'}, bijvoorbeeld hoofdstuk 3
+                  </span>
+                </span>
+                <input
+                  id="leren-notities"
+                  type="checkbox"
+                  checked={notities}
+                  onChange={(e) => setNotities(e.target.checked)}
+                />
+              </label>
             </section>
             <section className="kaart">
               {datums.map((datum) => {
                 const m = momentVan(datum);
                 const d = vanInvoer(datum)!;
                 return (
-                  <div key={datum} className={`leren__dag${m.aan ? '' : ' leren__dag--uit'}`}>
+                  <div key={datum} className="leren__dagblok">
+                  <div className={`leren__dag${m.aan ? '' : ' leren__dag--uit'}`}>
                     <label className="instelrij" htmlFor={`leren-aan-${datum}`} style={{ border: 'none', minHeight: 0 }}>
                       <input
                         id={`leren-aan-${datum}`}
@@ -230,6 +260,17 @@ export function LerenPlannen() {
                       onChange={(e) => e.target.value && zet(datum, { tijd: e.target.value })}
                     />
                   </div>
+                  {notities && m.aan && (
+                    <input
+                      type="text"
+                      className="leren__notitie"
+                      aria-label={`Notitie voor ${dagTitel(d)}`}
+                      placeholder={maken ? 'Wat ga je maken?' : 'Wat ga je leren?'}
+                      value={m.notitie ?? ''}
+                      onChange={(e) => zet(datum, { notitie: e.target.value })}
+                    />
+                  )}
+                  </div>
                 );
               })}
             </section>
@@ -242,7 +283,7 @@ export function LerenPlannen() {
                   key={d.minuten}
                   type="button"
                   className="leren__chip"
-                  aria-pressed={duur === d.minuten}
+                  aria-pressed={gekozenDuur === d.minuten}
                   onClick={() => setDuur(d.minuten)}
                 >
                   {d.naam}
@@ -255,7 +296,9 @@ export function LerenPlannen() {
             <label className="instelrij meldingrij" htmlFor="leren-herinnering">
               <span className="meldingrij__tekst">
                 <span>Herinnering</span>
-                <span className="meldingrij__uitleg">Een melding op het tijdstip dat je gaat leren</span>
+                <span className="meldingrij__uitleg">
+                  Een melding op het tijdstip dat je gaat {maken ? 'beginnen' : 'leren'}
+                </span>
               </span>
               <input
                 id="leren-herinnering"
