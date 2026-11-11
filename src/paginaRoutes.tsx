@@ -16,6 +16,7 @@ import { NieuwBericht } from './screens/NieuwBericht';
 import { Opdrachten } from './screens/Opdrachten';
 import { OpdrachtScherm } from './screens/OpdrachtScherm';
 import { AgendaExport } from './screens/AgendaExport';
+import { LerenPlannen } from './screens/LerenPlannen';
 import { Activiteiten } from './screens/Activiteiten';
 import { ActiviteitScherm } from './screens/ActiviteitScherm';
 import { Les } from './screens/Les';
@@ -34,6 +35,7 @@ export const paginaRoutes = (
     <Route path="agenda/:id" element={<Les />} />
     <Route path="agenda/:id/bewerken" element={<AfspraakBewerken />} />
     <Route path="agenda/:id/inhoud" element={<LesInhoud van="les" />} />
+    <Route path="leren/:id" element={<LerenPlannen />} />
     <Route path="huiswerk" element={<Huiswerk />} />
     <Route path="huiswerk/:id" element={<LesInhoud van="huiswerk" />} />
     <Route path="cijfers" element={<Cijfers />} />

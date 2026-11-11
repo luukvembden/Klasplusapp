@@ -9,6 +9,7 @@ import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
 import { vergeetGeladen } from '../hooks/useLaden';
 import { wisEigenAfspraken } from '../lib/eigenAfspraken';
+import { wisLeerplannen } from '../lib/leerplan';
 import { herstelInstellingen } from '../lib/instellingen';
 import { kanNotificaties, wisNotificaties } from '../lib/notificaties';
 import { zetOngelezen } from '../lib/ongelezen';
@@ -28,6 +29,7 @@ export function Instellingen() {
     await api.uitloggen();
     // Zoals de privacyverklaring belooft: alles van dit toestel weg, ook de voorkeuren.
     wisEigenAfspraken();
+    wisLeerplannen();
     wisAlles();
     vergeetGeladen();
     herstelInstellingen();

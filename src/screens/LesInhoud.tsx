@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AfgerondSchakelaar } from '../components/les/AfgerondSchakelaar';
 import { GegevenRij } from '../components/les/GegevenRij';
 import { BijlagenLijst } from '../components/meer/BijlagenLijst';
@@ -11,7 +11,13 @@ import { TerugLink } from '../components/ui/TerugLink';
 import { soortVan, useAfspraak } from '../hooks/useAfspraak';
 import { dagTitel, datumEnTijd, tijdvak } from '../lib/datum';
 import { metHoofdletter } from '../lib/tekst';
+import { leerplanVoor } from '../lib/leerplan';
 import '../components/les/les.css';
+import '../components/agenda/agenda.css';
+import '../components/leren/leren.css';
+
+/** Bij deze soorten kun je leren plannen. */
+const TOETSEN = ['proefwerk', 'tentamen', 'so', 'mondeling'] as const;
 
 const terugNaar = {
   les: (id: string) => ({ naar: `/agenda/${encodeURIComponent(id)}`, label: 'Les' }),
@@ -26,9 +32,19 @@ export function LesInhoud({ van }: { van: keyof typeof terugNaar }) {
   const [gewijzigd, setGewijzigd] = useState<boolean | null>(null);
   const afgerond = gewijzigd ?? a?.afgerond ?? false;
 
+  const isToets = !!a && TOETSEN.some((l) => a.labels.includes(l)) && new Date(a.start).getTime() > Date.now();
+
   return (
-    <div className="pagina pagina--met-terug">
+    <div className="pagina pagina--met-terug lesinhoud--met-knop">
       <TerugLink naar={terug.naar} label={terug.label} />
+      {isToets && (
+        <Link
+          to={`/leren/${encodeURIComponent(a.id)}`}
+          className="agendakop__vandaag agendakop__knoplink lesinhoud__knop"
+        >
+          {leerplanVoor(a.id) ? 'Leerplan' : 'Plan leren'}
+        </Link>
+      )}
       <PaginaKop
         sub={a ? `${metHoofdletter(a.vak ?? a.omschrijving)} · ${dagTitel(new Date(a.start))}` : ' '}
         titel={a ? soortVan(a) : ' '}

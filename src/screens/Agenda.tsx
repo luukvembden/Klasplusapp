@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { api, type Afspraak } from '../api';
@@ -11,6 +11,7 @@ import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { useInstellingen } from '../lib/instellingen';
+import { leerAfspraken, useLeerplannen } from '../lib/leerplan';
 import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, isWeekdag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
@@ -42,13 +43,16 @@ export function Agenda() {
   // en bij het vegen staat de buurdag (ook over de weekgrens) al klaar.
   const week = useLaden(() => api.afspraken(plusDagen(maandag, -7), plusDagen(maandag, 14)), [maandag.getTime()]);
   const weekGeladen = week.data && !week.laden && !week.fout;
+  // Leermomenten uit je leerplannen staan tussen de lessen (alleen op dit toestel).
+  const plannen = useLeerplannen();
+  const alleAfspraken = useMemo(() => [...(week.data?.data ?? []), ...leerAfspraken(plannen)], [week.data, plannen]);
   // Vegen kan over de hele lijst, ook het lege stuk eronder tot aan de balk (het plusje ligt erbuiten).
   const lijstVlak = useRef<HTMLDivElement>(null);
 
   // Een afspraak hoort bij elke dag die hij (deels) raakt; eigen afspraken kunnen meerdere dagen duren.
   const lessenOp = (d: Date) => {
     const einde = plusDagen(d, 1);
-    return (week.data?.data ?? [])
+    return alleAfspraken
       .filter((a) => new Date(a.start) < einde && (new Date(a.einde) > d || zelfdeDag(new Date(a.start), d)))
       // Hele-dag-afspraken bovenaan, daarna op begintijd.
       .sort((a, b) => Number(!!b.heleDag) - Number(!!a.heleDag) || a.start.localeCompare(b.start));
@@ -108,7 +112,7 @@ export function Agenda() {
   const roosterVan = (ma: Date) => {
     const dagen = Array.from({ length: 5 }, (_, i) => plusDagen(ma, i));
     const einde = plusDagen(ma, 5);
-    const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= ma && new Date(a.start) < einde);
+    const lessen = alleAfspraken.filter((a) => new Date(a.start) >= ma && new Date(a.start) < einde);
     if (!weekGeladen && lessen.length === 0) return null;
     // De les van nu (of in de pauze de volgende) komt uit de lessen van vandaag, als vandaag in deze week valt.
     const vandaag = new Date(nu);

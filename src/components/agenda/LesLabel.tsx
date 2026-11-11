@@ -14,6 +14,7 @@ const teksten: Record<Label, string> = {
   kwt: 'KWT',
   vervalt: 'Vervallen',
   gewijzigd: 'Wijziging',
+  leren: 'Leren',
 };
 
 /** Huiswerk is grijs zolang het open staat en wordt groen (met vinkje) als je het hebt afgerond. */

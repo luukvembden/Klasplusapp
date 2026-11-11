@@ -8,7 +8,9 @@ import { api, type Afspraak } from '../api';
 import { beginVanDag, dagNaam, naarInvoer, plusDagen } from './datum';
 import { leesInstellingen } from './instellingen';
 import { lees, schrijf, verwijder } from './opslag';
+import { alleLeerplannen, lerenTitel } from './leerplan';
 import { ochtendMelding } from './ochtendmelding';
+import { opMoment } from '../components/les/Invoerrij';
 import { metHoofdletter } from './tekst';
 
 /** Alleen in de telefoon-app; in de browser (demo) kan het niet. */
@@ -23,6 +25,9 @@ const HUISWERK_DAGEN = 8;
 /** Ochtendmeldingen ook met vaste nummers: vandaag en de dagen erna. */
 const OCHTEND_EERSTE = 6000;
 const OCHTEND_DAGEN = 8;
+/** Leerherinneringen: een vast blok nummers, zodat we ze elke keer helemaal kunnen vervangen. */
+const LEREN_EERSTE = 7000;
+const LEREN_MAX = 200;
 
 /** Een uniek nummer per melding (Android wil een geheel getal). */
 function volgnummer(): number {
@@ -199,6 +204,32 @@ async function planOchtend(aan: boolean, tijdstip: string) {
   if (meldingen.length) await LocalNotifications.schedule({ notifications: meldingen });
 }
 
+// ---- Leerherinneringen ----
+
+const wisLeren = () =>
+  LocalNotifications.cancel({ notifications: Array.from({ length: LEREN_MAX }, (_, i) => ({ id: LEREN_EERSTE + i })) });
+
+/** Een melding op elk leermoment uit een leerplan met herinnering, voor zover nog in de toekomst. */
+async function planLeren() {
+  await wisLeren();
+  const meldingen = [];
+  for (const p of Object.values(alleLeerplannen())) {
+    if (!p.herinnering) continue;
+    for (const m of p.momenten) {
+      const moment = opMoment(m.datum, m.tijd);
+      if (!m.aan || moment.getTime() <= Date.now() || meldingen.length >= LEREN_MAX) continue;
+      meldingen.push({
+        id: LEREN_EERSTE + meldingen.length,
+        title: lerenTitel(p),
+        body: `${p.soort} op ${dagNaam(new Date(p.toetsStart)).toLowerCase()}. Je had ${p.duur} minuten gepland.`,
+        schedule: { at: moment, allowWhileIdle: true },
+        extra: { pad: `/leren/${encodeURIComponent(p.toetsId)}` },
+      });
+    }
+  }
+  if (meldingen.length) await LocalNotifications.schedule({ notifications: meldingen });
+}
+
 // ---- Alles samen ----
 
 let bezig: Promise<void> | null = null;
@@ -222,6 +253,7 @@ export function controleerNu(altijd = false): Promise<void> {
     if (n.rooster) await controleerRooster().catch(() => undefined);
     await planHuiswerk(n.huiswerk, n.huiswerkTijd).catch(() => undefined);
     await planOchtend(n.ochtend, n.ochtendTijd).catch(() => undefined);
+    await planLeren().catch(() => undefined);
   })().finally(() => {
     bezig = null;
   });
@@ -235,6 +267,7 @@ export async function wisNotificaties() {
   if (kanNotificaties) {
     await wisHuiswerk().catch(() => undefined);
     await wisOchtend().catch(() => undefined);
+    await wisLeren().catch(() => undefined);
   }
 }
 

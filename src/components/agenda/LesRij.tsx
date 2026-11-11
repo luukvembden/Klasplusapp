@@ -4,6 +4,7 @@ import type { Afspraak } from '../../api';
 import { tijdvak } from '../../lib/datum';
 import { useInstellingen } from '../../lib/instellingen';
 import { metHoofdletter } from '../../lib/tekst';
+import { lesLink } from '../../lib/leerplan';
 import { LesLabel } from './LesLabel';
 import './agenda.css';
 import '../les/les.css';
@@ -37,7 +38,7 @@ export function LesRij({ afspraak, bezig }: { afspraak: Afspraak; bezig?: boolea
 
   return (
     <Link
-      to={`/agenda/${encodeURIComponent(afspraak.id)}`}
+      to={lesLink(afspraak)}
       className={`lesrij lesrij--link${bezig ? ' lesrij--nu' : ''}`}
       aria-current={bezig ? 'time' : undefined}
     >

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { lesLink } from '../../lib/leerplan';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Afspraak } from '../../api';
 import { dagKort, nlTijd, tijd, zelfdeDag } from '../../lib/datum';
@@ -149,7 +150,7 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
                 return (
                   <Link
                     key={a.id}
-                    to={`/agenda/${encodeURIComponent(a.id)}`}
+                    to={lesLink(a)}
                     className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}`}
                     style={{
                       top: y(s) + 1,

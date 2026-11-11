@@ -352,7 +352,8 @@
 
 /* Ingeschreven en Persoonlijk: accentkleur, zonder de vollere toetsstijl. */
 .leslabel--ingeschreven,
-.leslabel--eigen {
+.leslabel--eigen,
+.leslabel--leren {
   --label-kleur: var(--groen-tekst);
 }
 

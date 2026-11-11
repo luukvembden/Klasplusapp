@@ -44,7 +44,9 @@ export type Label =
   | 'kwt'
   | 'vervalt'
   /** Iets aan de les is anders dan normaal: docent, lokaal, tijd. */
-  | 'gewijzigd';
+  | 'gewijzigd'
+  /** Een leermoment uit een leerplan voor een toets (alleen op dit toestel). */
+  | 'leren';
 
 export interface Afspraak {
   id: string;
