@@ -133,7 +133,11 @@ export function Agenda() {
         {/* De dagen staan in beide weergaven op dezelfde hoogte, direct onder de kop. */}
         {perWeek ? (
           <div className="agenda__weekkoppen">
-            <WeekKoppen dagen={Array.from({ length: 5 }, (_, i) => plusDagen(maandag, i))} />
+            <WeekKoppen
+              dagen={Array.from({ length: 5 }, (_, i) => plusDagen(maandag, i))}
+              onVorige={() => naarWeek(plusDagen(maandag, -7))}
+              onVolgende={() => naarWeek(plusDagen(maandag, 7))}
+            />
           </div>
         ) : (
           <DagStrook dag={dag} onKies={setDag} />

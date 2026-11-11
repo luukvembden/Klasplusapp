@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Afspraak } from '../../api';
 import { dagKort, nlTijd, tijd, zelfdeDag } from '../../lib/datum';
 import './agenda.css';
@@ -43,18 +44,24 @@ function banen(lessen: Afspraak[]): Map<string, { baan: number; van: number }> {
   return uit;
 }
 
-/** Zelfde kolommen voor de rij met dagen (in de kop) en het rooster eronder. */
-const kolommenVoor = (aantal: number) => ({ gridTemplateColumns: `30px repeat(${aantal}, minmax(0, 1fr))` });
+/**
+ * Zelfde kolommen voor de rij met dagen (in de kop) en het rooster eronder: links de tijden (in de kop
+ * het pijltje terug), dan de dagen, rechts een smalle kolom (in de kop het pijltje vooruit).
+ */
+const kolommenVoor = (aantal: number) => ({ gridTemplateColumns: `30px repeat(${aantal}, minmax(0, 1fr)) 22px` });
 
 /**
- * De rij met dagen boven het rooster ("ma 9", "di 10" …). Staat in de kop van de Agenda, op dezelfde
- * hoogte als de dagstrook van de dagweergave. Alleen tekst; vandaag heeft een grijs vlakje.
+ * De rij met dagen boven het rooster ("ma 9", "di 10" …), met pijltjes naar de vorige en volgende week.
+ * Staat in de kop van de Agenda, op dezelfde hoogte als de dagstrook van de dagweergave. De dagen zijn
+ * alleen tekst; vandaag heeft een grijs vlakje en een nummer in de accentkleur.
  */
-export function WeekKoppen({ dagen }: { dagen: Date[] }) {
+export function WeekKoppen({ dagen, onVorige, onVolgende }: { dagen: Date[]; onVorige: () => void; onVolgende: () => void }) {
   const vandaag = new Date();
   return (
     <div className="weekrooster__koppen" style={kolommenVoor(dagen.length)}>
-      <span />
+      <button type="button" className="weekrooster__pijl" aria-label="Vorige week" onClick={onVorige}>
+        <ChevronLeft size={18} strokeWidth={2.2} aria-hidden="true" />
+      </button>
       {dagen.map((d) => (
         <span
           key={d.getTime()}
@@ -64,6 +71,9 @@ export function WeekKoppen({ dagen }: { dagen: Date[] }) {
           <b>{nlTijd(d).dag}</b>
         </span>
       ))}
+      <button type="button" className="weekrooster__pijl" aria-label="Volgende week" onClick={onVolgende}>
+        <ChevronRight size={18} strokeWidth={2.2} aria-hidden="true" />
+      </button>
     </div>
   );
 }

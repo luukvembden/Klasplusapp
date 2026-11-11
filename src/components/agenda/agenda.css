@@ -621,3 +621,21 @@
 .agenda__weekkoppen .weekrooster__kop b {
   line-height: 1.25;
 }
+
+/* Pijltjes naar de vorige en volgende week, links en rechts van de dagen. */
+.weekrooster__pijl {
+  height: var(--tik);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--tekst-secundair);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Vandaag: nummer in de accentkleur, net als in de dagweergave. */
+.weekrooster__kop--gekozen b {
+  color: var(--groen-tekst);
+}
