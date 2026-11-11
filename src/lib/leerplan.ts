@@ -105,10 +105,12 @@ export function zonderKlasPlusRegel(html: string | null): string | null {
   return kaal.replace(/<[^>]+>/g, '').trim() ? kaal : null;
 }
 
-/** Waar een rij in de Agenda naartoe gaat: de les, of bij een leermoment het plan. */
+/** Waar een rij in de Agenda naartoe gaat: de les, of bij een leer- of huiswerkmoment dat moment. */
 export function lesLink(a: Afspraak): string {
   const toets = toetsIdVan(a);
-  return toets ? `/leren/${encodeURIComponent(toets)}` : `/agenda/${encodeURIComponent(a.id)}`;
+  if (!toets) return `/agenda/${encodeURIComponent(a.id)}`;
+  const datum = a.id.split(SCHEIDING)[2] ?? '';
+  return `/leren/${encodeURIComponent(toets)}/${datum}`;
 }
 
 /** "Leren voor proefwerk Wiskunde B", of bij huiswerk "Huiswerk voor Aardrijkskunde maken". */

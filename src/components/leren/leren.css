@@ -182,3 +182,11 @@
   top: calc(var(--veilig-boven) + 20px);
   right: 20px;
 }
+
+/* Leermoment: de tweede knop is een link, maar ziet eruit als de gewone knop. */
+.leermoment__knop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
