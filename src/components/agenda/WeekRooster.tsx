@@ -10,7 +10,7 @@ const PX_PER_MINUUT = 1.1;
 /** Zo lang is een gewone les; ook de hoogte van een blok in de late rij. */
 const LES_MINUTEN = 50;
 /** Zonder lessen: zo hoog is één vak van vier uur in het vaste kader (08–12, 12–16, 16–20, 20–24). */
-const KADER_VAK_PX = 150;
+const KADER_VAK_PX = 75;
 
 const minuutVanDag = (iso: string) => {
   const n = nlTijd(new Date(iso));
@@ -194,7 +194,7 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
                   <Link
                     key={a.id}
                     to={lesLink(a)}
-                    className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}`}
+                    className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}${h < 34 ? ' weekles--klein' : ''}`}
                     style={{
                       top,
                       height: h,

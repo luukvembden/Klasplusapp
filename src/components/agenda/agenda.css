@@ -659,3 +659,28 @@
   background: var(--lijn);
   pointer-events: none;
 }
+
+/* Een klein blokje (kort, of in het vaste kader): alleen de titel en de begintijd, op één regel. */
+.weekles--klein {
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.weekles--klein b {
+  font-size: 11.5px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.weekles--klein span {
+  display: none;
+}
+
+.weekles--klein span:first-of-type {
+  display: block;
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 10px;
+}
