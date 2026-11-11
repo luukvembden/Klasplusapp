@@ -1,6 +1,6 @@
 # Klas+
 
-**Je schooldag, rustig op een rij.**
+**Je schooldag, alles op een rij.**
 
 Klas+ is een onofficiële app voor leerlingen (en ouders) met je rooster, huiswerk, cijfers, berichten en meer. Je logt in via je eigen school, en alles blijft op je telefoon. Er is geen server van Klas+ die meekijkt.
 
