@@ -291,7 +291,12 @@ export const liveApi: SchoolApi = {
 
   async maakAfspraak(invoer) {
     alleenLeerling();
-    await stuur('POST', `api/personen/${leerlingId()}/afspraken`, naarRuwePersoonlijke(invoer));
+    const pad = `api/personen/${leerlingId()}/afspraken`;
+    await stuur('POST', pad, naarRuwePersoonlijke(invoer)).catch(async (e) => {
+      // Weigert de school de notitie (soort of inhoud), dan de afspraak zonder notitie.
+      if (!invoer.beschrijving || !/infotype|inhoud/i.test(String(e?.message ?? ''))) throw e;
+      await stuur('POST', pad, naarRuwePersoonlijke({ ...invoer, beschrijving: '' }));
+    });
   },
 
   async wijzigAfspraak(id, invoer) {
@@ -300,7 +305,10 @@ export const liveApi: SchoolApi = {
     const pad = `api/personen/${leerlingId()}/afspraken/${encodeURIComponent(id)}`;
     const huidig = await haal<Record<string, unknown> & RuweAfspraak>(pad);
     if (huidig.Type !== PERSOONLIJK) throw new Error('Alleen eigen afspraken kun je wijzigen');
-    await stuur('PUT', pad, naarRuwePersoonlijke(invoer, huidig));
+    await stuur('PUT', pad, naarRuwePersoonlijke(invoer, huidig)).catch(async (e) => {
+      if (!invoer.beschrijving || !/infotype|inhoud/i.test(String(e?.message ?? ''))) throw e;
+      await stuur('PUT', pad, naarRuwePersoonlijke({ ...invoer, beschrijving: '' }, huidig));
+    });
   },
 
   async zetAfgerond(id, afgerond) {

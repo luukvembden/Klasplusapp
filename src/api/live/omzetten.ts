@@ -174,7 +174,8 @@ function labels(a: RuweAfspraak): Label[] {
   const lijst: Label[] = [];
   if (a.Type === PERSOONLIJK) lijst.push('eigen');
   if (a.Type === 7) lijst.push('kwt');
-  if (a.InfoType && infoLabels[a.InfoType]) lijst.push(infoLabels[a.InfoType]);
+  // Bij een eigen afspraak is het soort alleen nodig voor de notitie; geen label "Info" erbij.
+  if (a.Type !== PERSOONLIJK && a.InfoType && infoLabels[a.InfoType]) lijst.push(infoLabels[a.InfoType]);
   if (a.Status === 4 || a.Status === 5) lijst.push('vervalt');
   // Verplaatst (9) of gewijzigd en verplaatst (10): de tijd is anders, dus altijd een wijziging.
   // Status 3 ("gewijzigd") komt ook bij alleen nieuw huiswerk; zie wijzigingen.ts.
@@ -254,6 +255,8 @@ export function naarRuwePersoonlijke(invoer: AfspraakInvoer, bestaand?: Record<s
     Omschrijving: invoer.titel,
     Lokatie: invoer.locatie || null,
     Inhoud: alsHtml(invoer.beschrijving),
+    // Met tekst wil de school een soort weten (anders: "ongeldig infotype"); 6 is informatie.
+    InfoType: invoer.beschrijving ? 6 : 0,
   };
 }
 
