@@ -7,6 +7,8 @@ import './agenda.css';
 
 /** Zoveel pixels per minuut: een les van 50 minuten is dan 55px hoog. */
 const PX_PER_MINUUT = 1.1;
+/** Zo lang is een gewone les; ook de hoogte van een blok in de late rij. */
+const LES_MINUTEN = 50;
 
 const minuutVanDag = (iso: string) => {
   const n = nlTijd(new Date(iso));
@@ -105,17 +107,39 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
 
   if (getimed.length === 0) return <p className="melding">{leeg}</p>;
 
-  const van = Math.min(...getimed.map((a) => minuutVanDag(a.start)));
-  const tot = Math.max(...getimed.map((a) => Math.max(minuutVanDag(a.einde), minuutVanDag(a.start) + 15)));
-  const hoogte = (tot - van) * PX_PER_MINUUT;
+  // Het schoolrooster staat altijd op de echte tijd. Eigen afspraken en leermomenten die pas na de
+  // laatste les van de week beginnen, komen compact daaronder: na één leeg vak, op volgorde van tijd,
+  // elk zo hoog als een les. Zo hoef je niet ver naar beneden voor iets om 19:00.
+  const vanSchool = (a: Afspraak) => !a.labels.includes('eigen') && !a.labels.includes('leren');
+  const school = getimed.filter(vanSchool);
+  const schoolEinde = school.length ? Math.max(...school.map((a) => minuutVanDag(a.einde))) : Infinity;
+  const isLaat = (a: Afspraak) => !vanSchool(a) && minuutVanDag(a.start) >= schoolEinde;
+  const normaal = getimed.filter((a) => !isLaat(a));
+  const laat = getimed.filter(isLaat);
+
+  const van = Math.min(...normaal.map((a) => minuutVanDag(a.start)));
+  const tot = Math.max(...normaal.map((a) => Math.max(minuutVanDag(a.einde), minuutVanDag(a.start) + 15)));
   const y = (minuut: number) => (minuut - van) * PX_PER_MINUUT;
+  const RIJ = LES_MINUTEN * PX_PER_MINUUT;
+  const laatTijden = [...new Set(laat.map((a) => minuutVanDag(a.start)))].sort((p, q) => p - q);
+  const laatY = (minuut: number) => y(tot) + RIJ + laatTijden.indexOf(minuut) * RIJ;
+  const hoogte = laat.length ? laatY(laatTijden[laatTijden.length - 1]) + RIJ : y(tot);
+
+  /** Boven- en onderkant van een blok: echt op tijd, of in de compacte rij onderaan. */
+  const plekVan = (a: Afspraak) => {
+    if (isLaat(a)) return { top: laatY(minuutVanDag(a.start)) + 1, hoogte: RIJ - 2 };
+    const s = minuutVanDag(a.start);
+    const e = minuutVanDag(a.einde);
+    return { top: y(s) + 1, hoogte: Math.max(y(e) - y(s) - 2, 18) };
+  };
 
   // Links langs de rand: het lesuur en de begintijd, één keer per begintijd die in de week voorkomt.
-  const assen = new Map<number, { tijd: string; uur: number | null }>();
+  const assen = new Map<number, { tijd: string; uur: number | null; top: number }>();
   for (const a of getimed) {
     const m = minuutVanDag(a.start);
     const bekend = assen.get(m);
-    if (!bekend || (bekend.uur === null && a.lesuur)) assen.set(m, { tijd: tijd(new Date(a.start)), uur: a.lesuur });
+    const top = isLaat(a) ? laatY(m) : y(m);
+    if (!bekend || (bekend.uur === null && a.lesuur)) assen.set(m, { tijd: tijd(new Date(a.start)), uur: a.lesuur, top });
   }
 
   const kolommen = kolommenVoor(dagen.length);
@@ -124,8 +148,8 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
     <div className="weekrooster">
       <div className="weekrooster__raster" style={{ ...kolommen, height: hoogte }}>
         <div className="weekrooster__as" aria-hidden="true">
-          {[...assen].map(([m, { tijd: t, uur }]) => (
-            <span key={m} className="weekrooster__astijd" style={{ top: y(m) }}>
+          {[...assen].map(([m, { tijd: t, uur, top }]) => (
+            <span key={m} className="weekrooster__astijd" style={{ top }}>
               {uur && <b>{uur}</b>}
               {t}
             </span>
@@ -133,15 +157,19 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
         </div>
 
         {dagen.map((d, i) => {
-          const plek = banen(perDag[i]);
+          // Naast elkaar als ze tegelijk zijn; de late rij per tijdstip apart.
+          const plek = banen(perDag[i].filter((a) => !isLaat(a)));
+          for (const m of laatTijden) {
+            const samen = perDag[i].filter((a) => isLaat(a) && minuutVanDag(a.start) === m);
+            samen.forEach((a, baan) => plek.set(a.id, { baan, van: samen.length }));
+          }
           return (
             <div
               key={d.getTime()}
               className={`weekrooster__dag${zelfdeDag(d, gekozen) ? ' weekrooster__dag--gekozen' : ''}`}
             >
               {perDag[i].map((a) => {
-                const s = minuutVanDag(a.start);
-                const e = minuutVanDag(a.einde);
+                const { top, hoogte: h } = plekVan(a);
                 const { baan, van: aantal } = plek.get(a.id) ?? { baan: 0, van: 1 };
                 const { titel, docent } = kort(a);
                 const vervalt = a.labels.includes('vervalt');
@@ -153,8 +181,8 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
                     to={lesLink(a)}
                     className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}`}
                     style={{
-                      top: y(s) + 1,
-                      height: Math.max(y(e) - y(s) - 2, 18),
+                      top,
+                      height: h,
                       left: `calc(${(baan / aantal) * 100}% + ${baan ? 1 : 0}px)`,
                       width: `calc(${100 / aantal}% - ${aantal > 1 ? 1 : 0}px)`,
                     }}
