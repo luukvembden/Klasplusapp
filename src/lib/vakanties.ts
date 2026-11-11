@@ -1,4 +1,4 @@
-import { beginVanDag, isWeekdag, plusDagen, vanInvoer } from './datum';
+import { beginVanDag, vanInvoer } from './datum';
 
 // Schoolvakanties zoals de overheid ze vastlegt (rijksoverheid.nl, open data), per regio.
 // Scholen hebben soms nog eigen vrije dagen; die kent Klas+ niet.
@@ -45,9 +45,8 @@ const VAKANTIES: Vakantie[] = [
 const klein = (naam: string) => naam.charAt(0).toLowerCase() + naam.slice(1);
 
 /**
- * Het regeltje onderin Meer: hoeveel schooldagen nog tot de volgende vakantie, of hoeveel dagen vrij
- * je nog hebt als het al vakantie is. Zonder gekozen regio alleen de vakanties van heel Nederland.
- * Schooldagen zijn maandag tot en met vrijdag; eigen vrije dagen van de school tellen niet mee.
+ * Het regeltje onderin Meer: hoeveel dagen nog tot de volgende vakantie, of hoeveel dagen vrij je
+ * nog hebt als het al vakantie is. Zonder gekozen regio alleen de vakanties van heel Nederland.
  */
 export function vakantieRegel(regio: Regio | '', nu = new Date()): string | null {
   const vandaag = beginVanDag(nu);
@@ -63,9 +62,7 @@ export function vakantieRegel(regio: Regio | '', nu = new Date()): string | null
 
   const volgende = lijst.find((v) => v.begin > vandaag);
   if (!volgende) return null;
-  // Schooldagen na vandaag tot de vakantie begint.
-  let schooldagen = 0;
-  for (let d = plusDagen(vandaag, 1); d < volgende.begin; d = plusDagen(d, 1)) if (isWeekdag(d)) schooldagen++;
-  if (schooldagen === 0) return `Vandaag de laatste schooldag voor de ${klein(volgende.naam)}`;
-  return `Nog ${schooldagen} ${schooldagen === 1 ? 'schooldag' : 'schooldagen'} tot de ${klein(volgende.naam)}`;
+  // Gewone dagen tot de vakantie begint (de zaterdag waarop hij ingaat).
+  const dagen = Math.round((volgende.begin.getTime() - vandaag.getTime()) / 86_400_000);
+  return `Nog ${dagen} ${dagen === 1 ? 'dag' : 'dagen'} tot de ${klein(volgende.naam)}`;
 }
