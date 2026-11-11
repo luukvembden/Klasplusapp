@@ -10,6 +10,15 @@ interface Props {
   onNaarNu: () => void;
 }
 
+const isWeekend = (d: Date) => [0, 6].includes(nlTijd(d).weekdag);
+/** Valt dit blok (werkweek of weekend) in de huidige week? */
+const ditBlok = (bereik: [Date, Date]) => zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date()));
+
+function kopTitel(bereik: [Date, Date]): string {
+  if (isWeekend(bereik[0])) return ditBlok(bereik) ? 'Dit weekend' : 'Weekend';
+  return ditBlok(bereik) ? 'Deze week' : `Week ${weekNummer(bereik[0])}`;
+}
+
 /** "9 – 13 november", of "30 november – 4 december" over een maandgrens. */
 function bereikTekst([van, tot]: [Date, Date]): string {
   return nlTijd(van).maand === nlTijd(tot).maand
@@ -35,13 +44,14 @@ export function AgendaKop({ dag, bereik, onNaarNu }: Props) {
       <div className="agendakop__tekst">
         {bereik ? (
           <>
-            {/* De huidige week heet "Deze week"; het weeknummer staat dan achter de datums. */}
-            <h1 className="agendakop__titel">
-              {zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date())) ? 'Deze week' : `Week ${weekNummer(bereik[0])}`}
-            </h1>
+            {/*
+              De huidige week heet "Deze week", het huidige weekend "Dit weekend"; dan staat het weeknummer
+              achter de datums. Een ander weekend heet "Weekend" (ook met weeknummer), een andere week "Week 47".
+            */}
+            <h1 className="agendakop__titel">{kopTitel(bereik)}</h1>
             <span className="agendakop__sub">
               {bereikTekst(bereik)}
-              {zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date())) && ` · week ${weekNummer(bereik[0])}`}
+              {(ditBlok(bereik) || isWeekend(bereik[0])) && ` · week ${weekNummer(bereik[0])}`}
             </span>
           </>
         ) : (
