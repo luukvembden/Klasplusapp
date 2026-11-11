@@ -200,7 +200,7 @@ export function naarAfspraak(a: RuweAfspraak): Afspraak {
     labels: labels(a),
     vak: a.Vakken?.[0]?.Naam ?? null,
     docenten: (a.Docenten ?? []).map((d) => d.Naam).filter(Boolean),
-    inhoudHtml: a.Inhoud?.trim() ? a.Inhoud : null,
+    inhoudHtml: a.Inhoud?.trim() ? (a.Type === PERSOONLIJK ? tekstAlsHtml(a.Inhoud) : a.Inhoud) : null,
     afgerond: a.Afgerond ?? false,
     heeftBijlagen: a.HeeftBijlagen ?? false,
   };
@@ -215,6 +215,9 @@ export function naarAfspraakDetail(a: RuweAfspraak): AfspraakDetail {
     bijlagen: (a.Bijlagen ?? []).map(naarOpdrachtBijlage),
   };
 }
+
+/** De tekst van een eigen afspraak: gewone tekst (nieuw) of al HTML (oud); regeleinden blijven staan. */
+const tekstAlsHtml = (inhoud: string) => (/<[a-z][\s\S]*>/i.test(inhoud) ? inhoud : alsHtml(inhoud));
 
 /** Tekst veilig in HTML zetten; regeleinden blijven zichtbaar. */
 const alsHtml = (tekst: string) =>
@@ -254,7 +257,9 @@ export function naarRuwePersoonlijke(invoer: AfspraakInvoer, bestaand?: Record<s
     DuurtHeleDag: invoer.heleDag,
     Omschrijving: invoer.titel,
     Lokatie: invoer.locatie || null,
-    Inhoud: alsHtml(invoer.beschrijving),
+    // Gewone tekst met regeleinden, zoals de schoolsite die bij een eigen afspraak toont (HTML zou je
+    // daar letterlijk zien staan, met <p> en <br>).
+    Inhoud: invoer.beschrijving || null,
     // Met tekst wil de school een soort weten (anders: "ongeldig infotype"); 6 is informatie.
     InfoType: invoer.beschrijving ? 6 : 0,
   };
