@@ -43,6 +43,31 @@ function banen(lessen: Afspraak[]): Map<string, { baan: number; van: number }> {
   return uit;
 }
 
+/** Zelfde kolommen voor de rij met dagen (in de kop) en het rooster eronder. */
+const kolommenVoor = (aantal: number) => ({ gridTemplateColumns: `30px repeat(${aantal}, minmax(0, 1fr))` });
+
+/**
+ * De rij met dagen boven het rooster ("ma 9", "di 10" …). Staat in de kop van de Agenda, op dezelfde
+ * hoogte als de dagstrook van de dagweergave. Alleen tekst; vandaag heeft een grijs vlakje.
+ */
+export function WeekKoppen({ dagen }: { dagen: Date[] }) {
+  const vandaag = new Date();
+  return (
+    <div className="weekrooster__koppen" style={kolommenVoor(dagen.length)}>
+      <span />
+      {dagen.map((d) => (
+        <span
+          key={d.getTime()}
+          className={`weekrooster__kop${zelfdeDag(d, vandaag) ? ' weekrooster__kop--gekozen' : ''}`}
+        >
+          {dagKort(d)}
+          <b>{nlTijd(d).dag}</b>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 interface Props {
   /** De dagen die naast elkaar staan: maandag tot en met vrijdag, of zaterdag en zondag. */
   dagen: Date[];
@@ -80,23 +105,10 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg }: Props) {
     if (!bekend || (bekend.uur === null && a.lesuur)) assen.set(m, { tijd: tijd(new Date(a.start)), uur: a.lesuur });
   }
 
-  const kolommen = { gridTemplateColumns: `30px repeat(${dagen.length}, minmax(0, 1fr))` };
+  const kolommen = kolommenVoor(dagen.length);
 
   return (
     <div className="weekrooster">
-      <div className="weekrooster__koppen" style={kolommen}>
-        <span />
-        {dagen.map((d) => (
-          <span
-            key={d.getTime()}
-            className={`weekrooster__kop${zelfdeDag(d, gekozen) ? ' weekrooster__kop--gekozen' : ''}`}
-          >
-            {dagKort(d)}
-            <b>{nlTijd(d).dag}</b>
-          </span>
-        ))}
-      </div>
-
       <div className="weekrooster__raster" style={{ ...kolommen, height: hoogte }}>
         <div className="weekrooster__as" aria-hidden="true">
           {[...assen].map(([m, { tijd: t, uur }]) => (

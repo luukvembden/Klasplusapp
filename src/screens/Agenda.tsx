@@ -5,7 +5,7 @@ import { api, type Afspraak } from '../api';
 import { AgendaKop } from '../components/agenda/AgendaKop';
 import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
-import { WeekRooster } from '../components/agenda/WeekRooster';
+import { WeekKoppen, WeekRooster } from '../components/agenda/WeekRooster';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
@@ -130,7 +130,14 @@ export function Agenda() {
       <div className="agendakop-vlak">
         {/* In de weekweergave geen dagkiezer: je veegt per week, en de dagen staan boven het rooster. */}
         <AgendaKop dag={dag} bereik={perWeek ? [maandag, plusDagen(maandag, 4)] : undefined} />
-        {!perWeek && <DagStrook dag={dag} onKies={setDag} />}
+        {/* De dagen staan in beide weergaven op dezelfde hoogte, direct onder de kop. */}
+        {perWeek ? (
+          <div className="agenda__weekkoppen">
+            <WeekKoppen dagen={Array.from({ length: 5 }, (_, i) => plusDagen(maandag, i))} />
+          </div>
+        ) : (
+          <DagStrook dag={dag} onKies={setDag} />
+        )}
       </div>
 
       <div className="agenda__midden">
