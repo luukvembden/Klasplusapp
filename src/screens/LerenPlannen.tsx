@@ -12,7 +12,7 @@ import { soortVan, useAfspraak } from '../hooks/useAfspraak';
 import { beginVanDag, dagTitel, naarInvoer, plusDagen, tijd, vanInvoer } from '../lib/datum';
 import { useLagen } from '../lib/laag';
 import { bewaarLeerplan, leerplanVoor, verwijderLeerplan, type Leermoment } from '../lib/leerplan';
-import { controleerNu, kanNotificaties, vraagToestemming } from '../lib/notificaties';
+import { controleerNu } from '../lib/notificaties';
 import { metHoofdletter } from '../lib/tekst';
 import '../components/les/les.css';
 import '../components/ui/ui.css';
@@ -66,7 +66,6 @@ export function LerenPlannen() {
   const [dagen, setDagen] = useState<number | null>(bestaand?.dagen ?? null);
   const [duur, setDuur] = useState<number | null>(bestaand?.duur ?? null);
   const [notities, setNotities] = useState(bestaand?.notities ?? false);
-  const [herinnering, setHerinnering] = useState(bestaand?.herinnering ?? true);
   // Een ouder kan geen afspraken in de agenda van het kind zetten.
   const kanOpSchool = !api.isOuder();
   const [bezig, setBezig] = useState(false);
@@ -99,7 +98,11 @@ export function LerenPlannen() {
 
   const opslaan = async () => {
     if (!a) return;
-    const momenten = datums.map((datum) => ({ datum, ...momentVan(datum) }));
+    // Wat je hier kiest geldt: de duur van het plan, en nieuwe afspraken op school (ids volgen hieronder).
+    const momenten = datums.map((datum) => {
+      const { tijd: t, aan, notitie } = momentVan(datum);
+      return { datum, tijd: t, aan, notitie };
+    });
     if (!momenten.some((m) => m.aan)) {
       setMelding('Zet minstens één dag aan.');
       return;
@@ -113,7 +116,8 @@ export function LerenPlannen() {
       duur: gekozenDuur,
       momenten,
       notities,
-      herinnering,
+      // Herinneringen voor leermomenten staan uit (meldingen werken nog niet betrouwbaar genoeg).
+      herinnering: false,
       // Altijd ook in de schoolagenda (behalve voor een ouder).
       opSchool: kanOpSchool,
       schoolIds: bestaand?.schoolIds ?? [],
@@ -124,8 +128,12 @@ export function LerenPlannen() {
     setMelding(null);
     let gelukt = true;
     try {
-      const ids = plan.opSchool ? await zetOpSchool(plan, plan.schoolIds) : (await haalVanSchool(plan.schoolIds), []);
-      bewaarLeerplan({ ...plan, schoolIds: ids });
+      const perDatum = plan.opSchool ? await zetOpSchool(plan, plan.schoolIds) : (await haalVanSchool(plan.schoolIds), {});
+      bewaarLeerplan({
+        ...plan,
+        momenten: plan.momenten.map((m) => (perDatum[m.datum] ? { ...m, schoolId: perDatum[m.datum] } : m)),
+        schoolIds: Object.values(perDatum),
+      });
     } catch (e) {
       gelukt = false;
       setMelding(
@@ -135,7 +143,6 @@ export function LerenPlannen() {
       setBezig(false);
     }
     vergeetGeladen();
-    if (herinnering && kanNotificaties) await vraagToestemming();
     void controleerNu(true);
     if (gelukt) terug();
   };
@@ -291,23 +298,6 @@ export function LerenPlannen() {
               ))}
             </div>
           </Sectie>
-
-          <section className="kaart">
-            <label className="instelrij meldingrij" htmlFor="leren-herinnering">
-              <span className="meldingrij__tekst">
-                <span>Herinnering</span>
-                <span className="meldingrij__uitleg">
-                  Een melding op het tijdstip dat je gaat {maken ? 'beginnen' : 'leren'}
-                </span>
-              </span>
-              <input
-                id="leren-herinnering"
-                type="checkbox"
-                checked={herinnering}
-                onChange={(e) => setHerinnering(e.target.checked)}
-              />
-            </label>
-          </section>
 
           {melding && <p className="melding">{melding}</p>}
 

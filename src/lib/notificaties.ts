@@ -8,9 +8,7 @@ import { api, type Afspraak } from '../api';
 import { beginVanDag, dagNaam, naarInvoer, plusDagen } from './datum';
 import { leesInstellingen } from './instellingen';
 import { lees, schrijf, verwijder } from './opslag';
-import { alleLeerplannen, isMaken, lerenTitel, notitieVan } from './leerplan';
 import { ochtendMelding } from './ochtendmelding';
-import { opMoment } from '../components/les/Invoerrij';
 import { metHoofdletter } from './tekst';
 
 /** Alleen in de telefoon-app; in de browser (demo) kan het niet. */
@@ -209,27 +207,12 @@ async function planOchtend(aan: boolean, tijdstip: string) {
 const wisLeren = () =>
   LocalNotifications.cancel({ notifications: Array.from({ length: LEREN_MAX }, (_, i) => ({ id: LEREN_EERSTE + i })) });
 
-/** Een melding op elk leermoment uit een leerplan met herinnering, voor zover nog in de toekomst. */
+/**
+ * Herinneringen voor leermomenten staan uit (meldingen werken nog niet betrouwbaar genoeg). Wat een
+ * eerdere versie al had ingepland, halen we hier weg.
+ */
 async function planLeren() {
   await wisLeren();
-  const meldingen = [];
-  for (const p of Object.values(alleLeerplannen())) {
-    if (!p.herinnering) continue;
-    for (const m of p.momenten) {
-      const moment = opMoment(m.datum, m.tijd);
-      if (!m.aan || moment.getTime() <= Date.now() || meldingen.length >= LEREN_MAX) continue;
-      meldingen.push({
-        id: LEREN_EERSTE + meldingen.length,
-        title: lerenTitel(p),
-        body:
-          notitieVan(p, m) ||
-          `${isMaken(p) ? 'Huiswerk' : p.soort} voor ${dagNaam(new Date(p.toetsStart)).toLowerCase()}. Je had ${p.duur} minuten gepland.`,
-        schedule: { at: moment, allowWhileIdle: true },
-        extra: { pad: `/leren/${encodeURIComponent(p.toetsId)}` },
-      });
-    }
-  }
-  if (meldingen.length) await LocalNotifications.schedule({ notifications: meldingen });
 }
 
 // ---- Alles samen ----

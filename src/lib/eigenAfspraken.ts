@@ -57,7 +57,8 @@ export function alsAfspraak(a: EigenAfspraak): Afspraak {
     labels: ['eigen'],
     vak: null,
     docenten: [],
-    inhoudHtml: null,
+    // Net als de school: de beschrijving zit ook in de lijst, niet alleen bij het openen.
+    inhoudHtml: a.beschrijving ? `<p>${a.beschrijving.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>')}</p>` : null,
     afgerond: false,
   };
 }

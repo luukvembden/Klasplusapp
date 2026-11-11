@@ -11,7 +11,7 @@ import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { useInstellingen } from '../lib/instellingen';
-import { metLeermomenten, useLeerplannen } from '../lib/leerplan';
+import { bewaarLeerplan, metLeermomenten, useLeerplannen, verwijderLeerplan, volgSchool } from '../lib/leerplan';
 import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, isWeekdag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
@@ -45,6 +45,22 @@ export function Agenda() {
   const weekGeladen = week.data && !week.laden && !week.fout;
   // Leermomenten uit je leerplannen staan tussen de lessen (alleen op dit toestel).
   const plannen = useLeerplannen();
+
+  // De schoolsite is leidend: is een leer- of huiswerkmoment daar aangepast of verwijderd, dan neemt
+  // Klas+ dat over zodra de agenda vers is opgehaald (niet uit de bewaarde versie zonder verbinding).
+  useEffect(() => {
+    const geladen = week.data;
+    if (!geladen || geladen.offline || week.laden) return;
+    const van = plusDagen(maandag, -7);
+    const tot = plusDagen(maandag, 14);
+    for (const plan of Object.values(plannen)) {
+      const nieuw = volgSchool(plan, geladen.data, van, tot);
+      if (!nieuw) continue;
+      if (nieuw.momenten.some((m) => m.aan)) bewaarLeerplan(nieuw);
+      else verwijderLeerplan(plan.toetsId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen na een nieuwe lading van school
+  }, [week.data]);
   // Staat een leermoment ook als persoonlijke afspraak op school, dan alleen de versie van Klas+ (die opent het plan).
   const alleAfspraken = useMemo(() => metLeermomenten(week.data?.data ?? [], plannen), [week.data, plannen]);
   // Vegen kan over de hele lijst, ook het lege stuk eronder tot aan de balk (het plusje ligt erbuiten).

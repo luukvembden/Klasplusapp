@@ -41,7 +41,8 @@ export function LeermomentScherm() {
 
   const maken = isMaken(plan);
   const start = opMoment(moment.datum, moment.tijd);
-  const einde = new Date(start.getTime() + plan.duur * 60_000);
+  const minuten = moment.duur ?? plan.duur;
+  const einde = new Date(start.getTime() + minuten * 60_000);
   const notitie = notitieVan(plan, moment);
   const toets = new Date(plan.toetsStart);
   const aantal = plan.momenten.filter((m) => m.aan).length;
@@ -65,10 +66,10 @@ export function LeermomentScherm() {
         <section className="kaart">
           <GegevenRij label="Datum" waarde={dagTitel(start)} />
           <GegevenRij label="Tijd" waarde={`${tijd(start)} – ${tijd(einde)}`} />
-          <GegevenRij label="Duur" waarde={duurTekst(plan.duur)} />
+          <GegevenRij label="Duur" waarde={duurTekst(minuten)} />
           <GegevenRij label="Moment" waarde={aantal > 1 ? `${welke} van ${aantal}` : undefined} />
-          <GegevenRij label={maken ? 'Huiswerk voor' : plan.soort} waarde={`${plan.vak} · ${dagTitel(toets)}`} />
-          <GegevenRij label="Herinnering" waarde={plan.herinnering ? 'Aan' : 'Uit'} />
+          {/* Het vak staat al in de titel; hier alleen wanneer de toets of het huiswerk is. */}
+          <GegevenRij label={maken ? 'Huiswerk voor' : plan.soort} waarde={dagTitel(toets)} />
           <GegevenRij label="Schoolagenda" waarde={plan.schoolIds?.length ? 'Staat erin' : undefined} />
         </section>
       </Sectie>

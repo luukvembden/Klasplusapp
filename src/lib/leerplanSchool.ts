@@ -14,15 +14,15 @@ export async function haalVanSchool(ids: string[]): Promise<void> {
 
 /**
  * Zet de leermomenten die aan staan als persoonlijke afspraken in de schoolagenda (eerst de oude
- * weg) en geeft de ids van de nieuwe terug. Gooit een fout als de school het weigert.
+ * weg) en geeft per datum het id van de nieuwe afspraak terug. Gooit een fout als de school het weigert.
  */
-export async function zetOpSchool(plan: Leerplan, oudeIds: string[]): Promise<string[]> {
+export async function zetOpSchool(plan: Leerplan, oudeIds: string[]): Promise<Record<string, string>> {
   await haalVanSchool(oudeIds);
   const momenten = plan.momenten
     .filter((m) => m.aan)
-    .map((m) => ({ start: opMoment(m.datum, m.tijd), notitie: notitieVan(plan, m) }))
+    .map((m) => ({ datum: m.datum, start: opMoment(m.datum, m.tijd), notitie: notitieVan(plan, m) }))
     .filter((m) => m.start.getTime() > Date.now());
-  if (momenten.length === 0) return [];
+  if (momenten.length === 0) return {};
 
   const titel = lerenTitel(plan);
   for (const { start, notitie } of momenten) {
@@ -40,13 +40,15 @@ export async function zetOpSchool(plan: Leerplan, oudeIds: string[]): Promise<st
   // De school geeft bij het maken geen id terug; zoek de nieuwe afspraken op titel en begintijd.
   const eerste = beginVanDag(momenten[0].start);
   const laatste = plusDagen(beginVanDag(momenten[momenten.length - 1].start), 1);
-  const lijst = (await api.afspraken(eerste, laatste)).data;
-  return lijst
-    .filter(
-      (a) =>
-        a.labels.includes('eigen') &&
-        a.omschrijving === titel &&
-        momenten.some((m) => Math.abs(new Date(a.start).getTime() - m.start.getTime()) < 60_000),
-    )
-    .map((a) => a.id);
+  const lijst = (await api.afspraken(eerste, laatste)).data.filter(
+    (a) => a.labels.includes('eigen') && a.omschrijving === titel,
+  );
+  const perDatum: Record<string, string> = {};
+  for (const m of momenten) {
+    const gevonden = lijst.find(
+      (a) => !Object.values(perDatum).includes(a.id) && Math.abs(new Date(a.start).getTime() - m.start.getTime()) < 60_000,
+    );
+    if (gevonden) perDatum[m.datum] = gevonden.id;
+  }
+  return perDatum;
 }

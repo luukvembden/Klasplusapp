@@ -1,7 +1,9 @@
 import { useSyncExternalStore } from 'react';
 import type { Afspraak } from '../api';
 import { opMoment } from '../components/les/Invoerrij';
+import { naarInvoer, tijd } from './datum';
 import { lees, schrijf, verwijder } from './opslag';
+import { htmlNaarTekst } from './tekst';
 
 // Leerplannen voor toetsen. Alleen op dit toestel: ze gaan niet naar de schoolsite.
 
@@ -14,6 +16,10 @@ export interface Leermoment {
   aan: boolean;
   /** Wat je die dag gaat doen, bijvoorbeeld "Hoofdstuk 3". Alleen als het plan notities per dag heeft. */
   notitie?: string;
+  /** Minuten, als dit moment op de schoolsite een andere duur kreeg dan het plan. */
+  duur?: number;
+  /** Id van de persoonlijke afspraak op school bij dit moment. */
+  schoolId?: string;
 }
 
 export interface Leerplan {
@@ -160,7 +166,7 @@ export function leerAfspraken(alle: Record<string, Leerplan>): Afspraak[] {
       uit.push({
         id: lerenId(p.toetsId, m.datum),
         start: start.toISOString(),
-        einde: new Date(start.getTime() + p.duur * 60_000).toISOString(),
+        einde: new Date(start.getTime() + (m.duur ?? p.duur) * 60_000).toISOString(),
         lesuur: null,
         omschrijving: lerenTitel(p),
         lokaal: null,
@@ -174,4 +180,75 @@ export function leerAfspraken(alle: Record<string, Leerplan>): Afspraak[] {
     }
   }
   return uit;
+}
+
+/**
+ * De schoolsite is leidend: is een moment daar aangepast (tijd, duur, notitie) of verwijderd, dan neemt
+ * Klas+ dat over. `van`–`tot` is de periode die net van school is opgehaald; alleen daarin betekent
+ * "niet gevonden" dat het moment op school is verwijderd. Geeft het nieuwe plan terug, of null als er
+ * niets veranderde.
+ */
+export function volgSchool(plan: Leerplan, afspraken: Afspraak[], van: Date, tot: Date): Leerplan | null {
+  const ids = new Set(plan.schoolIds ?? []);
+  if (ids.size === 0) return null;
+  const opSchool = new Map(afspraken.filter((a) => ids.has(a.id)).map((a) => [a.id, a]));
+  const gebruikt = new Set<string>();
+  let veranderd = false;
+  const momenten: Leermoment[] = [];
+
+  for (const m of plan.momenten) {
+    if (!m.aan) {
+      momenten.push(m);
+      continue;
+    }
+    const start = opMoment(m.datum, m.tijd);
+    // Een plan van voor deze versie weet nog niet welk id bij welk moment hoort: zoek op begintijd.
+    let id = m.schoolId;
+    if (!id) {
+      id = [...opSchool.values()].find(
+        (a) => !gebruikt.has(a.id) && Math.abs(new Date(a.start).getTime() - start.getTime()) < 60_000,
+      )?.id;
+      if (id) veranderd = true;
+    }
+    const a = id ? opSchool.get(id) : undefined;
+    if (!a) {
+      // Niet op school terug te vinden in de opgehaalde periode: daar verwijderd.
+      if (id && start >= van && start < tot) {
+        veranderd = true;
+        continue;
+      }
+      momenten.push(id ? { ...m, schoolId: id } : m);
+      continue;
+    }
+    gebruikt.add(a.id);
+    const nieuwStart = new Date(a.start);
+    const duur = Math.round((new Date(a.einde).getTime() - nieuwStart.getTime()) / 60_000);
+    const notitie = htmlNaarTekst(zonderKlasPlusRegel(a.inhoudHtml) ?? '').trim();
+    const nieuw: Leermoment = {
+      ...m,
+      schoolId: a.id,
+      datum: naarInvoer(nieuwStart),
+      tijd: tijd(nieuwStart),
+      duur: duur > 0 && duur !== plan.duur ? duur : undefined,
+      notitie: notitie || undefined,
+    };
+    if (
+      nieuw.datum !== m.datum ||
+      nieuw.tijd !== m.tijd ||
+      (nieuw.duur ?? plan.duur) !== (m.duur ?? plan.duur) ||
+      (nieuw.notitie ?? '') !== (plan.notities ? (m.notitie ?? '') : '')
+    ) {
+      veranderd = true;
+    }
+    momenten.push(nieuw);
+  }
+
+  if (!veranderd) return null;
+  return {
+    ...plan,
+    momenten,
+    // Staat er op school een notitie, dan heeft het plan notities per dag.
+    notities: plan.notities || momenten.some((m) => m.aan && m.notitie),
+    schoolIds: momenten.flatMap((m) => (m.aan && m.schoolId ? [m.schoolId] : [])),
+  };
 }
