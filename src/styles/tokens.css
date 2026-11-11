@@ -29,6 +29,9 @@
   /* Geoorloofde afwezigheid: altijd groen, welke kleurenset je ook kiest. Niet geoorloofd is --onvoldoende (rood). */
   --geoorloofd: #2e6b5a;
   --onvoldoende-vlak: #fbe9e0;
+  /* Gewijzigd uur (ander lokaal of andere docent) in de weekweergave. */
+  --gewijzigd-vlak: #eee8f8;
+  --gewijzigd-tekst: #5d3f96;
   --onvoldoende-rand: #e8b8a2;
 
   --ingeschreven-vlak: #ddf1ea;
@@ -72,6 +75,8 @@
   --onvoldoende: #f0a07f;
   --geoorloofd: #7cc2ab;
   --onvoldoende-vlak: #3b231a;
+  --gewijzigd-vlak: #2a2236;
+  --gewijzigd-tekst: #c9b1f2;
   --onvoldoende-rand: #7a4330;
   --ingeschreven-vlak: #1d3a31;
   --ingeschreven-tekst: #a9dccb;
@@ -103,6 +108,8 @@
     --onvoldoende: #f0a07f;
   --geoorloofd: #7cc2ab;
     --onvoldoende-vlak: #3b231a;
+    --gewijzigd-vlak: #2a2236;
+    --gewijzigd-tekst: #c9b1f2;
     --onvoldoende-rand: #7a4330;
     --ingeschreven-vlak: #1d3a31;
     --ingeschreven-tekst: #a9dccb;

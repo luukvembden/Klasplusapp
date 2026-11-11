@@ -87,14 +87,16 @@ interface Props {
   gekozen: Date;
   /** Wat er staat als er niets is. */
   leeg: string;
+  /** De les van nu, of in de pauze de volgende; die wordt groen (zelfde regel als in de dagweergave). */
+  uitgelicht?: string | null;
 }
 
 /**
  * De hele week in één raster, op tijd: elke les is zo hoog als hij duurt, zodat pauzes en tussenuren
- * als gat te zien zijn. Gewone lessen zijn wit, een gewijzigde les (ander lokaal, andere docent) heeft
- * de accentkleur en een vervallen les is doorgestreept. Tik op een les voor de lesinformatie.
+ * als gat te zien zijn. Gewone lessen zijn wit, de les van nu groen, een gewijzigde les (ander lokaal,
+ * andere docent) paars en een vervallen les is doorgestreept. Tik op een les voor de lesinformatie.
  */
-export function WeekRooster({ dagen, afspraken, gekozen, leeg }: Props) {
+export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Props) {
   const getimed = afspraken.filter((a) => !a.heleDag);
   const perDag = dagen.map((d) =>
     getimed.filter((a) => zelfdeDag(new Date(a.start), d)).sort((a, b) => a.start.localeCompare(b.start)),
@@ -142,12 +144,13 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg }: Props) {
                 const { baan, van: aantal } = plek.get(a.id) ?? { baan: 0, van: 1 };
                 const { titel, docent } = kort(a);
                 const vervalt = a.labels.includes('vervalt');
-                const gewijzigd = !vervalt && a.labels.includes('gewijzigd');
+                const nu = !vervalt && a.id === uitgelicht;
+                const gewijzigd = !vervalt && !nu && a.labels.includes('gewijzigd');
                 return (
                   <Link
                     key={a.id}
                     to={`/agenda/${encodeURIComponent(a.id)}`}
-                    className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}`}
+                    className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}`}
                     style={{
                       top: y(s) + 1,
                       height: Math.max(y(e) - y(s) - 2, 18),

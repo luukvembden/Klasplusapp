@@ -579,12 +579,23 @@
 
 /* Ander lokaal of andere docent: in de accentkleur. */
 .weekles--gewijzigd {
-  background: var(--groen-licht);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--groen-tekst) 35%, transparent);
+  background: var(--gewijzigd-vlak);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gewijzigd-tekst) 35%, transparent);
 }
 
 .weekles--gewijzigd b,
 .weekles--gewijzigd span {
+  color: var(--gewijzigd-tekst);
+}
+
+/* De les van nu (of in de pauze de volgende): groen, net als in de dagweergave. */
+.weekles--nu {
+  background: var(--groen-licht);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--groen-tekst) 40%, transparent);
+}
+
+.weekles--nu b,
+.weekles--nu span {
   color: var(--groen-tekst);
 }
 

@@ -110,7 +110,18 @@ export function Agenda() {
     const einde = plusDagen(ma, 5);
     const lessen = (week.data?.data ?? []).filter((a) => new Date(a.start) >= ma && new Date(a.start) < einde);
     if (!weekGeladen && lessen.length === 0) return null;
-    return <WeekRooster dagen={dagen} afspraken={lessen} gekozen={new Date()} leeg="Geen lessen in deze week." />;
+    // De les van nu (of in de pauze de volgende) komt uit de lessen van vandaag, als vandaag in deze week valt.
+    const vandaag = new Date(nu);
+    const licht = uitgelicht(lessen.filter((a) => zelfdeDag(new Date(a.start), vandaag)));
+    return (
+      <WeekRooster
+        dagen={dagen}
+        afspraken={lessen}
+        gekozen={vandaag}
+        leeg="Geen lessen in deze week."
+        uitgelicht={licht}
+      />
+    );
   };
 
   // De weekweergave laat alleen werkweken zien: staat de Agenda op een zaterdag of zondag, dan de week erna.
