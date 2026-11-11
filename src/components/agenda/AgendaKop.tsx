@@ -1,9 +1,18 @@
-import { dagEnMaand, dagNaam, datumInZin, weekNummer, zelfdeDag } from '../../lib/datum';
+import { dagEnMaand, dagNaam, datumInZin, nlTijd, weekNummer, zelfdeDag } from '../../lib/datum';
 import { useInstellingen, wijzigInstellingen, type AgendaIndeling } from '../../lib/instellingen';
 import './agenda.css';
 
 interface Props {
   dag: Date;
+  /** In de weekweergave: de eerste en laatste dag die je ziet (ma–vr, of za–zo). Dan heet de kop "Week 46". */
+  bereik?: [Date, Date];
+}
+
+/** "9 – 13 november", of "30 november – 4 december" over een maandgrens. */
+function bereikTekst([van, tot]: [Date, Date]): string {
+  return nlTijd(van).maand === nlTijd(tot).maand
+    ? `${nlTijd(van).dag} – ${dagEnMaand(tot)}`
+    : `${dagEnMaand(van)} – ${dagEnMaand(tot)}`;
 }
 
 const INDELINGEN: { waarde: AgendaIndeling; naam: string }[] = [
@@ -15,17 +24,26 @@ const INDELINGEN: { waarde: AgendaIndeling; naam: string }[] = [
  * Kop van de Agenda: grote titel met datum en week eronder, rechts de schakelaar Dag/Week.
  * Op vandaag heet de titel "Vandaag"; op een andere dag de weekdag.
  */
-export function AgendaKop({ dag }: Props) {
+export function AgendaKop({ dag, bereik }: Props) {
   const isVandaag = zelfdeDag(dag, new Date());
   const { indeling } = useInstellingen();
 
   return (
     <header className="agendakop">
       <div className="agendakop__tekst">
-        <h1 className="agendakop__titel">{isVandaag ? 'Vandaag' : dagNaam(dag)}</h1>
-        <span className="agendakop__sub">
-          {isVandaag ? datumInZin(dag) : dagEnMaand(dag)} · week {weekNummer(dag)}
-        </span>
+        {bereik ? (
+          <>
+            <h1 className="agendakop__titel">Week {weekNummer(bereik[0])}</h1>
+            <span className="agendakop__sub">{bereikTekst(bereik)}</span>
+          </>
+        ) : (
+          <>
+            <h1 className="agendakop__titel">{isVandaag ? 'Vandaag' : dagNaam(dag)}</h1>
+            <span className="agendakop__sub">
+              {isVandaag ? datumInZin(dag) : dagEnMaand(dag)} · week {weekNummer(dag)}
+            </span>
+          </>
+        )}
       </div>
 
       <div className="agendakop__knoppen">

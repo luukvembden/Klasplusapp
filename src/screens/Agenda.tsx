@@ -118,7 +118,7 @@ export function Agenda() {
       <WeekRooster
         dagen={dagen}
         afspraken={lessen}
-        gekozen={dag}
+        gekozen={new Date()}
         leeg={weekend ? 'Geen afspraken in het weekend.' : 'Geen lessen in deze week.'}
       />
     );
@@ -140,8 +140,9 @@ export function Agenda() {
     <div className="agenda">
       {/* Kop en dagstrook samen in één gekleurd blok, met witte tekst en een witte cirkel om de gekozen dag. */}
       <div className="agendakop-vlak">
-        <AgendaKop dag={dag} />
-        <DagStrook dag={dag} onKies={setDag} />
+        {/* In de weekweergave geen dagkiezer: je veegt per week, en de dagen staan boven het rooster. */}
+        <AgendaKop dag={dag} bereik={perWeek ? [blok, plusDagen(blok, isWeekend(blok) ? 1 : 4)] : undefined} />
+        {!perWeek && <DagStrook dag={dag} onKies={setDag} />}
       </div>
 
       <div className="agenda__midden">

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Afspraak } from '../../api';
-import { nlTijd, tijd, zelfdeDag } from '../../lib/datum';
+import { dagKort, nlTijd, tijd, zelfdeDag } from '../../lib/datum';
 import './agenda.css';
 
 /** Zoveel pixels per minuut: een les van 50 minuten is dan 55px hoog. */
@@ -48,7 +48,7 @@ interface Props {
   dagen: Date[];
   /** De afspraken van die dagen. */
   afspraken: Afspraak[];
-  /** De gekozen dag uit de dagstrook; die kolom krijgt een iets donkerder vlak. */
+  /** Vandaag; die kolom krijgt een iets donkerder vlak. */
   gekozen: Date;
   /** Wat er staat als er niets is. */
   leeg: string;
@@ -84,6 +84,19 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg }: Props) {
 
   return (
     <div className="weekrooster">
+      <div className="weekrooster__koppen" style={kolommen}>
+        <span />
+        {dagen.map((d) => (
+          <span
+            key={d.getTime()}
+            className={`weekrooster__kop${zelfdeDag(d, gekozen) ? ' weekrooster__kop--gekozen' : ''}`}
+          >
+            {dagKort(d)}
+            <b>{nlTijd(d).dag}</b>
+          </span>
+        ))}
+      </div>
+
       <div className="weekrooster__raster" style={{ ...kolommen, height: hoogte }}>
         <div className="weekrooster__as" aria-hidden="true">
           {[...assen].map(([m, { tijd: t, uur }]) => (
