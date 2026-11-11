@@ -480,3 +480,60 @@
   font-size: 13px;
   color: var(--tekst-secundair);
 }
+
+/* ---------- Rooster exporteren ---------- */
+.export__snel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.export__chip {
+  min-height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--kaart);
+  box-shadow: var(--schaduw-kaart);
+  color: var(--groen-tekst);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.export__uitleg {
+  padding: 12px 16px;
+}
+
+.export__uitleg p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--tekst-zacht);
+}
+
+.export__uitleg b {
+  color: var(--tekst);
+  font-weight: 600;
+}
+
+.export__let-op {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-kaart);
+  background: var(--onvoldoende-vlak);
+  color: var(--onvoldoende);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.export__klaar {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-kaart);
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+  font-size: 14px;
+  line-height: 1.45;
+}
