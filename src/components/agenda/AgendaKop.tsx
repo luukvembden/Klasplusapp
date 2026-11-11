@@ -39,7 +39,7 @@ export function AgendaKop({ dag, bereik }: Props) {
             </h1>
             <span className="agendakop__sub">
               {bereikTekst(bereik)}
-              {zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date())) && ` · Week ${weekNummer(bereik[0])}`}
+              {zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date())) && ` · week ${weekNummer(bereik[0])}`}
             </span>
           </>
         ) : (
