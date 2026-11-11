@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { AfgerondSchakelaar } from '../components/les/AfgerondSchakelaar';
 import { ChevronRight } from 'lucide-react';
 import { LesLabel } from '../components/agenda/LesLabel';
 import { GegevenRij } from '../components/les/GegevenRij';
@@ -19,9 +17,8 @@ import '../components/les/les.css';
 export function Les() {
   const { id = '' } = useParams();
   const { afspraak: a, tekst, fout, data } = useAfspraak(id);
-  // Na het (un)vinken meteen de nieuwe stand tonen, zonder opnieuw te laden.
-  const [gewijzigd, setGewijzigd] = useState<boolean | null>(null);
-  const afgerond = gewijzigd ?? a?.afgerond ?? false;
+  // Afronden kan alleen op het scherm met de tekst van het huiswerk; hier alleen het label.
+  const afgerond = a?.afgerond ?? false;
 
   // Zelf gemaakte afspraken krijgen hun eigen scherm, met bewerken en verwijderen.
   if (a?.labels.includes('eigen')) return <EigenAfspraakScherm afspraak={a} tekst={tekst} resultaat={data} />;
@@ -58,7 +55,6 @@ export function Les() {
             </div>
             <ChevronRight size={18} strokeWidth={2} color="var(--tekst-secundair)" aria-hidden="true" />
           </Link>
-          <AfgerondSchakelaar id={a.id} afgerond={afgerond} onWijzig={setGewijzigd} />
         </Sectie>
       )}
 
