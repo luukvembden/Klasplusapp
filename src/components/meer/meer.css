@@ -210,6 +210,11 @@
   border-bottom: none;
 }
 
+/* Het icoon rechts (openen, pijltje) blijft altijd even groot, ook naast een lange titel. */
+.bijlagerij > svg {
+  flex: 0 0 auto;
+}
+
 .bijlagerij:disabled {
   opacity: 0.6;
 }
