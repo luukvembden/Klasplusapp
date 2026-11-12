@@ -83,6 +83,13 @@ export function WeekKoppen({ dagen, onVorige, onVolgende }: { dagen: Date[]; onV
   );
 }
 
+/**
+ * Loopt een afspraak met tijden over meer dan één dag (zoals een toetsrooster als info van vrijdag tot de
+ * vrijdag erna)? Die staat dan als balk boven het rooster, net als een afspraak voor de hele dag.
+ */
+export const meerdaags = (a: Afspraak) =>
+  !a.heleDag && !zelfdeDag(new Date(a.start), new Date(new Date(a.einde).getTime() - 60_000));
+
 /** Raakt deze afspraak dag `d`? Zelfde regel als in de dagweergave. */
 export const opDag = (a: Afspraak, d: Date) =>
   new Date(a.start) < plusDagen(d, 1) && (new Date(a.einde) > d || zelfdeDag(new Date(a.start), d));
@@ -143,14 +150,19 @@ interface Props {
  * andere docent) paars en een vervallen les is doorgestreept. Tik op een les voor de lesinformatie.
  */
 export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Props) {
-  const getimed = afspraken.filter((a) => !a.heleDag);
+  const getimed = afspraken.filter((a) => !a.heleDag && !meerdaags(a));
   const perDag = dagen.map((d) =>
     getimed.filter((a) => zelfdeDag(new Date(a.start), d)).sort((a, b) => a.start.localeCompare(b.start)),
   );
-  const heleDagen = <HeleDagen dagen={dagen} afspraken={afspraken.filter((a) => a.heleDag)} />;
+  const heleDagen = <HeleDagen dagen={dagen} afspraken={afspraken.filter((a) => a.heleDag || meerdaags(a))} />;
 
   if (getimed.length === 0) {
-    return afspraken.length ? <div className="weekrooster">{heleDagen}</div> : <p className="melding">{leeg}</p>;
+    return (
+      <div className="weekrooster">
+        {heleDagen}
+        <p className="melding">{leeg}</p>
+      </div>
+    );
   }
 
   // Het schoolrooster staat altijd op de echte tijd. Eigen afspraken en leermomenten die pas na de

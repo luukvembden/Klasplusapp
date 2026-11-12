@@ -142,7 +142,20 @@ export function Agenda() {
     const dagen = Array.from({ length: blokDagen(start) }, (_, i) => plusDagen(start, i));
     return alleAfspraken.filter((a) => dagen.some((d) => opDag(a, d)));
   };
-  const weekendHeeftIets = (zaterdag: Date) => afsprakenIn(zaterdag).length > 0;
+  /**
+   * Het weekend krijg je alleen te zien als er echt iets voor dat weekend is: iets van jezelf (via het
+   * plusje of een leermoment), of iets van school dat op zaterdag of zondag begint. Info die van vrijdag
+   * doorloopt tot volgende week (zoals een toetsrooster) telt niet mee.
+   */
+  const weekendHeeftIets = (zaterdag: Date) => {
+    const maandagErna = plusDagen(zaterdag, 2);
+    return afsprakenIn(zaterdag).some(
+      (a) =>
+        a.labels.includes('eigen') ||
+        a.labels.includes('leren') ||
+        (new Date(a.start) >= zaterdag && new Date(a.start) < maandagErna),
+    );
+  };
   const vorigBlok = (start: Date) => {
     if (isWeekend(start)) return plusDagen(start, -5);
     const zaterdag = plusDagen(start, -2);
