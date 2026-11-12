@@ -131,13 +131,31 @@ export function Agenda() {
 
   /**
    * In de weekweergave wissel je tussen blokken: de werkweek (ma–vr, vijf kolommen), dan het weekend
-   * (za en zo, twee bredere kolommen), dan de volgende werkweek.
+   * (za en zo, twee bredere kolommen), dan de volgende werkweek. Een weekend zonder afspraken (geen
+   * eigen afspraak via het plusje, geen leermoment) sla je over: dan ga je meteen naar de andere week.
    */
   const isWeekend = (d: Date) => !isWeekdag(d);
   const blokStart = (d: Date) => (isWeekend(d) ? plusDagen(maandagVan(d), 5) : maandagVan(d));
   const blokDagen = (start: Date) => (isWeekend(start) ? 2 : 5);
-  const vorigBlok = (start: Date) => plusDagen(start, isWeekend(start) ? -5 : -2);
-  const volgendBlok = (start: Date) => plusDagen(start, isWeekend(start) ? 2 : 5);
+  const weekendHeeftIets = (zaterdag: Date) => {
+    const maandagErna = plusDagen(zaterdag, 2);
+    return alleAfspraken.some((a) => new Date(a.start) < maandagErna && new Date(a.einde) > zaterdag);
+  };
+  const vorigBlok = (start: Date) => {
+    if (isWeekend(start)) return plusDagen(start, -5);
+    const zaterdag = plusDagen(start, -2);
+    return weekendHeeftIets(zaterdag) ? zaterdag : plusDagen(start, -7);
+  };
+  const volgendBlok = (start: Date) => {
+    if (isWeekend(start)) return plusDagen(start, 2);
+    const zaterdag = plusDagen(start, 5);
+    return weekendHeeftIets(zaterdag) ? zaterdag : plusDagen(start, 7);
+  };
+  /** "Naar nu": in een leeg weekend meteen de week erna. */
+  const blokVanNu = () => {
+    const start = blokStart(new Date());
+    return isWeekend(start) && !weekendHeeftIets(start) ? plusDagen(start, 2) : start;
+  };
   const blok = blokStart(dag);
 
   /** Een blok als rooster; ook voor de buurblokken in de schuifbaan. */
@@ -175,7 +193,7 @@ export function Agenda() {
         <AgendaKop
           dag={dag}
           bereik={perWeek ? [blok, plusDagen(blok, blokDagen(blok) - 1)] : undefined}
-          onNaarNu={() => (perWeek ? naarBlok(blokStart(new Date())) : setDag(beginVanDag(new Date())))}
+          onNaarNu={() => (perWeek ? naarBlok(blokVanNu()) : setDag(beginVanDag(new Date())))}
         />
         {/* De dagen staan in beide weergaven op dezelfde hoogte, direct onder de kop. */}
         {perWeek ? (
