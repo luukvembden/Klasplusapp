@@ -5,7 +5,7 @@ import { api, type Afspraak } from '../api';
 import { AgendaKop } from '../components/agenda/AgendaKop';
 import { DagStrook } from '../components/agenda/DagStrook';
 import { LesRij } from '../components/agenda/LesRij';
-import { WeekKoppen, WeekRooster } from '../components/agenda/WeekRooster';
+import { opDag, WeekKoppen, WeekRooster } from '../components/agenda/WeekRooster';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { VeegCarrousel } from '../components/ui/VeegCarrousel';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
@@ -137,10 +137,12 @@ export function Agenda() {
   const isWeekend = (d: Date) => !isWeekdag(d);
   const blokStart = (d: Date) => (isWeekend(d) ? plusDagen(maandagVan(d), 5) : maandagVan(d));
   const blokDagen = (start: Date) => (isWeekend(start) ? 2 : 5);
-  const weekendHeeftIets = (zaterdag: Date) => {
-    const maandagErna = plusDagen(zaterdag, 2);
-    return alleAfspraken.some((a) => new Date(a.start) < maandagErna && new Date(a.einde) > zaterdag);
+  /** De afspraken die je in een blok ziet: alles wat een van de dagen raakt (ook hele-dag-afspraken). */
+  const afsprakenIn = (start: Date) => {
+    const dagen = Array.from({ length: blokDagen(start) }, (_, i) => plusDagen(start, i));
+    return alleAfspraken.filter((a) => dagen.some((d) => opDag(a, d)));
   };
+  const weekendHeeftIets = (zaterdag: Date) => afsprakenIn(zaterdag).length > 0;
   const vorigBlok = (start: Date) => {
     if (isWeekend(start)) return plusDagen(start, -5);
     const zaterdag = plusDagen(start, -2);
@@ -162,8 +164,7 @@ export function Agenda() {
   const roosterVan = (start: Date) => {
     const weekend = isWeekend(start);
     const dagen = Array.from({ length: blokDagen(start) }, (_, i) => plusDagen(start, i));
-    const einde = plusDagen(start, dagen.length);
-    const lessen = alleAfspraken.filter((a) => new Date(a.start) >= start && new Date(a.start) < einde);
+    const lessen = afsprakenIn(start);
     if (!weekGeladen && lessen.length === 0) return null;
     // De les van nu (of de volgende binnen een kwartier) komt uit de afspraken van vandaag.
     const vandaag = new Date(nu);

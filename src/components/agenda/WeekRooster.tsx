@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { lesLink } from '../../lib/leerplan';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Afspraak } from '../../api';
-import { dagKort, nlTijd, tijd, zelfdeDag } from '../../lib/datum';
+import { dagKort, nlTijd, plusDagen, tijd, zelfdeDag } from '../../lib/datum';
 import './agenda.css';
 
 /** Zoveel pixels per minuut: een les van 50 minuten is dan 55px hoog. */
@@ -83,6 +83,47 @@ export function WeekKoppen({ dagen, onVorige, onVolgende }: { dagen: Date[]; onV
   );
 }
 
+/** Raakt deze afspraak dag `d`? Zelfde regel als in de dagweergave. */
+export const opDag = (a: Afspraak, d: Date) =>
+  new Date(a.start) < plusDagen(d, 1) && (new Date(a.einde) > d || zelfdeDag(new Date(a.start), d));
+
+/**
+ * Afspraken voor de hele dag: boven het rooster, als een balk over de dagen die ze raken. Liggen er
+ * meer over dezelfde dagen, dan onder elkaar.
+ */
+function HeleDagen({ dagen, afspraken }: { dagen: Date[]; afspraken: Afspraak[] }) {
+  if (afspraken.length === 0) return null;
+  const rijen: number[] = []; // per rij: de laatste bezette dag
+  const balken = [...afspraken]
+    .sort((a, b) => a.start.localeCompare(b.start))
+    .map((a) => {
+      const raakt = dagen.map((d, i) => (opDag(a, d) ? i : -1)).filter((i) => i >= 0);
+      if (raakt.length === 0) return null;
+      const van = raakt[0];
+      const tot = raakt[raakt.length - 1];
+      let rij = rijen.findIndex((laatste) => laatste < van);
+      if (rij < 0) rij = rijen.push(tot) - 1;
+      else rijen[rij] = tot;
+      return { a, van, tot, rij };
+    })
+    .filter((b) => b !== null);
+  return (
+    <div className="weekrooster__heledag" style={kolommenVoor(dagen.length)}>
+      {balken.map(({ a, van, tot, rij }) => (
+        <Link
+          key={a.id}
+          to={lesLink(a)}
+          className="weekbalk"
+          style={{ gridColumn: `${van + 2} / ${tot + 3}`, gridRow: rij + 1 }}
+          aria-label={`${a.omschrijving}, hele dag`}
+        >
+          {a.omschrijving}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 interface Props {
   /** De dagen die naast elkaar staan: maandag tot en met vrijdag, of zaterdag en zondag. */
   dagen: Date[];
@@ -106,8 +147,11 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
   const perDag = dagen.map((d) =>
     getimed.filter((a) => zelfdeDag(new Date(a.start), d)).sort((a, b) => a.start.localeCompare(b.start)),
   );
+  const heleDagen = <HeleDagen dagen={dagen} afspraken={afspraken.filter((a) => a.heleDag)} />;
 
-  if (getimed.length === 0) return <p className="melding">{leeg}</p>;
+  if (getimed.length === 0) {
+    return afspraken.length ? <div className="weekrooster">{heleDagen}</div> : <p className="melding">{leeg}</p>;
+  }
 
   // Het schoolrooster staat altijd op de echte tijd. Eigen afspraken en leermomenten die pas na de
   // laatste les van de week beginnen, komen compact daaronder: na één leeg vak, op volgorde van tijd,
@@ -160,6 +204,7 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
 
   return (
     <div className="weekrooster">
+      {heleDagen}
       <div className="weekrooster__raster" style={{ ...kolommen, height: hoogte }}>
         {grenzen.map((m) => (
           <span key={`lijn-${m}`} className="weekrooster__lijn" style={{ top: y(m) }} aria-hidden="true" />
