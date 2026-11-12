@@ -1,4 +1,4 @@
-import { dagEnMaand, dagNaam, datumInZin, maandagVan, nlTijd, weekNummer, zelfdeDag } from '../../lib/datum';
+import { dagEnMaand, dagNaam, datumInZin, maandagVan, nlTijd, plusDagen, weekNummer, zelfdeDag } from '../../lib/datum';
 import { useInstellingen, wijzigInstellingen, type AgendaIndeling } from '../../lib/instellingen';
 import './agenda.css';
 
@@ -13,10 +13,14 @@ interface Props {
 const isWeekend = (d: Date) => [0, 6].includes(nlTijd(d).weekdag);
 /** Valt dit blok (werkweek of weekend) in de huidige week? */
 const ditBlok = (bereik: [Date, Date]) => zelfdeDag(maandagVan(bereik[0]), maandagVan(new Date()));
+/** Is dit de werkweek na deze week? */
+const volgendeWeek = (bereik: [Date, Date]) =>
+  !isWeekend(bereik[0]) && zelfdeDag(maandagVan(bereik[0]), plusDagen(maandagVan(new Date()), 7));
 
 function kopTitel(bereik: [Date, Date]): string {
   if (isWeekend(bereik[0])) return ditBlok(bereik) ? 'Dit weekend' : 'Weekend';
-  return ditBlok(bereik) ? 'Deze week' : `Week ${weekNummer(bereik[0])}`;
+  if (ditBlok(bereik)) return 'Deze week';
+  return volgendeWeek(bereik) ? 'Volgende week' : `Week ${weekNummer(bereik[0])}`;
 }
 
 /** "9 – 13 november", of "30 november – 4 december" over een maandgrens. */
@@ -46,12 +50,12 @@ export function AgendaKop({ dag, bereik, onNaarNu }: Props) {
           <>
             {/*
               De huidige week heet "Deze week", het huidige weekend "Dit weekend"; dan staat het weeknummer
-              achter de datums. Een ander weekend heet "Weekend" (ook met weeknummer), een andere week "Week 47".
+              achter de datums. Een ander weekend heet "Weekend" (ook met weeknummer), de week erna "Volgende week" (met weeknummer), een andere week "Week 48".
             */}
             <h1 className="agendakop__titel">{kopTitel(bereik)}</h1>
             <span className="agendakop__sub">
               {bereikTekst(bereik)}
-              {(ditBlok(bereik) || isWeekend(bereik[0])) && ` · week ${weekNummer(bereik[0])}`}
+              {(ditBlok(bereik) || volgendeWeek(bereik) || isWeekend(bereik[0])) && ` · week ${weekNummer(bereik[0])}`}
             </span>
           </>
         ) : (
