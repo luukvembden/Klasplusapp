@@ -237,11 +237,15 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
                 const vervalt = a.labels.includes('vervalt');
                 const nu = !vervalt && a.id === uitgelicht;
                 const gewijzigd = !vervalt && !nu && a.labels.includes('gewijzigd');
+                // Lang blok (zoals een excursie): tekst mag per heel woord naar de volgende regel, en
+                // "BTME,KNNW" wordt "BTME, KNNW" zodat elke afkorting een eigen regel kan krijgen.
+                const lang = h >= 2 * RIJ;
+                const woorden = (t: string) => (lang ? t.replace(/\s*,\s*/g, ', ') : t);
                 return (
                   <Link
                     key={a.id}
                     to={lesLink(a)}
-                    className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}${h < 34 ? ' weekles--klein' : ''}`}
+                    className={`weekles${vervalt ? ' weekles--vervalt' : ''}${gewijzigd ? ' weekles--gewijzigd' : ''}${nu ? ' weekles--nu' : ''}${h < 34 ? ' weekles--klein' : ''}${lang ? ' weekles--lang' : ''}`}
                     style={{
                       top,
                       height: h,
@@ -255,8 +259,8 @@ export function WeekRooster({ dagen, afspraken, gekozen, leeg, uitgelicht }: Pro
                     <b>{titel}</b>
                     {/* Zonder lesuur (eigen afspraak) de tijden erbij; die staan dan niet langs de rand. */}
                     {!a.lesuur && <span>{tijd(new Date(a.start))} – {tijd(new Date(a.einde))}</span>}
-                    {a.lokaal && <span>{a.lokaal}</span>}
-                    {docent && <span>{docent}</span>}
+                    {a.lokaal && <span>{woorden(a.lokaal)}</span>}
+                    {docent && <span>{woorden(docent)}</span>}
                   </Link>
                 );
               })}

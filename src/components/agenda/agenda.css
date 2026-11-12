@@ -593,6 +593,18 @@
   text-overflow: ellipsis;
 }
 
+/*
+ * Lang blok (twee lessen of meer, zoals een excursie): afgekapte tekst gaat naar de volgende regel,
+ * maar alleen per heel woord; een woord wordt nooit over twee regels gebroken.
+ */
+.weekles--lang b,
+.weekles--lang span {
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
 .weekles:focus-visible {
   outline: 2px solid var(--groen-tekst);
   outline-offset: 1px;
