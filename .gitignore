@@ -6,3 +6,5 @@ dist
 .claude/
 *.ipa
 android/.idea/
+.idea/
+tsconfig.tsbuildinfo
