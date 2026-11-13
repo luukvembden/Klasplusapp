@@ -2,15 +2,22 @@
 
 **Je schooldag, alles op een rij.**
 
-Klas+ is een onofficiële app voor leerlingen (en ouders) met je rooster, huiswerk, cijfers, berichten en meer. Je logt in via je eigen school, en alles blijft op je telefoon. Er is geen server van Klas+ die meekijkt.
+Klas+ is een app voor leerlingen (en ouders) met je rooster, huiswerk, cijfers, berichten en meer. Je logt in via je eigen school, en alles blijft op je telefoon. Er is geen server van Klas+ die meekijkt.
+
+<p>
+  <img src="screenshots/02-agenda-dag.png" width="200" alt="Agenda, dag">
+  <img src="screenshots/03-agenda-week.png" width="200" alt="Agenda, week">
+  <img src="screenshots/08-leren-plannen.png" width="200" alt="Leren plannen">
+  <img src="screenshots/09-cijfers.png" width="200" alt="Cijfers">
+</p>
 
 ## Wat Klas+ extra doet
 
 ### Leren plannen voor je toets
 Staat er een SO of proefwerk aan te komen? Tik op **Plan leren** en Klas+ weet al welk vak het is en wanneer de toets is.
-- Kies hoeveel dagen van tevoren je begint, met een snelknop (3 dagen, 1 week, …) of het draaiwiel.
-- Geef elke dag een eigen tijd, of zet alle dagen in één keer op 19:00.
-- Zet er per dag een notitie bij, zoals "hoofdstuk 3", zodat je weet wat je die avond doet.
+- Eén kaart, drie keuzes: hoeveel dagen van tevoren, hoe laat en hoe lang.
+- Daaronder je dagen. Vink een dag uit als je dan niet kunt, of geef hem een eigen tijd.
+- Bij elke dag kun je kwijt wat je gaat leren, zoals "hoofdstuk 3".
 - Je leermomenten verschijnen in je agenda én als persoonlijke afspraak op de schoolsite. Verschuif je er een op de site, dan neemt Klas+ dat gewoon over.
 
 ### Huiswerk inplannen
@@ -21,7 +28,9 @@ Wissel rechtsboven tussen **Dag** en **Week**. De weekweergave zet je rooster op
 - De les van nu (of die binnen een kwartier begint) is **groen**.
 - Een ander lokaal of een andere docent? Dat uur is **paars**.
 - Vervallen uren zijn doorgestreept.
-- Het weekend krijgt zijn eigen scherm, met twee brede dagen.
+- Afspraken voor de hele dag, of die over meerdere dagen lopen (zoals een toetsweek), staan als balk boven je rooster.
+- Lange blokken, zoals een excursie, laten hun tekst gewoon doorlopen.
+- Het weekend krijgt zijn eigen scherm, maar alleen als je er iets hebt staan. Anders veeg je meteen door naar volgende week.
 - Avondafspraken staan netjes onder je rooster, zonder eindeloos scrollen.
 
 ### Ochtendmelding
@@ -31,7 +40,10 @@ Elke schooldag op een tijd die je zelf kiest: je eerste les, hoe laat en waar, e
 Kies een periode en zet je lessen in Apple Agenda of een andere agenda-app, met lokaal en huiswerk erbij.
 
 ### Ga ik over?
-Vul de overgangsnormen van je school in en Klas+ rekent met je gemiddeldes van nu uit of je overgaat. Ook zie je wat je moet halen voor het gemiddelde dat je wilt.
+Vul de overgangsnormen van je school in en Klas+ rekent met je gemiddeldes van nu uit of je overgaat.
+
+### Cijfercalculator
+Wat doet een 6,5 met je gemiddelde? En wat moet je halen voor een 7? De calculator rekent mee terwijl je typt.
 
 ### Jouw stijl
 Licht, donker of systeem. Groen, blauw of roze. En op iPhone past het app-icoon zich aan als je beginscherm donker of getint is.
@@ -57,7 +69,7 @@ Ergens onderin de app telt Klas+ af naar de volgende vakantie. Zoek maar.
 - **Berichten:** lezen, schrijven, beantwoorden en doorsturen.
 - **Opdrachten:** wat je moet inleveren, en de feedback van je docent.
 - **Activiteiten:** inschrijven voor de sportdag of excursie, en zien wanneer de inschrijving sluit.
-- **Afwezigheid:** je overzicht van dit jaar, en afwezig melden als je school dat toestaat.
+- **Afwezigheid:** je overzicht van dit jaar, wat er gemeld is, en afwezig melden als je school dat toestaat.
 - **Leermiddelen:** je digitale methodes, met één tik open bij de uitgever.
 - **Studiewijzers:** de planning per vak, als je docent die gebruikt.
 
