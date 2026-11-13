@@ -188,14 +188,7 @@ export function LerenPlannen() {
                 ))}
               </select>
             </Invoerrij>
-            <Invoerrij
-              label={
-                <>
-                  Tijd <span className="leren__hint">ook per dag aan te passen</span>
-                </>
-              }
-              voor="leren-alle"
-            >
+            <Invoerrij label="Tijd" voor="leren-alle">
               <input
                 id="leren-alle"
                 type="time"
