@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calculator } from 'lucide-react';
+import { Calculator, ChartNoAxesColumnIncreasing } from 'lucide-react';
 import { CijferRij } from '../components/cijfers/CijferRij';
 import { BijgewerktBalk } from '../components/ui/BijgewerktBalk';
 import { Sectie } from '../components/ui/Sectie';
@@ -43,13 +43,15 @@ export function Cijfers() {
         {/* Zelfde knop als "Vandaag" in de Agenda. */}
         <div className="agendakop__knoppen">
           <Link to="/cijfers/gemiddeldes" className="agendakop__vandaag agendakop__knoplink">
+            <ChartNoAxesColumnIncreasing size={16} strokeWidth={2.4} aria-hidden="true" />
             Gemiddeldes
           </Link>
         </div>
       </header>
 
       <div className="agenda__midden">
-        <div className="scherm__lijst">
+        {/* Ruimte onderaan, zodat de rekenmachine-knop niet over het laatste cijfer valt. */}
+        <div className="scherm__lijst cijfers__lijst">
           <VegenOmTeVernieuwen onVernieuw={vernieuw}>
             <div className="pagina pagina--onder-kop">
               <Sectie titel="Recent">

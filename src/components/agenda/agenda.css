@@ -375,16 +375,11 @@
 
 
 /* Als link (Gemiddeldes): zelfde uiterlijk als de knop, tekst in het midden. */
+/* Als link (Gemiddeldes): zelfde uiterlijk als de knop, tekst in het midden; eventueel een klein icoon. */
 .agendakop__knoplink {
   display: inline-flex;
   align-items: center;
-  text-decoration: none;
-}
-
-/* Als link (Gemiddeldes): zelfde uiterlijk als de knop, tekst in het midden. */
-.agendakop__knoplink {
-  display: inline-flex;
-  align-items: center;
+  gap: 6px;
   text-decoration: none;
 }
 
