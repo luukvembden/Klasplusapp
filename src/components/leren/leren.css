@@ -1,40 +1,4 @@
 /* ---------- Leren plannen ---------- */
-.leren__toets {
-  margin: 0;
-  font-size: 14px;
-  color: var(--tekst-zacht);
-}
-
-.leren__snel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.leren__chip {
-  min-height: 36px;
-  padding: 0 14px;
-  border: none;
-  border-radius: 999px;
-  background: var(--kaart);
-  box-shadow: var(--schaduw-kaart);
-  color: var(--groen-tekst);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.leren__chip[aria-pressed='true'] {
-  background: var(--kop);
-  color: var(--op-groen);
-}
-
-.leren__chip:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
 /* Een dag in het plan: de regel met vinkje en tijd, en eventueel de notitie eronder. */
 .leren__dagblok {
   border-bottom: 1px solid var(--lijn-zacht);
@@ -54,15 +18,15 @@
 .leren__notitie {
   display: block;
   width: calc(100% - 44px);
-  margin: -4px 0 12px 44px;
-  min-height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--invoer-rand);
-  border-radius: 10px;
-  background: var(--achtergrond);
+  margin: -6px 0 12px 44px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--vlak);
   color: var(--tekst);
   font: inherit;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .leren__notitie::placeholder {
@@ -95,13 +59,6 @@
 .leren__tijd:disabled {
   color: var(--tekst-secundair);
   opacity: 0.6;
-}
-
-.leren__nawoord {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--tekst-secundair);
 }
 
 /* Rechtsboven bij een toets: "Plan leren". */

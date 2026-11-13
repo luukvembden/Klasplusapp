@@ -8,7 +8,7 @@ import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
 import { soortVan, useAfspraak } from '../hooks/useAfspraak';
-import { beginVanDag, dagTitel, naarInvoer, plusDagen, tijd, vanInvoer } from '../lib/datum';
+import { beginVanDag, dagKort, dagTitel, korteDatum, naarInvoer, plusDagen, vanInvoer } from '../lib/datum';
 import { useLagen } from '../lib/laag';
 import { bewaarLeerplan, leerplanVoor, verwijderLeerplan, type Leermoment } from '../lib/leerplan';
 import { controleerNu } from '../lib/notificaties';
@@ -22,18 +22,13 @@ import '../components/leren/leren.css';
 const MAX_DAGEN = 21;
 const STANDAARD_TIJD = '19:00';
 
-const SNEL = [
-  { naam: '3 dagen', dagen: 3 },
-  { naam: '5 dagen', dagen: 5 },
-  { naam: '1 week', dagen: 7 },
-  { naam: '2 weken', dagen: 14 },
-];
-
 const DUREN = [
+  { naam: '15 min', minuten: 15 },
   { naam: '30 min', minuten: 30 },
   { naam: '45 min', minuten: 45 },
   { naam: '1 uur', minuten: 60 },
   { naam: '1,5 uur', minuten: 90 },
+  { naam: '2 uur', minuten: 120 },
 ];
 
 /** De datums waarop je leert: van `dagen` dagen voor de toets tot de dag ervoor, niet in het verleden. */
@@ -45,8 +40,8 @@ function datumsVoor(toetsDag: Date, dagen: number): string[] {
 }
 
 /**
- * Leren plannen voor een toets: hoeveel dagen van tevoren je begint (snelknoppen of de keuzelijst),
- * en per dag hoe laat. De leermomenten komen in je Agenda, met een melding als je dat wilt.
+ * Leren plannen voor een toets, zo eenvoudig mogelijk: één kaart met hoeveel dagen, hoe laat en hoe lang,
+ * daaronder de dagen (aan/uit, eigen tijd, notitie). De leermomenten komen in je Agenda en op school.
  */
 export function LerenPlannen() {
   const { id = '' } = useParams();
@@ -64,7 +59,6 @@ export function LerenPlannen() {
 
   const [dagen, setDagen] = useState<number | null>(bestaand?.dagen ?? null);
   const [duur, setDuur] = useState<number | null>(bestaand?.duur ?? null);
-  const [notities, setNotities] = useState(bestaand?.notities ?? false);
   // Een ouder kan geen afspraken in de agenda van het kind zetten.
   const kanOpSchool = !api.isOuder();
   const [bezig, setBezig] = useState(false);
@@ -114,7 +108,8 @@ export function LerenPlannen() {
       dagen: gekozenDagen,
       duur: gekozenDuur,
       momenten,
-      notities,
+      // Elke dag heeft een notitieveld; leeg blijft leeg.
+      notities: true,
       // Herinneringen voor leermomenten staan uit (meldingen werken nog niet betrouwbaar genoeg).
       herinnering: false,
       // Altijd ook in de schoolagenda (behalve voor een ouder).
@@ -160,16 +155,14 @@ export function LerenPlannen() {
     <div className="pagina pagina--met-terug">
       <TerugLink naar={`/huiswerk/${encodeURIComponent(id)}`} label="Terug" />
       <PaginaKop
-        sub={a ? `${soortVan(a)} · ${metHoofdletter(a.vak ?? a.omschrijving)}` : ' '}
+        sub={
+          a
+            ? `${soortVan(a)} · ${metHoofdletter(a.vak ?? a.omschrijving)} · ${dagKort(new Date(a.start))} ${korteDatum(a.start)}`
+            : ' '
+        }
         titel={maken ? 'Huiswerk inplannen' : 'Leren plannen'}
       />
       {fout && <p className="melding">{fout}</p>}
-      {a && (
-        <p className="leren__toets">
-          {maken ? 'Huiswerk voor' : 'Toets op'} {dagTitel(new Date(a.start)).toLowerCase()}
-          {a.lesuur ? `, ${a.lesuur}e uur` : ''} om {tijd(new Date(a.start))}
-        </p>
-      )}
 
       {a && max < 1 && (
         <p className="melding">
@@ -179,137 +172,102 @@ export function LerenPlannen() {
 
       {a && max >= 1 && (
         <>
-          <Sectie titel="Hoeveel dagen van tevoren">
-            <div className="leren__snel" role="group" aria-label="Snel kiezen">
-              {SNEL.map((s) => (
-                <button
-                  key={s.naam}
-                  type="button"
-                  className="leren__chip"
-                  aria-pressed={gekozenDagen === s.dagen}
-                  disabled={s.dagen > max}
-                  onClick={() => setDagen(s.dagen)}
-                >
-                  {s.naam}
-                </button>
-              ))}
-            </div>
-            {/* Eén brede rij; tik op het getal en de telefoon toont zijn eigen keuzewiel of lijst. */}
-            <section className="kaart leren__aantal">
-              <Invoerrij label="Aantal dagen" voor="leren-dagen">
-                <select
-                  id="leren-dagen"
-                  className="invoerrij__veld invoerrij__keuze"
-                  value={Math.min(gekozenDagen, max)}
-                  onChange={(e) => kiesDagen(Number(e.target.value))}
-                >
-                  {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={n}>
-                      {n}
+          {/* Alle keuzes in één kaart; tik op een waarde en de telefoon opent zijn eigen keuzewiel of lijst. */}
+          <section className="kaart">
+            <Invoerrij label="Aantal dagen" voor="leren-dagen">
+              <select
+                id="leren-dagen"
+                className="invoerrij__veld invoerrij__keuze"
+                value={Math.min(gekozenDagen, max)}
+                onChange={(e) => kiesDagen(Number(e.target.value))}
+              >
+                {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Invoerrij>
+            <Invoerrij label="Tijd" voor="leren-alle">
+              <input
+                id="leren-alle"
+                type="time"
+                className="invoerrij__veld"
+                value={alle}
+                onChange={(e) => {
+                  const t = e.target.value;
+                  if (!t) return;
+                  setAlle(t);
+                  setTijden((oud) =>
+                    Object.fromEntries(datums.map((d) => [d, { ...(oud[d] ?? { aan: true }), tijd: t }])),
+                  );
+                }}
+              />
+            </Invoerrij>
+            <Invoerrij label="Hoe lang" voor="leren-duur">
+              <select
+                id="leren-duur"
+                className="invoerrij__veld invoerrij__keuze"
+                value={gekozenDuur}
+                onChange={(e) => setDuur(Number(e.target.value))}
+              >
+                {[...DUREN, ...(DUREN.some((d) => d.minuten === gekozenDuur) ? [] : [{ naam: `${gekozenDuur} min`, minuten: gekozenDuur }])]
+                  .sort((x, y) => x.minuten - y.minuten)
+                  .map((d) => (
+                    <option key={d.minuten} value={d.minuten}>
+                      {d.naam}
                     </option>
                   ))}
-                </select>
-              </Invoerrij>
-            </section>
-          </Sectie>
+              </select>
+            </Invoerrij>
+          </section>
 
-          <Sectie
-            titel="Wanneer per dag"
-            nawoord={<p className="leren__nawoord">Zet een dag uit als je dan niet kunt.</p>}
-          >
-            <section className="kaart">
-              <Invoerrij label="Zelfde tijd voor alle dagen" voor="leren-alle">
-                <input
-                  id="leren-alle"
-                  type="time"
-                  className="invoerrij__veld"
-                  value={alle}
-                  onChange={(e) => {
-                    const t = e.target.value;
-                    if (!t) return;
-                    setAlle(t);
-                    setTijden((oud) =>
-                      Object.fromEntries(datums.map((d) => [d, { ...(oud[d] ?? { aan: true }), tijd: t }])),
-                    );
-                  }}
-                />
-              </Invoerrij>
-              <label className="instelrij meldingrij" htmlFor="leren-notities">
-                <span className="meldingrij__tekst">
-                  <span>Notitie per dag</span>
-                  <span className="meldingrij__uitleg">
-                    Wat je die dag gaat {maken ? 'maken' : 'leren'}, bijvoorbeeld hoofdstuk 3
-                  </span>
-                </span>
-                <input
-                  id="leren-notities"
-                  type="checkbox"
-                  checked={notities}
-                  onChange={(e) => setNotities(e.target.checked)}
-                />
-              </label>
-            </section>
+          <Sectie titel="Dagen">
             <section className="kaart">
               {datums.map((datum) => {
                 const m = momentVan(datum);
                 const d = vanInvoer(datum)!;
                 return (
                   <div key={datum} className="leren__dagblok">
-                  <div className={`leren__dag${m.aan ? '' : ' leren__dag--uit'}`}>
-                    <label className="instelrij" htmlFor={`leren-aan-${datum}`} style={{ border: 'none', minHeight: 0 }}>
+                    <div className={`leren__dag${m.aan ? '' : ' leren__dag--uit'}`}>
+                      <label className="instelrij" htmlFor={`leren-aan-${datum}`} style={{ border: 'none', minHeight: 0 }}>
+                        <input
+                          id={`leren-aan-${datum}`}
+                          type="checkbox"
+                          checked={m.aan}
+                          onChange={(e) => zet(datum, { aan: e.target.checked })}
+                        />
+                      </label>
+                      <span className="leren__dagnaam">{dagTitel(d)}</span>
                       <input
-                        id={`leren-aan-${datum}`}
-                        type="checkbox"
-                        checked={m.aan}
-                        onChange={(e) => zet(datum, { aan: e.target.checked })}
+                        type="time"
+                        className="leren__tijd"
+                        aria-label={`Tijd op ${dagTitel(d)}`}
+                        value={m.tijd}
+                        disabled={!m.aan}
+                        onChange={(e) => e.target.value && zet(datum, { tijd: e.target.value })}
                       />
-                    </label>
-                    <span className="leren__dagnaam">{dagTitel(d)}</span>
-                    <input
-                      type="time"
-                      className="leren__tijd"
-                      aria-label={`Tijd op ${dagTitel(d)}`}
-                      value={m.tijd}
-                      disabled={!m.aan}
-                      onChange={(e) => e.target.value && zet(datum, { tijd: e.target.value })}
-                    />
-                  </div>
-                  {notities && m.aan && (
-                    <input
-                      type="text"
-                      className="leren__notitie"
-                      aria-label={`Notitie voor ${dagTitel(d)}`}
-                      placeholder={maken ? 'Wat ga je maken?' : 'Wat ga je leren?'}
-                      value={m.notitie ?? ''}
-                      onChange={(e) => zet(datum, { notitie: e.target.value })}
-                    />
-                  )}
+                    </div>
+                    {m.aan && (
+                      <input
+                        type="text"
+                        className="leren__notitie"
+                        aria-label={`Notitie voor ${dagTitel(d)}`}
+                        placeholder="Notitie (optioneel)"
+                        value={m.notitie ?? ''}
+                        onChange={(e) => zet(datum, { notitie: e.target.value })}
+                      />
+                    )}
                   </div>
                 );
               })}
             </section>
           </Sectie>
 
-          <Sectie titel="Hoe lang per keer">
-            <div className="leren__snel" role="group" aria-label="Hoe lang per keer">
-              {DUREN.map((d) => (
-                <button
-                  key={d.minuten}
-                  type="button"
-                  className="leren__chip"
-                  aria-pressed={gekozenDuur === d.minuten}
-                  onClick={() => setDuur(d.minuten)}
-                >
-                  {d.naam}
-                </button>
-              ))}
-            </div>
-          </Sectie>
-
           {melding && <p className="melding">{melding}</p>}
 
           <button type="button" className="knop-primair" onClick={opslaan} disabled={bezig}>
-            {bezig ? 'Bezig…' : bestaand ? 'Plan bijwerken' : 'Plan opslaan'}
+            {bezig ? 'Bezig…' : bestaand ? 'Bijwerken' : 'Inplannen'}
           </button>
           {bestaand && (
             <button type="button" className="knop-verwijderen" onClick={wis} disabled={bezig}>
