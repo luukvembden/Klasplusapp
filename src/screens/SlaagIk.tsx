@@ -34,7 +34,7 @@ export function SlaagIk() {
         <Link to="/cijfers/slaag-ik/vakken" className="agendakop__vandaag gemiddeldes__knop tandwielknop" aria-label="Mijn vakken">
           <Settings size={20} strokeWidth={2.2} aria-hidden="true" />
         </Link>
-        <PaginaKop sub={`${profiel?.klas ? `${profiel.klas} · ` : ''}met je SE-cijfers van nu`} titel="Slaag ik?" />
+        <PaginaKop sub="Met je SE-cijfers van nu" titel="Slaag ik?" />
       </VasteKop>
       <OfflineRegel resultaat={resultaat} />
       {fout && <p className="melding">{fout}</p>}
