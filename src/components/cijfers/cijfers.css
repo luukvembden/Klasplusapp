@@ -153,13 +153,7 @@
   white-space: nowrap;
 }
 
-/* Cijfercalculator */
-.calc-knop {
-  width: 100%;
-  margin-top: 12px;
-}
-
-/* De uitkomst staat als laatste regel in de kaart, op een zacht getinte achtergrond. */
+/* Cijfercalculator: de uitkomst staat als laatste regel in de kaart, op een zacht getinte achtergrond. */
 .calc-uitkomst {
   margin: 0 -16px;
   padding: 12px 16px;
