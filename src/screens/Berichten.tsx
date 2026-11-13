@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronRight, Paperclip, Plus } from "lucide-react";
+import { Paperclip, Plus } from "lucide-react";
 import { api, type BerichtKort, type BerichtMap } from "../api";
 import { OfflineRegel } from "../components/ui/OfflineRegel";
 import { PaginaKop } from "../components/ui/PaginaKop";
@@ -54,8 +54,6 @@ function BerichtRij({ b, verzonden }: { b: BerichtKort; verzonden: boolean }) {
         </span>
         {!b.gelezen && <span className="visueel-verborgen">Ongelezen</span>}
       </span>
-      {/* Net als bij Huiswerk: een subtiel pijltje dat de rij te openen is. */}
-      <ChevronRight size={18} strokeWidth={2} color="var(--tekst-secundair)" aria-hidden="true" />
     </Link>
   );
 }

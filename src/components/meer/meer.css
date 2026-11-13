@@ -13,9 +13,7 @@
 
 /* Eén bericht in het postvak: stip voor ongelezen, afzender en datum, onderwerp. */
 .berichtrij {
-  position: relative;
   display: flex;
-  align-items: center;
   gap: 10px;
   padding: 12px 0;
   border-bottom: 1px solid var(--lijn-zacht);
@@ -31,16 +29,11 @@
   background: var(--vlak);
 }
 
-/*
- * Het stipje voor ongelezen hangt in de rand van de kaart, zodat de tekst even ver links begint als bij
- * Huiswerk.
- */
 .berichtrij__stip {
-  position: absolute;
-  left: -12px;
-  top: 19px;
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  margin-top: 6px;
   border-radius: 50%;
   background: var(--groen-tekst);
 }
@@ -50,7 +43,6 @@
 }
 
 .berichtrij__tekst {
-  align-self: stretch;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
