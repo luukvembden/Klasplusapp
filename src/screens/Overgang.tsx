@@ -19,6 +19,7 @@ import "../components/les/les.css";
 import "../components/ui/ui.css";
 import "../components/cijfers/cijfers.css";
 import "../components/instellingen/instellingen.css";
+import { LaadKaart } from "../components/ui/Laden";
 
 const COMPENSATIE: { waarde: Compensatie; tekst: string }[] = [
   { waarde: "gemiddelde", tekst: "Gemiddelde 6,0" },
@@ -81,6 +82,7 @@ export function Overgang() {
       </VasteKop>
       <OfflineRegel resultaat={resultaat} />
       {fout && <p className="melding">{fout}</p>}
+      {!cijfers && !fout && <LaadKaart rijen={6} />}
 
       {uitslag && uitslag.vakken.length === 0 && (
         <p className="melding">Nog geen cijfers om mee te rekenen.</p>

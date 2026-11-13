@@ -16,6 +16,7 @@ import { useLaagZichtbaar } from '../lib/laag';
 import { beginVanDag, isWeekdag, maandagVan, naarInvoer, plusDagen, zelfdeDag } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/agenda/agenda.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Een dag die de Agenda moet tonen zodra hij weer bovenop ligt, bijvoorbeeld na het opslaan van een afspraak. */
 let gevraagdeDag: Date | null = null;
@@ -124,6 +125,7 @@ export function Agenda() {
             ))}
           </section>
         )}
+        {!week.data && !week.fout && lessen.length === 0 && <LaadKaart rijen={6} />}
         {weekGeladen && lessen.length === 0 && <p className="melding">Geen afspraken op deze dag.</p>}
       </>
     );
@@ -178,7 +180,7 @@ export function Agenda() {
     const weekend = isWeekend(start);
     const dagen = Array.from({ length: blokDagen(start) }, (_, i) => plusDagen(start, i));
     const lessen = afsprakenIn(start);
-    if (!weekGeladen && lessen.length === 0) return null;
+    if (!weekGeladen && lessen.length === 0) return week.data || week.fout ? null : <LaadKaart rijen={6} />;
     // De les van nu (of de volgende binnen een kwartier) komt uit de afspraken van vandaag.
     const vandaag = new Date(nu);
     const licht = uitgelicht(lessen.filter((a) => zelfdeDag(new Date(a.start), vandaag)));

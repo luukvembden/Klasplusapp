@@ -9,6 +9,7 @@ import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import '../components/ui/ui.css';
 import '../components/meer/meer.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /**
  * Leermiddelen: de digitale methodes die de school voor je klaarzet, op vak. Tik om de methode bij de
@@ -43,6 +44,7 @@ export function Leermiddelen() {
       </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
+        {!geladen.data && !geladen.fout && <LaadKaart />}
         {geladen.fout && <p className="melding">{geladen.fout}</p>}
         {fout && <p className="melding">{fout}</p>}
         {klaar && lijst.length === 0 && <p className="melding">Je school heeft geen leermiddelen klaargezet.</p>}

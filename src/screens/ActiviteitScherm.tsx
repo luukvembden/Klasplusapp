@@ -20,6 +20,7 @@ import { htmlNaarTekst } from "../lib/tekst";
 import "../components/les/les.css";
 import "../components/meer/meer.css";
 import "../components/ui/ui.css";
+import { LaadKaart } from "../components/ui/Laden";
 
 /** Wat we laten zien als in- of uitschrijven niet lukt: de uitleg van school, of een gewone zin. */
 function foutBijInschrijven(e: unknown, inschrijven: boolean): string {
@@ -211,6 +212,7 @@ export function ActiviteitScherm() {
         <p className="melding">{lijst.fout ?? onderdelen.fout}</p>
       )}
       {fout && <p className="melding">{fout}</p>}
+      {!onderdelen.data && !lijst.fout && !onderdelen.fout && <LaadKaart rijen={3} />}
       {gelukt && (
         <p className="onderdeel__gelukt" role="status">
           <Check size={18} strokeWidth={2.6} aria-hidden="true" />

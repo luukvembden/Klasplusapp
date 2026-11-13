@@ -16,6 +16,7 @@ import { htmlNaarTekst, metHoofdletter, openExtern } from '../lib/tekst';
 import '../components/les/les.css';
 import '../components/meer/meer.css';
 import '../components/ui/ui.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Eén opdracht: wanneer inleveren, status, de opdracht zelf, bijlagen en de feedback van de docent. */
 export function OpdrachtScherm() {
@@ -33,6 +34,7 @@ export function OpdrachtScherm() {
         <PaginaKop sub={o?.vak ? metHoofdletter(o.vak) : ' '} titel={o?.titel ?? ' '} />
       </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
+      {!o && !geladen.fout && <LaadKaart rijen={3} />}
       {geladen.fout && <p className="melding">{geladen.fout}</p>}
 
       {o && (

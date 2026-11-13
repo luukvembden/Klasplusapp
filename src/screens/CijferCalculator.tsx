@@ -11,6 +11,7 @@ import '../components/cijfers/cijfers.css';
 import '../components/les/les.css';
 import '../components/instellingen/instellingen.css';
 import '../components/ui/ui.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** "7,0" of "7.0" → 7. Null bij iets wat geen getal is. */
 const parse = (s: string): number | null => {
@@ -77,7 +78,7 @@ export function CijferCalculator() {
     return (
       <div className="pagina pagina--met-terug">
         {kop}
-        <p className="melding">Bezig met laden…</p>
+        <LaadKaart rijen={3} />
       </div>
     );
   }

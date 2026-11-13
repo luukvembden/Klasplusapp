@@ -279,3 +279,43 @@
 .agenda__midden:has(> .plusknop) .scherm__lijst .pagina {
   padding-bottom: 88px;
 }
+
+/* Laden: grijze balkjes die zacht oplichten, zolang er nog niets binnen is (zie Laden.tsx). */
+.laadrij {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--lijn-zacht);
+}
+
+.laadrij:last-child {
+  border-bottom: none;
+}
+
+.laadbalk {
+  display: block;
+  border-radius: 6px;
+  background: var(--vlak);
+  animation: laad-licht 1.4s ease-in-out infinite;
+}
+
+.laadbalk--breed {
+  height: 14px;
+}
+
+.laadbalk--smal {
+  height: 11px;
+}
+
+@keyframes laad-licht {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laadbalk {
+    animation: none;
+  }
+}

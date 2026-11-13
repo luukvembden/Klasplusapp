@@ -11,6 +11,7 @@ import '../components/huiswerk/huiswerk.css';
 import '../components/instellingen/instellingen.css';
 import '../components/les/les.css';
 import '../components/afwezigheid/afwezigheid.css';
+import { LaadRijen } from '../components/ui/Laden';
 
 /** "Donderdag 29 oktober · 10:00 – 11:30", "… t/m …" bij meer hele dagen, of "vanaf …" zonder einde. */
 export function wanneer(m: { heleDag: boolean; start: string; einde: string | null }): string {
@@ -83,6 +84,7 @@ export function AfwezigheidMelden() {
         }
       >
         <section className="kaart" aria-busy={meldingen.laden}>
+          {!meldingen.data && !meldingen.fout && <LaadRijen rijen={2} />}
           {meldingen.fout && <p className="melding">{meldingen.fout}</p>}
           {meldingen.data && lijst.length === 0 && <p className="melding">Er is nog niets gemeld.</p>}
           {lijst.map((m) => (

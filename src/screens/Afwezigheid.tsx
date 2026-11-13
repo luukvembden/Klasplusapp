@@ -13,6 +13,7 @@ import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
 import '../components/huiswerk/huiswerk.css';
 import '../components/ui/ui.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** "6 keer · 2 niet geoorloofd" */
 function samenvatting(lijst: AfwezigheidT[]): string {
@@ -53,6 +54,7 @@ export function Afwezigheid() {
         <div className="scherm__lijst" aria-busy={geladen.laden}>
           <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
             <div className="pagina pagina--onder-kop">
+              {!geladen.data && !geladen.fout && <LaadKaart />}
               {geladen.fout && <p className="melding">{geladen.fout}</p>}
               {klaar && lijst.length === 0 && <p className="melding">Je bent dit schooljaar nog niet afwezig geweest.</p>}
               {[...perMaand.values()].map((maand) => (

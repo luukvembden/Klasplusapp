@@ -11,6 +11,7 @@ import { dagTitel, maandagVan, naarInvoer, plusDagen, vanInvoer, weekNummer } fr
 import '../components/agenda/agenda.css';
 import '../components/huiswerk/huiswerk.css';
 import '../components/ui/ui.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Labels die betekenen dat er iets te doen of te leren is. */
 const TAAK: Label[] = ['huiswerk', 'proefwerk', 'tentamen', 'so', 'mondeling'];
@@ -52,6 +53,7 @@ export function Huiswerk() {
     }
     return (
       <>
+        {!geladen.data && !geladen.fout && <LaadKaart rijen={5} />}
         {klaar && taken.length === 0 && <p className="melding">Geen huiswerk of toetsen deze week.</p>}
         {[...perDag.entries()].map(([dag, lijst]) => (
           <Sectie key={dag} titel={dagTitel(vanInvoer(dag)!)}>

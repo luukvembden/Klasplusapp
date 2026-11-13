@@ -10,6 +10,7 @@ import { perVak } from '../lib/cijfers';
 import '../components/ui/ui.css';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
+import { LaadRijen } from '../components/ui/Laden';
 
 export function Gemiddeldes() {
   const { cijfers, resultaat, sub, fout, vernieuw } = useCijfers();
@@ -32,6 +33,7 @@ export function Gemiddeldes() {
         <VegenOmTeVernieuwen onVernieuw={vernieuw}>
           <div className="pagina pagina--onder-kop">
             <section className="kaart kaart--vakken" aria-busy={!cijfers}>
+              {!cijfers && !fout && <LaadRijen rijen={6} />}
               {fout && <p className="melding">{fout}</p>}
               {cijfers &&
                 perVak(cijfers).map((o) => (

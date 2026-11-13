@@ -15,6 +15,7 @@ import { verversOngelezen } from "../lib/ongelezen";
 import { htmlNaarTekst } from "../lib/tekst";
 import "../components/les/les.css";
 import "../components/meer/meer.css";
+import { LaadKaart } from "../components/ui/Laden";
 
 /** Eén bericht: onderwerp, afzender en datum, de tekst, ontvangers en bijlagen. */
 export function BerichtScherm() {
@@ -47,6 +48,7 @@ export function BerichtScherm() {
         <TerugLink naar="/meer/berichten" label="Berichten" />
       </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
+      {!b && !geladen.fout && <LaadKaart rijen={3} />}
       {geladen.fout && <p className="melding">{geladen.fout}</p>}
 
       {b && (

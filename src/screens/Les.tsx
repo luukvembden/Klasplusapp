@@ -13,6 +13,7 @@ import { dagTitel, korteDatumTijd, tijdvak } from '../lib/datum';
 import { metHoofdletter } from '../lib/tekst';
 import { EigenAfspraakScherm } from './EigenAfspraakScherm';
 import '../components/les/les.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Lesinformatie: alles over één les, en een voorproefje van het huiswerk of de toets. */
 export function Les() {
@@ -35,6 +36,7 @@ export function Les() {
       </VasteKop>
       <OfflineRegel resultaat={data} />
       {fout && <p className="melding">{fout}</p>}
+      {!a && !fout && <LaadKaart rijen={4} />}
 
       {a && a.labels.length > 0 && (
         <div className="les__labels">

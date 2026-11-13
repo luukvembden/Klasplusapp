@@ -10,6 +10,7 @@ import { meestRecent } from '../lib/cijfers';
 import { nieuwVandaag } from '../lib/nieuweCijfers';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
+import { LaadRijen } from '../components/ui/Laden';
 
 const AANTAL_RECENT = 20;
 
@@ -54,6 +55,7 @@ export function Cijfers() {
             <div className="pagina pagina--onder-kop">
               <Sectie titel="Recent">
                 <section className="kaart" aria-busy={!cijfers}>
+                  {!cijfers && !fout && <LaadRijen rijen={6} />}
                   {fout && <p className="melding">{fout}</p>}
                   {cijfers && cijfers.length === 0 && <p className="melding">Nog geen cijfers.</p>}
                   {cijfers &&

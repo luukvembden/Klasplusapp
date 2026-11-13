@@ -11,6 +11,7 @@ import { korteDatumMetJaar } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/cijfers/cijfers.css';
 import '../components/meer/meer.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 function ActiviteitRij({ a }: { a: Activiteit }) {
   const stand = inschrijfStand(a);
@@ -60,6 +61,7 @@ export function Activiteiten() {
       <div className="scherm__lijst">
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
           <div className="pagina pagina--onder-kop">
+            {!geladen.data && !geladen.fout && <LaadKaart />}
             {geladen.fout && <p className="melding">{geladen.fout}</p>}
             {lijst && lijst.length === 0 && <p className="melding">Je school heeft nu geen activiteiten klaargezet.</p>}
             {open.length > 0 && (

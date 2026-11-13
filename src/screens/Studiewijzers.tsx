@@ -10,6 +10,7 @@ import { useLaden } from '../hooks/useLaden';
 import { korteDatum } from '../lib/datum';
 import '../components/ui/ui.css';
 import '../components/meer/meer.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** "9 nov – 29 jan", of leeg als de school geen periode noemt. */
 export const periode = (van: string | null, tot: string | null) =>
@@ -29,6 +30,7 @@ export function Studiewijzers() {
       </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
+        {!geladen.data && !geladen.fout && <LaadKaart rijen={2} />}
         {geladen.fout && <p className="melding">{geladen.fout}</p>}
         {klaar && lijst.length === 0 && (
           <p className="melding">Je school heeft op dit moment geen studiewijzers voor je klaargezet.</p>

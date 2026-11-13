@@ -13,6 +13,7 @@ import "../components/ui/ui.css";
 import "../components/cijfers/cijfers.css";
 import "../components/agenda/agenda.css";
 import "../components/meer/meer.css";
+import { LaadRijen } from "../components/ui/Laden";
 
 /** Vandaag: "09:12"; gisteren: "gisteren"; anders "4 nov", met jaartal als het niet dit jaar is. */
 function wanneer(iso: string): string {
@@ -103,6 +104,7 @@ export function Berichten() {
           <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
             <div className="pagina pagina--onder-kop">
               <section className="kaart" aria-busy={!lijst}>
+                {!lijst && !geladen.fout && <LaadRijen />}
                 {geladen.fout && <p className="melding">{geladen.fout}</p>}
                 {lijst && lijst.length === 0 && (
                   <p className="melding">

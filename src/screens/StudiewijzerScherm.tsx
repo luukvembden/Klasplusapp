@@ -14,6 +14,7 @@ import { periode } from './Studiewijzers';
 import '../components/les/les.css';
 import '../components/ui/ui.css';
 import '../components/meer/meer.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Valt vandaag in dit onderdeel? Dan krijgt het het label "Nu". */
 function isNu(van: string | null, tot: string | null): boolean {
@@ -36,6 +37,7 @@ export function StudiewijzerScherm() {
       </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
+        {!sw && !geladen.fout && <LaadKaart rijen={3} />}
         {geladen.fout && <p className="melding">{geladen.fout}</p>}
         {sw && sw.onderdelen.length === 0 && <p className="melding">Deze studiewijzer is nog leeg.</p>}
         <div className="studiewijzer">

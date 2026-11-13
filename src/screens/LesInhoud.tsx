@@ -17,6 +17,7 @@ import { leerplanVoor } from '../lib/leerplan';
 import '../components/les/les.css';
 import '../components/agenda/agenda.css';
 import '../components/leren/leren.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 const TOETSEN: Label[] = ['proefwerk', 'tentamen', 'so', 'mondeling'];
 
@@ -57,6 +58,7 @@ export function LesInhoud({ van }: { van: keyof typeof terugNaar }) {
       </VasteKop>
       <OfflineRegel resultaat={data} />
       {fout && <p className="melding">{fout}</p>}
+      {!a && !fout && <LaadKaart rijen={3} />}
 
       {a && (
         <section className="kaart lestekst">

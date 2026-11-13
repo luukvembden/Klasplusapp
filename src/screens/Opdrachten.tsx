@@ -12,6 +12,7 @@ import { metHoofdletter } from '../lib/tekst';
 import '../components/ui/ui.css';
 import '../components/cijfers/cijfers.css';
 import '../components/meer/meer.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 function OpdrachtRij({ o }: { o: OpdrachtKort }) {
   const datum = o.ingeleverdOp ?? o.inleverenVoor;
@@ -55,6 +56,7 @@ export function Opdrachten() {
       <div className="scherm__lijst">
         <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
           <div className="pagina pagina--onder-kop">
+            {!lijst && !geladen.fout && <LaadKaart />}
             {geladen.fout && <p className="melding">{geladen.fout}</p>}
             {lijst && lijst.length === 0 && <p className="melding">Geen opdrachten dit schooljaar.</p>}
             {open.length > 0 && (

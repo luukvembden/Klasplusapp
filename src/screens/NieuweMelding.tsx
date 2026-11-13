@@ -13,6 +13,7 @@ import { wanneer } from './AfwezigheidMelden';
 import '../components/instellingen/instellingen.css';
 import '../components/les/les.css';
 import '../components/afwezigheid/afwezigheid.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Afwezig melden, in dezelfde opbouw als een nieuwe afspraak. Wat er mag, bepaalt de school. */
 export function NieuweMelding() {
@@ -24,7 +25,11 @@ export function NieuweMelding() {
         <VasteKop>
           <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
         </VasteKop>
-        <p className="melding">{opties.fout ?? (opties.laden && !opties.data ? 'Bezig met laden…' : 'Afwezig melden kan niet voor dit account.')}</p>
+        {!opties.data && !opties.fout ? (
+          <LaadKaart rijen={3} />
+        ) : (
+          <p className="melding">{opties.fout ?? 'Afwezig melden kan niet voor dit account.'}</p>
+        )}
       </div>
     );
   }

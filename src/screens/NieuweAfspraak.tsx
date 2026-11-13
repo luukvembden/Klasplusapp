@@ -11,6 +11,7 @@ import { useAfspraak } from '../hooks/useAfspraak';
 import { toonDagInAgenda } from './Agenda';
 import '../components/les/les.css';
 import '../components/instellingen/instellingen.css';
+import { LaadKaart } from '../components/ui/Laden';
 
 /** Een bestaande eigen afspraak: het id, en wat er nu in staat. */
 interface Bestaand {
@@ -33,15 +34,19 @@ export function AfspraakBewerken() {
   if (!a) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar={`/agenda/${encodeURIComponent(id)}`} label="Afspraak" />
-        <p className="melding">{fout ?? 'Bezig met laden…'}</p>
+        <VasteKop>
+          <TerugLink naar={`/agenda/${encodeURIComponent(id)}`} label="Afspraak" />
+        </VasteKop>
+        {fout ? <p className="melding">{fout}</p> : <LaadKaart rijen={4} />}
       </div>
     );
   }
   if (!a.labels.includes('eigen')) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar={`/agenda/${encodeURIComponent(id)}`} label="Les" />
+        <VasteKop>
+          <TerugLink naar={`/agenda/${encodeURIComponent(id)}`} label="Les" />
+        </VasteKop>
         <p className="melding">Alleen je eigen afspraken kun je bewerken.</p>
       </div>
     );
