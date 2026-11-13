@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { api, type Afwezigheid as AfwezigheidT } from '../api';
 import { AfwezigheidRij } from '../components/afwezigheid/AfwezigheidRij';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
@@ -24,9 +24,9 @@ function samenvatting(lijst: AfwezigheidT[]): string {
 /** Alle afwezigheden van dit schooljaar, per maand, nieuwste bovenaan. Alleen om te bekijken. */
 export function Afwezigheid() {
   const geladen = useLaden(() => api.afwezigheden(), []);
-  // De knop opent de meldingen. Mag je zelf melden, dan een plusje; kun je ze alleen bekijken, een loepje.
+  // Rechtsboven altijd "Meldingen"; mag dit account zelf afwezig melden, dan rechtsonder ook een plusje.
   const opties = useLaden(() => api.meldOpties(), []).data;
-  const magMelden = !!opties;
+  const magMelden = !!opties?.kanMelden;
   const lijst = [...(geladen.data?.data ?? [])].sort((a, b) => b.start.localeCompare(a.start));
 
   const perMaand = new Map<string, AfwezigheidT[]>();
@@ -41,6 +41,10 @@ export function Afwezigheid() {
     <div className="scherm">
       <div className="pagina pagina--met-terug gemiddeldes__kop">
         <TerugLink naar="/meer" label="Meer" />
+        {/* Rechtsboven, in dezelfde knop als "Overgang" bij Gemiddeldes. */}
+        <Link to="/meer/afwezigheid/melden" className="agendakop__vandaag agendakop__knoplink gemiddeldes__knop">
+          Meldingen
+        </Link>
         <PaginaKop titel="Afwezigheid" sub={geladen.data ? samenvatting(lijst) : ' '} />
         <OfflineRegel resultaat={geladen.data} />
       </div>
@@ -64,16 +68,8 @@ export function Afwezigheid() {
           </VegenOmTeVernieuwen>
         </div>
         {magMelden && (
-          <Link
-            to="/meer/afwezigheid/melden"
-            className="plusknop"
-            aria-label={opties.kanMelden ? 'Afwezigheid melden' : 'Meldingen bekijken'}
-          >
-            {opties.kanMelden ? (
-              <Plus size={26} strokeWidth={2.4} aria-hidden="true" />
-            ) : (
-              <Search size={24} strokeWidth={2.4} aria-hidden="true" />
-            )}
+          <Link to="/meer/afwezigheid/melden/nieuw" className="plusknop" aria-label="Afwezigheid melden">
+            <Plus size={26} strokeWidth={2.4} aria-hidden="true" />
           </Link>
         )}
       </div>
