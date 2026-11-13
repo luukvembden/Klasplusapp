@@ -9,10 +9,16 @@ import { TerugLink } from '../components/ui/TerugLink';
 import { VasteKop } from '../components/ui/VasteKop';
 import { useCijfers } from '../hooks/useCijfers';
 import { perVak } from '../lib/cijfers';
-import { bewaarKeuzes, examenNiveau, isVmbo, leesKeuzes, soortVan, type ExamenSoort, type Niveau } from '../lib/examen';
+import { bewaarKeuzes, examenNiveau, isVmbo, leesKeuzes, soortVan, standaardSoort, type ExamenSoort, type Niveau } from '../lib/examen';
 import '../components/les/les.css';
 import '../components/ui/ui.css';
 import '../components/instellingen/instellingen.css';
+
+/**
+ * havo/vwo: vinkje uit = geen centraal examen. Dan telt het in het combinatiecijfer, behalve vakken die
+ * Klas+ kent als "alleen schoolexamen" (informatica, wiskunde D, NLT, BSM).
+ */
+const zonderCe = (naam: string, niveau: Niveau): ExamenSoort => (standaardSoort(naam, niveau) === 'se' ? 'se' : 'combi');
 
 /** De keuzes per vak; "Profielvak" bestaat alleen bij vmbo gemengd. */
 function soorten(niveau: Niveau): { waarde: ExamenSoort; tekst: string }[] {
@@ -54,18 +60,50 @@ export function ExamenVakken() {
       <ExamenjaarKeuze profiel={profiel} onWijzig={() => ververs((n) => n + 1)} />
       {!cijfers && <LaadKaart rijen={6} />}
       {cijfers && vakken.length === 0 && <p className="melding">Nog geen vakken met cijfers.</p>}
-      {niveau && vakken.length > 0 && (
+      {/* havo en vwo: per vak aanvinken of het een centraal examen heeft. */}
+      {niveau && !isVmbo(niveau) && vakken.length > 0 && (
+        <Sectie
+          titel="Centraal examen"
+          nawoord={
+            <p className="instellingen__let-op">
+              Zet uit bij vakken zonder centraal examen. Maatschappijleer, CKV en het profielwerkstuk tellen dan samen
+              als één combinatiecijfer; vakken als informatica tellen met alleen hun schoolexamen. Lichamelijke
+              opvoeding telt niet mee in de cijfers en staat er niet bij.
+            </p>
+          }
+        >
+          <section className="kaart">
+            {vakken
+              .filter((v) => standaardSoort(v.vak.naam, niveau) !== 'niet')
+              .map((v) => (
+                <label key={v.vak.code} className="instelrij meldingrij" htmlFor={`examen-${v.vak.code}`}>
+                  <span className="meldingrij__tekst">
+                    <span>{v.vak.naam}</span>
+                  </span>
+                  <input
+                    id={`examen-${v.vak.code}`}
+                    type="checkbox"
+                    role="switch"
+                    checked={soortVan(v, keuzes, niveau) === 'ce'}
+                    onChange={(e) => kies(v.vak.code, e.target.checked ? 'ce' : zonderCe(v.vak.naam, niveau))}
+                  />
+                </label>
+              ))}
+          </section>
+        </Sectie>
+      )}
+
+      {/* vmbo: meer soorten vakken (keuzevakken, profielvak, alleen schoolexamen), dus per vak een keuzelijst. */}
+      {niveau && isVmbo(niveau) && vakken.length > 0 && (
         <Sectie
           titel="Per vak"
           nawoord={
             <p className="instellingen__let-op">
-              {isVmbo(niveau)
-                ? niveau === 'gl'
-                  ? 'Het profielvak en de beroepsgerichte keuzevakken vormen samen het combinatiecijfer; het profielvak telt daarin zo vaak mee als je keuzevakken hebt. Maatschappijleer heeft alleen een schoolexamen. Lichamelijke opvoeding, kunstvakken en het profielwerkstuk krijgen een voldoende of goed en tellen niet mee in de cijfers.'
-                  : niveau === 'tl'
-                    ? 'Maatschappijleer heeft alleen een schoolexamen. Lichamelijke opvoeding, kunstvakken en het profielwerkstuk krijgen een voldoende of goed en tellen niet mee in de cijfers.'
-                    : 'Je beroepsgerichte keuzevakken vormen samen het combinatiecijfer. Maatschappijleer heeft alleen een schoolexamen. Lichamelijke opvoeding en kunstvakken krijgen een voldoende of goed en tellen niet mee in de cijfers.'
-                : 'Maatschappijleer, CKV en het profielwerkstuk vormen samen het combinatiecijfer. Vakken als informatica hebben alleen een schoolexamen. Lichamelijke opvoeding telt niet mee in de cijfers.'}
+              {niveau === 'gl'
+                ? 'Het profielvak en de beroepsgerichte keuzevakken vormen samen het combinatiecijfer; het profielvak telt daarin zo vaak mee als je keuzevakken hebt. Maatschappijleer heeft alleen een schoolexamen. Lichamelijke opvoeding, kunstvakken en het profielwerkstuk krijgen een voldoende of goed en tellen niet mee in de cijfers.'
+                : niveau === 'tl'
+                  ? 'Maatschappijleer heeft alleen een schoolexamen. Lichamelijke opvoeding, kunstvakken en het profielwerkstuk krijgen een voldoende of goed en tellen niet mee in de cijfers.'
+                  : 'Je beroepsgerichte keuzevakken vormen samen het combinatiecijfer. Maatschappijleer heeft alleen een schoolexamen. Lichamelijke opvoeding en kunstvakken krijgen een voldoende of goed en tellen niet mee in de cijfers.'}
             </p>
           }
         >
