@@ -1,5 +1,15 @@
 apply plugin: 'com.android.application'
 
+// Versie en ondertekening voor een release-APK. Op GitHub zet de workflow deze waarden (zie
+// .github/workflows/android-apk.yml); lokaal bouwt Android Studio gewoon een debug-versie zonder.
+def klasplusVersie = System.getenv("KLASPLUS_VERSIE") // bijvoorbeeld "0.1.14"
+def klasplusVersieCode = { String v ->
+    def d = v.tokenize('.').collect { it.replaceAll('[^0-9]', '') ?: '0' }.collect { it.toInteger() }
+    while (d.size() < 3) d << 0
+    return d[0] * 10000 + d[1] * 100 + d[2]
+}
+def sleutelBestand = System.getenv("KLASPLUS_KEYSTORE")
+
 android {
     namespace = "nl.klasplus.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +17,8 @@ android {
         applicationId "nl.klasplus.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode klasplusVersie ? klasplusVersieCode(klasplusVersie) : 1
+        versionName klasplusVersie ?: "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +26,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (sleutelBestand) {
+                storeFile file(sleutelBestand)
+                storePassword System.getenv("KLASPLUS_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KLASPLUS_KEY_ALIAS")
+                keyPassword System.getenv("KLASPLUS_KEYSTORE_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
+            if (sleutelBestand) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

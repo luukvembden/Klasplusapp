@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { LaagZichtbaar, LagenContext } from '../lib/laag';
 import { paginaRoutes, TABS } from '../paginaRoutes';
 import { TabBar } from './TabBar';
+import { UpdateBalk } from './UpdateBalk';
 
 /** Eén pagina in de stapel, met de plek in de browsergeschiedenis waar hij hoort. */
 interface Laag {
@@ -180,6 +181,7 @@ export function AppLayout() {
             );
           })}
         </main>
+        <UpdateBalk />
         <TabBar naarTab={naarTab} />
       </div>
     </LagenContext.Provider>

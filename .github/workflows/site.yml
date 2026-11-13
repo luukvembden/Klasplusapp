@@ -1,0 +1,51 @@
+# Zet de downloadpagina (map site/) online via GitHub Pages, met de screenshots en het icoon erbij.
+#
+# Eén keer aanzetten: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+# Daarna gaat hij vanzelf online bij elke wijziging in site/ of screenshots/.
+
+name: Downloadpagina
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'screenshots/**'
+      - 'public/icoon.svg'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  pagina:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.online.outputs.page_url }}
+    steps:
+      - name: Code ophalen
+        uses: actions/checkout@v4
+
+      - name: Pagina samenstellen
+        run: |
+          mkdir -p _pagina/screenshots
+          cp site/index.html _pagina/
+          cp public/icoon.svg _pagina/
+          cp screenshots/*.png _pagina/screenshots/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _pagina
+
+      - name: Online zetten
+        id: online
+        uses: actions/deploy-pages@v4

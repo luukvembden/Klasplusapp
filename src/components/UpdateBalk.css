@@ -1,0 +1,46 @@
+/* Nieuwe versie: smalle balk net boven de tabbalk, in de accentkleur. */
+.updatebalk {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 20px;
+  background: var(--groen-licht);
+  border-top: 1px solid var(--lijn);
+  color: var(--groen-tekst);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.updatebalk__tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.updatebalk__knop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--groen);
+  color: var(--op-groen);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.updatebalk__weg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  color: var(--tekst-secundair);
+  cursor: pointer;
+}

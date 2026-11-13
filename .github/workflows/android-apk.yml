@@ -1,0 +1,90 @@
+# Bouwt een ondertekende release-APK van Klas+ en zet hem bij een GitHub Release, zodat iedereen hem kan
+# downloaden (de downloadpagina en de updatemelding in de app wijzen naar de nieuwste).
+#
+# Starten: zet een versietag, bijvoorbeeld v0.1.14 (net als voor de .ipa).
+# Nodig (Settings > Secrets and variables > Actions): KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS.
+# Die staan in de map Klasplus-sleutel buiten het project (LEES-MIJ.txt).
+
+name: Android APK bouwen
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # om de Release te maken en de APK erbij te zetten
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Code ophalen
+        uses: actions/checkout@v4
+
+      - name: Controleren of de sleutel er is
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::De geheimen KEYSTORE_BASE64, KEYSTORE_PASSWORD en KEY_ALIAS ontbreken (zie LEES-MIJ.txt in de map Klasplus-sleutel)."
+            exit 1
+          fi
+
+      - name: Node installeren
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Java installeren (nodig voor Android)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Pakketten installeren
+        run: npm ci
+
+      - name: Versie van de tag overnemen (v0.1.14 wordt 0.1.14)
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
+
+      - name: Web-app bouwen
+        run: npm run build
+
+      - name: Naar Android kopiëren
+        run: npx cap sync android
+
+      - name: Sleutel neerzetten
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/klasplus-release.jks"
+
+      - name: Release-APK bouwen en ondertekenen
+        working-directory: android
+        env:
+          KLASPLUS_VERSIE: ${{ github.ref_name }}
+          KLASPLUS_KEYSTORE: ${{ runner.temp }}/klasplus-release.jks
+          KLASPLUS_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KLASPLUS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          export KLASPLUS_VERSIE="${KLASPLUS_VERSIE#v}"
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
+          cp app/build/outputs/apk/release/app-release.apk ../Klasplus.apk
+          ls -lh ../Klasplus.apk
+
+      - name: Sleutel weer weghalen
+        if: always()
+        run: rm -f "$RUNNER_TEMP/klasplus-release.jks"
+
+      - name: Release maken met de APK
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Klas+ ${{ github.ref_name }}
+          files: Klasplus.apk
+          body: |
+            Download **Klasplus.apk** hieronder en open hem op je Android-telefoon.
+            Eerste keer? Sta dan "Installeren uit onbekende bronnen" toe voor je browser.

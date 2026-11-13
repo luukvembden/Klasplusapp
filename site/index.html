@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Klas+ · Alles voor school. Eén overzicht.</title>
+  <meta name="description" content="Klas+ is een rustige app voor je rooster, huiswerk, cijfers en berichten. Gratis, zonder reclame, en alles blijft op je telefoon.">
+  <link rel="icon" href="icoon.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root {
+      --groen: #2e6b5a; --groen-donker: #1f4d40; --groen-licht: #e3eee9; --mint: #a6dcc9;
+      --achtergrond: #f4f5f1; --kaart: #ffffff; --tekst: #1b2420; --tekst-zacht: #3f4843; --tekst-secundair: #59625d;
+      --lijn: #e2e5df; --font: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --groen: #3d8a74; --groen-donker: #2e6b5a; --groen-licht: #1c2b26; --mint: #7cc2ab;
+        --achtergrond: #111614; --kaart: #1a211e; --tekst: #e8ede9; --tekst-zacht: #c4ccc7; --tekst-secundair: #9aa39e;
+        --lijn: #2a332f; color-scheme: dark;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--achtergrond); color: var(--tekst); font-family: var(--font); line-height: 1.5; }
+    a { color: var(--groen); }
+    .breed { max-width: 1040px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+
+    /* Kop: groen vlak met naam, belofte en de downloadknop */
+    .kop { background: var(--groen-donker); color: #fff; }
+    @media (prefers-color-scheme: light) { .kop { background: #2e6b5a; } }
+    .kop .breed { padding-top: 56px; padding-bottom: 56px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; }
+    .merk { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 800; }
+    .merk img { width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 0 0 2px rgba(255,255,255,.25); }
+    h1 { font-size: clamp(36px, 6vw, 56px); line-height: 1.05; letter-spacing: -1.2px; margin: 22px 0 14px; text-wrap: balance; }
+    .belofte { font-size: 18px; color: rgba(255,255,255,.85); margin: 0 0 28px; max-width: 34ch; }
+    .knop { display: inline-flex; align-items: center; gap: 10px; padding: 16px 24px; border-radius: 14px; background: #fff; color: #1f4d40; font-weight: 800; font-size: 17px; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+    .knop:focus-visible { outline: 3px solid var(--mint); outline-offset: 3px; }
+    .knop svg { width: 20px; height: 20px; }
+    .klein { font-size: 13.5px; color: rgba(255,255,255,.75); margin: 12px 0 0; }
+    .telefoons { display: flex; justify-content: center; gap: 14px; }
+    .telefoons img { width: 46%; max-width: 230px; border-radius: 26px; border: 6px solid #10241d; box-shadow: 0 20px 40px rgba(0,0,0,.3); }
+    .telefoons img:nth-child(2) { transform: translateY(28px); }
+
+    section { padding: 64px 0 8px; }
+    h2 { font-size: 28px; letter-spacing: -0.5px; margin: 0 0 20px; }
+    .rooster { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .vak { background: var(--kaart); border-radius: 16px; padding: 20px; min-width: 0; }
+    .vak h3 { margin: 0 0 6px; font-size: 17px; }
+    .vak p { margin: 0; color: var(--tekst-zacht); font-size: 15px; }
+
+    .stappen { counter-reset: stap; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; list-style: none; padding: 0; margin: 0; }
+    .stappen li { background: var(--kaart); border-radius: 16px; padding: 20px; position: relative; padding-top: 56px; font-size: 15px; color: var(--tekst-zacht); }
+    .stappen li strong { display: block; color: var(--tekst); font-size: 17px; margin-bottom: 4px; }
+    .stappen li::before { counter-increment: stap; content: counter(stap); position: absolute; top: 18px; left: 20px; width: 28px; height: 28px; border-radius: 8px; background: var(--groen); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+
+    .schermen { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
+    .schermen img { width: 210px; flex: 0 0 auto; border-radius: 20px; border: 5px solid var(--kaart); scroll-snap-align: start; }
+
+    .privacy { background: var(--groen-licht); border-radius: 20px; padding: 28px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 28px; }
+    .privacy h2 { grid-column: 1 / -1; margin-bottom: 4px; }
+    .privacy p { margin: 0; font-size: 15px; color: var(--tekst-zacht); }
+    .privacy b { color: var(--tekst); }
+
+    footer { padding: 56px 0 40px; color: var(--tekst-secundair); font-size: 13.5px; }
+    footer p { margin: 0 0 6px; max-width: 70ch; }
+
+    @media (max-width: 820px) {
+      .kop .breed { grid-template-columns: 1fr; padding-top: 40px; }
+      .rooster, .stappen, .privacy { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="kop">
+    <div class="breed">
+      <div>
+        <div class="merk"><img src="icoon.svg" alt="">Klas+</div>
+        <h1>Alles voor school. Eén overzicht.</h1>
+        <p class="belofte">Je rooster, huiswerk, cijfers en berichten in één rustige app. Gratis, zonder reclame, en alles blijft op je telefoon.</p>
+        <a class="knop" id="download" href="https://github.com/luukvembden/Klasplusapp/releases/latest/download/Klasplus.apk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download voor Android
+        </a>
+        <p class="klein"><span id="versie">Nieuwste versie</span> · ongeveer 5 MB · voor iPhone komt Klas+ later</p>
+      </div>
+      <div class="telefoons" aria-hidden="true">
+        <img src="screenshots/02-agenda-dag.png" alt="">
+        <img src="screenshots/03-agenda-week.png" alt="">
+      </div>
+    </div>
+  </header>
+
+  <main class="breed">
+    <section>
+      <h2>Wat Klas+ extra doet</h2>
+      <div class="rooster">
+        <div class="vak"><h3>Leren plannen</h3><p>Kies hoeveel dagen je leert voor een toets en hoe laat. Het staat meteen in je agenda.</p></div>
+        <div class="vak"><h3>Je hele week</h3><p>Wissel tussen dag en week. Wat verandert is paars, wat vervalt doorgestreept.</p></div>
+        <div class="vak"><h3>Ochtendmelding</h3><p>Elke schooldag je eerste les, en wat er vervalt of verandert.</p></div>
+        <div class="vak"><h3>Overgang en examen</h3><p>Ga je over, of slaag je? Klas+ rekent het uit met je cijfers van nu.</p></div>
+        <div class="vak"><h3>Cijfercalculator</h3><p>Wat doet een 6,5 met je gemiddelde? Het antwoord verschijnt terwijl je typt.</p></div>
+        <div class="vak"><h3>En de rest</h3><p>Huiswerk, berichten, opdrachten, activiteiten, afwezigheid, studiewijzers en leermiddelen.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Zo ziet het eruit</h2>
+      <div class="schermen">
+        <img src="screenshots/06-huiswerk.png" alt="Huiswerk per week">
+        <img src="screenshots/08-leren-plannen.png" alt="Leren plannen voor een toets">
+        <img src="screenshots/09-cijfers.png" alt="Je nieuwste cijfers">
+        <img src="screenshots/12-overgang.png" alt="Overgangscheck">
+        <img src="screenshots/13-meer.png" alt="Meer">
+        <img src="screenshots/14-berichten.png" alt="Berichten">
+      </div>
+    </section>
+
+    <section>
+      <h2>Installeren</h2>
+      <ol class="stappen">
+        <li><strong>Download</strong>Tik op "Download voor Android" en open het bestand Klasplus.apk.</li>
+        <li><strong>Toestaan</strong>De eerste keer vraagt je telefoon of je browser apps mag installeren. Zet dat aan en ga terug.</li>
+        <li><strong>Inloggen</strong>Open Klas+, kies je school en log in op de inlogpagina van je school.</li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="privacy">
+        <h2>Je gegevens blijven van jou</h2>
+        <p><b>Je wachtwoord zien we nooit.</b> Je logt in op de inlogpagina van je eigen school.</p>
+        <p><b>Er is geen server van Klas+.</b> Je gegevens gaan alleen tussen je telefoon en je school.</p>
+        <p><b>Geen reclame, geen statistieken.</b> Er wordt niets doorgestuurd of verkocht.</p>
+        <p><b>Updates via GitHub.</b> De app kijkt daar af en toe of er een nieuwe versie is, zonder iets van jou mee te sturen.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="breed">
+    <p>Klas+ is een onofficiële app en heeft geen band met je school of de leverancier van het schoolsysteem.</p>
+    <p>De broncode staat op <a href="https://github.com/luukvembden/Klasplusapp">GitHub</a>. © 2026 Luuk van Embden</p>
+  </footer>
+
+  <script>
+    // De nieuwste versie tonen; lukt dat niet, dan blijft er gewoon "Nieuwste versie" staan.
+    fetch('https://api.github.com/repos/luukvembden/Klasplusapp/releases/latest')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((r) => { if (r && r.tag_name) document.getElementById('versie').textContent = 'Versie ' + r.tag_name.replace(/^v/, ''); })
+      .catch(() => {});
+  </script>
+</body>
+</html>

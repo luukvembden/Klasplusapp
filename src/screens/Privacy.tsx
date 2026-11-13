@@ -57,6 +57,12 @@ export function Privacy({ van = 'instellingen' }: { van?: 'meer' | 'instellingen
           voor reclame of statistieken.
         </p>
 
+        <h2>Updates</h2>
+        <p>
+          Op Android kijkt Klas+ af en toe op GitHub of er een nieuwe versie is, zodat je een melding krijgt. Daarbij
+          gaat er niets van jou mee: alleen de vraag wat de nieuwste versie is.
+        </p>
+
         <h2>Uitloggen</h2>
         <p>
           Zodra je uitlogt, worden de toegangssleutel en alle opgeslagen gegevens direct en permanent van dit toestel
