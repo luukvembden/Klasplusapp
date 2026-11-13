@@ -286,3 +286,114 @@
 .overgang__punten--plus {
   color: var(--groen-tekst);
 }
+
+/* Rond knopje met een tandwiel rechtsboven (normen bij Overgang, vakken bij Slaag ik?). */
+.tandwielknop {
+  width: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Overgang en Slaag ik?: "let op" in een warme kleur. */
+.overgang__uitslag--letop {
+  background: color-mix(in srgb, #d9a01e 18%, var(--kaart));
+  color: color-mix(in srgb, #b07d00 75%, var(--tekst));
+}
+
+/* Slaag ik? */
+.slaag__ce {
+  padding: 12px 16px;
+  gap: 6px;
+}
+
+.slaag__ce-rij {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.slaag__ce-getal {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--groen-tekst);
+  font-variant-numeric: tabular-nums;
+}
+
+.slaag__ce-uitleg {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tekst-secundair);
+}
+
+.slaag__koppen,
+.slaag__vak {
+  display: grid;
+  grid-template-columns: 1fr 44px 70px;
+  align-items: center;
+  gap: 8px;
+}
+
+.slaag__koppen {
+  padding-top: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--tekst-secundair);
+}
+
+.slaag__koppen span:not(:first-child) {
+  text-align: right;
+}
+
+.slaag__vak {
+  min-height: 48px;
+  border-bottom: 1px solid var(--lijn-zacht);
+  font-size: 15px;
+}
+
+.slaag__vak:last-child {
+  border-bottom: none;
+}
+
+.slaag__naam {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.slaag__naam small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--tekst-secundair);
+}
+
+.slaag__se,
+.slaag__nodig {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.slaag__se {
+  color: var(--tekst-secundair);
+}
+
+.slaag__nodig {
+  font-weight: 800;
+}
+
+.slaag__nodig--klaar {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tekst-secundair);
+}
+
+.slaag__vak--laag .slaag__nodig {
+  color: var(--onvoldoende);
+}

@@ -7,6 +7,9 @@ import { Cijfers } from './screens/Cijfers';
 import { Gemiddeldes } from './screens/Gemiddeldes';
 import { CijferCalculator } from './screens/CijferCalculator';
 import { Overgang } from './screens/Overgang';
+import { OvergangNormen } from './screens/OvergangNormen';
+import { SlaagIk } from './screens/SlaagIk';
+import { ExamenVakken } from './screens/ExamenVakken';
 import { Huiswerk } from './screens/Huiswerk';
 import { Instellingen } from './screens/Instellingen';
 import { Meer } from './screens/Meer';
@@ -47,6 +50,9 @@ export const paginaRoutes = (
     <Route path="cijfers/gemiddeldes" element={<Gemiddeldes />} />
     <Route path="cijfers/calculator" element={<CijferCalculator />} />
     <Route path="cijfers/overgang" element={<Overgang />} />
+    <Route path="cijfers/overgang/normen" element={<OvergangNormen />} />
+    <Route path="cijfers/slaag-ik" element={<SlaagIk />} />
+    <Route path="cijfers/slaag-ik/vakken" element={<ExamenVakken />} />
         <Route path="meer" element={<Meer />} />
     <Route path="meer/berichten" element={<Berichten />} />
     <Route path="meer/berichten/nieuw" element={<NieuwBericht />} />

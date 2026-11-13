@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
-import { CircleAlert, CircleCheck } from "lucide-react";
-import { Invoerrij } from "../components/les/Invoerrij";
+import { useMemo } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { CircleAlert, CircleCheck, Settings } from "lucide-react";
 import { OfflineRegel } from "../components/ui/OfflineRegel";
 import { PaginaKop } from "../components/ui/PaginaKop";
 import { Sectie } from "../components/ui/Sectie";
@@ -8,76 +8,38 @@ import { TerugLink } from "../components/ui/TerugLink";
 import { VasteKop } from "../components/ui/VasteKop";
 import { useCijfers } from "../hooks/useCijfers";
 import { formatCijfer, perVak } from "../lib/cijfers";
-import {
-  bereken,
-  bewaarNormen,
-  leesNormen,
-  type Compensatie,
-  type Normen,
-} from "../lib/overgang";
+import { isExamenjaar } from "../lib/examen";
+import { bereken, leesNormen } from "../lib/overgang";
 import "../components/les/les.css";
 import "../components/ui/ui.css";
+import "../components/agenda/agenda.css";
 import "../components/cijfers/cijfers.css";
 import "../components/instellingen/instellingen.css";
 import { LaadKaart } from "../components/ui/Laden";
-
-const COMPENSATIE: { waarde: Compensatie; tekst: string }[] = [
-  { waarde: "gemiddelde", tekst: "Gemiddelde 6,0" },
-  { waarde: "punten", tekst: "Pluspunten" },
-  { waarde: "geen", tekst: "Niet toegestaan" },
-];
-
-/** Een keuzelijst met getallen, rechts in een invoerrij. */
-function Getal({
-  id,
-  waarde,
-  van,
-  tot,
-  onKies,
-}: {
-  id: string;
-  waarde: number;
-  van: number;
-  tot: number;
-  onKies: (n: number) => void;
-}) {
-  return (
-    <select
-      id={id}
-      className="invoerrij__veld"
-      value={waarde}
-      onChange={(e) => onKies(Number(e.target.value))}
-    >
-      {Array.from({ length: tot - van + 1 }, (_, i) => van + i).map((n) => (
-        <option key={n} value={n}>
-          {n}
-        </option>
-      ))}
-    </select>
-  );
-}
 
 /**
  * Overgangscheck: ga je over met je gemiddeldes van nu? De normen vult de leerling zelf in
  * (ze verschillen per school); ze blijven op dit toestel bewaard.
  */
 export function Overgang() {
-  const { cijfers, resultaat, fout } = useCijfers();
+  const { cijfers, profiel, resultaat, fout } = useCijfers();
   const vakken = useMemo(() => (cijfers ? perVak(cijfers) : []), [cijfers]);
-  const [normen, setNormen] = useState<Normen>(leesNormen);
-
-  const wijzig = (deel: Partial<Normen>) => {
-    const nieuw = { ...normen, ...deel };
-    setNormen(nieuw);
-    bewaarNormen(nieuw);
-  };
+  const normen = leesNormen();
+  const examen = isExamenjaar(profiel?.klas);
 
   const uitslag = cijfers ? bereken(vakken, normen) : null;
+
+  // In het examenjaar is er geen overgang: dan Slaag ik?
+  if (examen) return <Navigate to="/cijfers/slaag-ik" replace />;
 
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
         <TerugLink naar="/cijfers/gemiddeldes" label="Gemiddeldes" />
+        {/* Tandwieltje rechtsboven: de normen van je school invullen. */}
+        <Link to="/cijfers/overgang/normen" className="agendakop__vandaag gemiddeldes__knop tandwielknop" aria-label="Normen van je school">
+          <Settings size={20} strokeWidth={2.2} aria-hidden="true" />
+        </Link>
         <PaginaKop sub="Met je gemiddeldes van nu" titel="Overgangscheck" />
       </VasteKop>
       <OfflineRegel resultaat={resultaat} />
@@ -152,55 +114,6 @@ export function Overgang() {
             </section>
           </Sectie>
 
-          <Sectie
-            titel="Normen van je school"
-            nawoord={
-              <p className="instellingen__let-op">
-                Overgangsnormen verschillen per school; je vindt ze meestal in
-                de schoolgids. Compensatie is hoe je onvoldoendes mag goedmaken:
-                met een gemiddelde van minstens 6,0, of met evenveel pluspunten
-                (een 7 is +1). Dit is een schatting met je gemiddeldes van nu;
-                je school beslist.
-              </p>
-            }
-          >
-            <section className="kaart">
-              <Invoerrij label="Tekortpunten hoogstens" voor="norm-tekort">
-                <Getal
-                  id="norm-tekort"
-                  waarde={normen.maxTekort}
-                  van={0}
-                  tot={6}
-                  onKies={(n) => wijzig({ maxTekort: n })}
-                />
-              </Invoerrij>
-              <Invoerrij label="Laagste cijfer dat mag" voor="norm-laagste">
-                <Getal
-                  id="norm-laagste"
-                  waarde={normen.laagste}
-                  van={1}
-                  tot={6}
-                  onKies={(n) => wijzig({ laagste: n })}
-                />
-              </Invoerrij>
-              <Invoerrij label="Compensatie" voor="norm-compensatie">
-                <select
-                  id="norm-compensatie"
-                  className="invoerrij__veld"
-                  value={normen.compensatie}
-                  onChange={(e) =>
-                    wijzig({ compensatie: e.target.value as Compensatie })
-                  }
-                >
-                  {COMPENSATIE.map((c) => (
-                    <option key={c.waarde} value={c.waarde}>
-                      {c.tekst}
-                    </option>
-                  ))}
-                </select>
-              </Invoerrij>
-            </section>
-          </Sectie>
 
         </>
       )}

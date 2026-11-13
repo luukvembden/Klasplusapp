@@ -42,6 +42,8 @@ Kies een periode en zet je lessen in Apple Agenda of een andere agenda-app, met 
 ### Ga ik over?
 Vul de overgangsnormen van je school in en Klas+ rekent met je gemiddeldes van nu uit of je overgaat.
 
+In je examenjaar (5 havo, 6 vwo) wordt dit vanzelf **Slaag ik?**: per vak je SE en wat je op het centraal examen nodig hebt, en of je slaagt volgens de landelijke slaag-zakregeling.
+
 ### Cijfercalculator
 Wat doet een 6,5 met je gemiddelde? En wat moet je halen voor een 7? De calculator rekent mee terwijl je typt.
 

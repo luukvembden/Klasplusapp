@@ -7,13 +7,16 @@ import { TerugLink } from '../components/ui/TerugLink';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useCijfers } from '../hooks/useCijfers';
 import { perVak } from '../lib/cijfers';
+import { isExamenjaar } from '../lib/examen';
 import '../components/ui/ui.css';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
 import { LaadRijen } from '../components/ui/Laden';
 
 export function Gemiddeldes() {
-  const { cijfers, resultaat, sub, fout, vernieuw } = useCijfers();
+  const { cijfers, profiel, resultaat, sub, fout, vernieuw } = useCijfers();
+  // In het examenjaar (5 havo, 6 vwo) is er geen overgang maar een eindexamen.
+  const examen = isExamenjaar(profiel?.klas);
   const [openVak, setOpenVak] = useState<string | null>(null);
 
   return (
@@ -22,8 +25,11 @@ export function Gemiddeldes() {
       <div className="pagina pagina--met-terug gemiddeldes__kop gemiddeldes__kop--met-knop">
         <TerugLink naar="/cijfers" label="Cijfers" />
         {/* Rechtsboven, in dezelfde knop als "Gemiddeldes" bij Cijfers. */}
-        <Link to="/cijfers/overgang" className="agendakop__vandaag agendakop__knoplink gemiddeldes__knop">
-          Overgang
+        <Link
+          to={examen ? '/cijfers/slaag-ik' : '/cijfers/overgang'}
+          className="agendakop__vandaag agendakop__knoplink gemiddeldes__knop"
+        >
+          {examen ? 'Slaag ik?' : 'Overgang'}
         </Link>
         <PaginaKop sub={sub} titel="Gemiddeldes" />
         <OfflineRegel resultaat={resultaat} />
