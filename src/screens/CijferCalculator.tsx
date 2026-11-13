@@ -93,13 +93,14 @@ export function CijferCalculator() {
   const { som, weging: W } = vak ? somEnWeging(vak.cijfers) : { som: 0, weging: 0 };
   const huidig = W > 0 ? som / W : null;
 
-  // De uitkomsten rekenen meteen mee terwijl je typt; zolang een veld leeg is staat er een streepje.
+  // De uitkomsten rekenen meteen mee terwijl je typt, maar pas als beide velden zijn ingevuld (ook de
+  // weging); tot die tijd staat er een streepje.
 
   /** Stel dat ik dit haal: het gemiddelde met het nieuwe cijfer erbij. */
   const stel = ((): Uitkomst => {
-    if (!nieuw.trim()) return { label: 'Nieuw gemiddelde', waarde: null };
+    if (!nieuw.trim() || !nieuwWeging.trim()) return { label: 'Nieuw gemiddelde', waarde: null };
     const c = parse(nieuw);
-    const w = parse(nieuwWeging || '1');
+    const w = parse(nieuwWeging);
     if (c === null || c < 1 || c > 10) return { uitleg: 'Vul een cijfer van 1 tot en met 10 in.' };
     if (w === null || w <= 0) return { uitleg: 'De weging moet meer dan 0 zijn.' };
     return { label: 'Nieuw gemiddelde', waarde: (som + c * w) / (W + w) };
@@ -107,9 +108,9 @@ export function CijferCalculator() {
 
   /** Mijn doel: het laagste cijfer waarmee je je doelgemiddelde haalt. */
   const nodig = ((): Uitkomst => {
-    if (!doel.trim()) return { label: 'Minimaal nodig', waarde: null };
+    if (!doel.trim() || !doelWeging.trim()) return { label: 'Minimaal nodig', waarde: null };
     const d = parse(doel);
-    const w = parse(doelWeging || '1');
+    const w = parse(doelWeging);
     if (d === null || d < 1 || d > 10) return { uitleg: 'Kies een doel van 1 tot en met 10.' };
     if (w === null || w <= 0) return { uitleg: 'De weging moet meer dan 0 zijn.' };
     const x = (d * (W + w) - som) / w;
@@ -163,7 +164,7 @@ export function CijferCalculator() {
               id="calc-nieuw-weging"
               className="invoerrij__veld"
               inputMode="decimal"
-              placeholder="1×"
+              placeholder="bijv. 2"
               value={nieuwWeging}
               onChange={(e) => setNieuwWeging(e.target.value)}
             />
@@ -189,7 +190,7 @@ export function CijferCalculator() {
               id="calc-doel-weging"
               className="invoerrij__veld"
               inputMode="decimal"
-              placeholder="1×"
+              placeholder="bijv. 2"
               value={doelWeging}
               onChange={(e) => setDoelWeging(e.target.value)}
             />
