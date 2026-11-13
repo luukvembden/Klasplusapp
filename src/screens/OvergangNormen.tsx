@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ExamenjaarKeuze } from "../components/cijfers/ExamenjaarKeuze";
 import { useCijfers } from "../hooks/useCijfers";
+import { examenNiveau } from "../lib/examen";
 import { Invoerrij } from "../components/les/Invoerrij";
 import { PaginaKop } from "../components/ui/PaginaKop";
 import { Sectie } from "../components/ui/Sectie";
@@ -57,7 +57,9 @@ function Getal({
 export function OvergangNormen() {
   const [normen, setNormen] = useState<Normen>(leesNormen);
   const { profiel } = useCijfers();
-  const navigate = useNavigate();
+  // Na het wijzigen van je examenjaar blijf je hier; de terugknop gaat naar de check die dan geldt.
+  const [, ververs] = useState(0);
+  const examen = !!examenNiveau(profiel);
 
   const wijzig = (deel: Partial<Normen>) => {
     const nieuw = { ...normen, ...deel };
@@ -68,16 +70,14 @@ export function OvergangNormen() {
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
-        <TerugLink naar="/cijfers/overgang" label="Overgangscheck" />
+        {examen ? (
+          <TerugLink naar="/cijfers/examen" label="Examencheck" />
+        ) : (
+          <TerugLink naar="/cijfers/overgang" label="Overgangscheck" />
+        )}
         <PaginaKop sub="Zoals in je schoolgids" titel="Normen" />
       </VasteKop>
-      {/* Zet je hier een examenjaar aan, dan ga je meteen naar de Examencheck. */}
-      <ExamenjaarKeuze
-        profiel={profiel}
-        onWijzig={(k) => {
-          if (k !== "geen") navigate("/cijfers/examen", { replace: true });
-        }}
-      />
+      <ExamenjaarKeuze profiel={profiel} onWijzig={() => ververs((n) => n + 1)} />
       <Sectie
         titel="Normen van je school"
         nawoord={

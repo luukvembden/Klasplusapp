@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import { ExamenjaarKeuze } from '../components/cijfers/ExamenjaarKeuze';
 import { Invoerrij } from '../components/les/Invoerrij';
 import { LaadKaart } from '../components/ui/Laden';
@@ -42,9 +41,6 @@ export function ExamenVakken() {
   const [, ververs] = useState(0);
   const niveau = examenNiveau(profiel);
 
-  // Zet je het examenjaar op "geen", dan hoort hier de overgangscheck.
-  if (profiel && !niveau) return <Navigate to="/cijfers/overgang" replace />;
-
   const kies = (code: string, soort: ExamenSoort) => {
     const nieuw = { ...keuzes, [code]: soort };
     setKeuzes(nieuw);
@@ -54,7 +50,12 @@ export function ExamenVakken() {
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
-        <TerugLink naar="/cijfers/examen" label="Examencheck" />
+        {/* Na het wijzigen van je examenjaar blijf je hier; de terugknop gaat naar de check die dan geldt. */}
+        {niveau || !profiel ? (
+          <TerugLink naar="/cijfers/examen" label="Examencheck" />
+        ) : (
+          <TerugLink naar="/cijfers/overgang" label="Overgangscheck" />
+        )}
         <PaginaKop sub="Hoe elk vak meetelt" titel="Mijn vakken" />
       </VasteKop>
       <ExamenjaarKeuze profiel={profiel} onWijzig={() => ververs((n) => n + 1)} />
