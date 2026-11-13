@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { Routes, useLocation, useNavigate, type Location } from 'react-router-dom';
+import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 import { LaagZichtbaar, LagenContext } from '../lib/laag';
 import { paginaRoutes, TABS } from '../paginaRoutes';
 import { TabBar } from './TabBar';
@@ -127,6 +129,25 @@ export function AppLayout() {
     else if (i >= 0) navigate(lagen[i].idx - lagen[lagen.length - 1].idx);
     else navigate(pad, { replace: true });
   };
+
+  /**
+   * Android: de terugknop van de telefoon doet hetzelfde als de terugknop linksboven (naar de pagina die
+   * ernaast staat). Op een andere tab ga je terug naar de Agenda; op de Agenda gaat de app naar de achtergrond.
+   */
+  const pad = useRef(location.pathname);
+  pad.current = location.pathname;
+  useEffect(() => {
+    if (Capacitor.getPlatform() !== 'android') return;
+    const luisteraar = App.addListener('backButton', () => {
+      const terugLink = document.querySelector<HTMLAnchorElement>('.laag--boven a.terug');
+      if (terugLink) terugLink.click();
+      else if (pad.current !== '/') navigate('/');
+      else void App.minimizeApp();
+    });
+    return () => {
+      void luisteraar.then((l) => l.remove());
+    };
+  }, [navigate]);
 
   useVegenTerug({
     lagenRef,
