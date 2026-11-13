@@ -143,7 +143,7 @@ export function CijferCalculator() {
           </Invoerrij>
           <div className="instelrij instelrij--vast">
             <span>Nu gemiddeld</span>
-            <span className="instelrij__waarde">{huidig === null ? '—' : formatCijfer(huidig)}</span>
+            <span className="instelrij__waarde">{huidig === null ? '-' : formatCijfer(huidig)}</span>
           </div>
         </section>
       </Sectie>
