@@ -713,3 +713,16 @@
   min-width: 0;
   font-size: 10px;
 }
+
+/*
+ * Cijfers: twee knoppen rechtsboven. Past dat niet naast de titel (heel smal scherm), dan gaan de knoppen
+ * eronder staan in plaats van over de titel heen.
+ */
+.agendakop--twee-knoppen {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.agendakop--twee-knoppen .agendakop__tekst {
+  flex: 0 0 auto;
+}

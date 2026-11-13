@@ -30,7 +30,7 @@ export function Examencheck() {
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
-        <TerugLink naar="/cijfers/gemiddeldes" label="Gemiddeldes" />
+        <TerugLink naar="/cijfers" label="Cijfers" />
         <Link to="/cijfers/examen/vakken" className="agendakop__vandaag gemiddeldes__knop tandwielknop" aria-label="Mijn vakken">
           <Settings size={20} strokeWidth={2.2} aria-hidden="true" />
         </Link>

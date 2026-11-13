@@ -35,7 +35,7 @@ export function Overgang() {
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
-        <TerugLink naar="/cijfers/gemiddeldes" label="Gemiddeldes" />
+        <TerugLink naar="/cijfers" label="Cijfers" />
         {/* Tandwieltje rechtsboven: de normen van je school invullen. */}
         <Link to="/cijfers/overgang/normen" className="agendakop__vandaag gemiddeldes__knop tandwielknop" aria-label="Normen van je school">
           <Settings size={20} strokeWidth={2.2} aria-hidden="true" />

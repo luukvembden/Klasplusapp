@@ -7,6 +7,7 @@ import { Sectie } from '../components/ui/Sectie';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useCijfers } from '../hooks/useCijfers';
 import { meestRecent } from '../lib/cijfers';
+import { isExamenjaar } from '../lib/examen';
 import { nieuwVandaag } from '../lib/nieuweCijfers';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
@@ -18,6 +19,8 @@ export function Cijfers() {
   const { cijfers, profiel, resultaat, fout, vernieuw } = useCijfers();
   // Net als op de andere schermen: titel groot, daaronder klas en periode.
   const onder = [profiel?.klas, profiel?.periode].filter(Boolean).join(' · ');
+  // In het examenjaar (5 havo, 6 vwo) is er geen overgang maar een eindexamen.
+  const examen = isExamenjaar(profiel?.klas);
   // Cijfers die vandaag voor het eerst binnenkwamen; per kind apart bij een ouder. Wacht op het profiel,
   // zodat we weten van wie de cijfers zijn.
   const nieuw = useMemo(
@@ -36,15 +39,18 @@ export function Cijfers() {
 
   return (
     <div className="scherm">
-      <header className="agendakop">
+      <header className="agendakop agendakop--twee-knoppen">
         <div className="agendakop__tekst">
           <h1 className="agendakop__titel">Cijfers</h1>
           <span className="agendakop__sub">{onder || ' '}</span>
         </div>
-        {/* Zelfde knop als "Vandaag" in de Agenda. */}
+        {/* Rechtsboven: Gemiddeldes, en Overgang (of in het examenjaar Examen) direct ernaast. */}
         <div className="agendakop__knoppen">
           <Link to="/cijfers/gemiddeldes" className="agendakop__vandaag agendakop__knoplink">
             Gemiddeldes
+          </Link>
+          <Link to={examen ? '/cijfers/examen' : '/cijfers/overgang'} className="agendakop__vandaag agendakop__knoplink">
+            {examen ? 'Examen' : 'Overgang'}
           </Link>
         </div>
       </header>
