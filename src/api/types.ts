@@ -16,6 +16,8 @@ export interface Profiel {
   school: string;
   /** Bijvoorbeeld "4 vwo". */
   klas: string;
+  /** Codes en namen van studie en klas samen, om het examenjaar te herkennen (bijvoorbeeld "VWO6 6V2"). */
+  klasInfo?: string;
   /** Bijvoorbeeld "Periode 1". */
   periode: string;
   /**

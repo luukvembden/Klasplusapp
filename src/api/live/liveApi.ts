@@ -271,6 +271,9 @@ export const liveApi: SchoolApi = {
       initialen: initialen(account.Persoon),
       school: schoolNaam(huidigeSessie()!.schoolUrl),
       klas: huidig.studie?.omschrijving || huidig.groep?.omschrijving || '',
+      klasInfo: [huidig.studie?.code, huidig.studie?.omschrijving, huidig.groep?.code, huidig.groep?.omschrijving]
+        .filter(Boolean)
+        .join(' '),
       periode: periode?.omschrijving || periode?.code || '',
       ouder: kindId === undefined ? undefined : { kinderen: lijst.map(naarKind), gekozen: kindId },
     });

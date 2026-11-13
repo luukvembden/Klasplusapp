@@ -9,7 +9,7 @@ import { TerugLink } from '../components/ui/TerugLink';
 import { VasteKop } from '../components/ui/VasteKop';
 import { useCijfers } from '../hooks/useCijfers';
 import { formatCijfer, perVak } from '../lib/cijfers';
-import { berekenSlagen, isExamenjaar, leesKeuzes } from '../lib/examen';
+import { berekenSlagen, examenNiveau, leesKeuzes } from '../lib/examen';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
 import '../components/ui/ui.css';
@@ -20,10 +20,14 @@ import '../components/ui/ui.css';
  */
 export function Examencheck() {
   const { cijfers, profiel, resultaat, fout } = useCijfers();
-  const uitslag = useMemo(() => (cijfers ? berekenSlagen(perVak(cijfers), leesKeuzes()) : null), [cijfers]);
+  const niveau = examenNiveau(profiel);
+  const uitslag = useMemo(
+    () => (cijfers && niveau ? berekenSlagen(perVak(cijfers), leesKeuzes(), niveau) : null),
+    [cijfers, niveau],
+  );
 
   // Niet in het examenjaar: dan hoort hier de overgangscheck.
-  if (profiel && !isExamenjaar(profiel.klas)) return <Navigate to="/cijfers/overgang" replace />;
+  if (profiel && !niveau) return <Navigate to="/cijfers/overgang" replace />;
 
   const Icoon = uitslag?.stand === 'goed' ? CircleCheck : uitslag?.stand === 'letop' ? TriangleAlert : CircleAlert;
 
@@ -67,7 +71,7 @@ export function Examencheck() {
             )}
           </section>
 
-          {uitslag.vakken.length > 0 && (
+          {uitslag.vakken.some((v) => v.soort !== 'se') && (
             <section className="kaart slaag__ce">
               <div className="slaag__ce-rij">
                 <span>Gemiddeld nodig op je centraal examens</span>
@@ -86,9 +90,9 @@ export function Examencheck() {
             titel="Per vak"
             nawoord={
               <p className="instellingen__let-op">
-                CE nodig: wat je minimaal moet halen voor een 6 als eindcijfer. Klas+ rekent met je cijfers van dit
-                schooljaar als SE; telt je school ook eerdere SE-cijfers mee, dan wijkt het af. Het examenreglement van
-                je school is leidend.
+                CE nodig: wat je minimaal moet halen voor een 6 als eindcijfer. {uitslag.ookNodig} Klas+ rekent met je
+                cijfers van dit schooljaar als SE; telt je school ook eerdere SE-cijfers mee, dan wijkt het af. Het
+                examenreglement van je school is leidend.
               </p>
             }
           >
@@ -99,12 +103,20 @@ export function Examencheck() {
                 <span>CE nodig</span>
               </div>
               {uitslag.vakken.map((v) => {
-                const laag = v.ceNodig === null || v.ceNodig > 5.5;
+                const zonderCe = v.soort === 'se';
+                const laag = !zonderCe && (v.ceNodig === null || v.ceNodig > 5.5);
                 return (
                   <div key={v.code} className={`slaag__vak${laag ? ' slaag__vak--laag' : ''}`}>
-                    <span className="slaag__naam">{v.naam}</span>
+                    <span className="slaag__naam">
+                      {v.naam}
+                      {v.soort === 'profiel' && <small>profielvak, telt in het combinatiecijfer</small>}
+                    </span>
                     <span className="slaag__se">{formatCijfer(v.se)}</span>
-                    <span className="slaag__nodig">{v.ceNodig === null ? 'te hoog' : formatCijfer(v.ceNodig)}</span>
+                    {zonderCe ? (
+                      <span className="slaag__nodig slaag__nodig--klaar">geen CE</span>
+                    ) : (
+                      <span className="slaag__nodig">{v.ceNodig === null ? 'te hoog' : formatCijfer(v.ceNodig)}</span>
+                    )}
                   </div>
                 );
               })}

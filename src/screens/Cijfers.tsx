@@ -7,7 +7,7 @@ import { Sectie } from '../components/ui/Sectie';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useCijfers } from '../hooks/useCijfers';
 import { meestRecent } from '../lib/cijfers';
-import { isExamenjaar } from '../lib/examen';
+import { examenNiveau } from '../lib/examen';
 import { nieuwVandaag } from '../lib/nieuweCijfers';
 import '../components/agenda/agenda.css';
 import '../components/cijfers/cijfers.css';
@@ -20,7 +20,7 @@ export function Cijfers() {
   // Net als op de andere schermen: titel groot, daaronder klas en periode.
   const onder = [profiel?.klas, profiel?.periode].filter(Boolean).join(' · ');
   // In het examenjaar (5 havo, 6 vwo) is er geen overgang maar een eindexamen.
-  const examen = isExamenjaar(profiel?.klas);
+  const examen = !!examenNiveau(profiel);
   // Cijfers die vandaag voor het eerst binnenkwamen; per kind apart bij een ouder. Wacht op het profiel,
   // zodat we weten van wie de cijfers zijn.
   const nieuw = useMemo(

@@ -8,7 +8,7 @@ import { TerugLink } from "../components/ui/TerugLink";
 import { VasteKop } from "../components/ui/VasteKop";
 import { useCijfers } from "../hooks/useCijfers";
 import { formatCijfer, perVak } from "../lib/cijfers";
-import { isExamenjaar } from "../lib/examen";
+import { examenNiveau } from "../lib/examen";
 import { bereken, leesNormen } from "../lib/overgang";
 import "../components/les/les.css";
 import "../components/ui/ui.css";
@@ -25,7 +25,7 @@ export function Overgang() {
   const { cijfers, profiel, resultaat, fout } = useCijfers();
   const vakken = useMemo(() => (cijfers ? perVak(cijfers) : []), [cijfers]);
   const normen = leesNormen();
-  const examen = isExamenjaar(profiel?.klas);
+  const examen = !!examenNiveau(profiel);
 
   const uitslag = cijfers ? bereken(vakken, normen) : null;
 
