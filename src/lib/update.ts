@@ -6,7 +6,7 @@ import { lees, schrijf } from './opslag';
 // zelf op GitHub of er een nieuwere versie is. Dat is de enige plek buiten je school waar Klas+ contact mee
 // maakt, en er gaat niets van jou mee: alleen de vraag "wat is de nieuwste versie?".
 
-const RELEASES = 'https://api.github.com/repos/luukvembden/Klasplusapp/releases/latest';
+const RELEASES = 'https://api.github.com/repos/Luukve6/Klasplusapp/releases/latest';
 /** Niet vaker dan eens per zes uur vragen. */
 const WACHT = 6 * 60 * 60 * 1000;
 const LAATSTE = 'update.laatste';

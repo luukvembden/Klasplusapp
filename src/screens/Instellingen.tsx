@@ -19,7 +19,7 @@ import { openExtern } from '../lib/tekst';
 import '../components/instellingen/instellingen.css';
 
 /** De broncode van Klas+. */
-const GITHUB = 'https://github.com/luukvembden/Klasplusapp';
+const GITHUB = 'https://github.com/Luukve6/Klasplusapp';
 
 /** Instellingen, onder Meer. Je naam en het kiezen van een kind staan bovenaan bij Meer. */
 export function Instellingen() {

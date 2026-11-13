@@ -77,7 +77,7 @@
         <div class="merk"><img src="icoon.svg" alt="">Klas+</div>
         <h1>Alles voor school. Eén overzicht.</h1>
         <p class="belofte">Je rooster, huiswerk, cijfers en berichten in één rustige app. Gratis, zonder reclame, en alles blijft op je telefoon.</p>
-        <a class="knop" id="download" href="https://github.com/luukvembden/Klasplusapp/releases/latest/download/Klasplus.apk">
+        <a class="knop" id="download" href="https://github.com/Luukve6/Klasplusapp/releases/latest/download/Klasplus.apk">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
           Download voor Android
         </a>
@@ -137,12 +137,12 @@
 
   <footer class="breed">
     <p>Klas+ is een onofficiële app en heeft geen band met je school of de leverancier van het schoolsysteem.</p>
-    <p>De broncode staat op <a href="https://github.com/luukvembden/Klasplusapp">GitHub</a>. © 2026 Luuk van Embden</p>
+    <p>De broncode staat op <a href="https://github.com/Luukve6/Klasplusapp">GitHub</a>. © 2026 Luuk van Embden</p>
   </footer>
 
   <script>
     // De nieuwste versie tonen; lukt dat niet, dan blijft er gewoon "Nieuwste versie" staan.
-    fetch('https://api.github.com/repos/luukvembden/Klasplusapp/releases/latest')
+    fetch('https://api.github.com/repos/Luukve6/Klasplusapp/releases/latest')
       .then((r) => (r.ok ? r.json() : null))
       .then((r) => { if (r && r.tag_name) document.getElementById('versie').textContent = 'Versie ' + r.tag_name.replace(/^v/, ''); })
       .catch(() => {});
