@@ -79,3 +79,11 @@
   justify-content: center;
   text-decoration: none;
 }
+
+/* Licht, naast "Tijd": de tijd kun je ook per dag nog aanpassen. */
+.leren__hint {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--tekst-secundair);
+  opacity: 0.8;
+}

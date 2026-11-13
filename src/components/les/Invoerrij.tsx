@@ -3,7 +3,7 @@ import { nlMoment } from '../../lib/datum';
 import './les.css';
 
 /** Een rij "label — invoerveld", in dezelfde stijl als de rijen op Lesinformatie. */
-export function Invoerrij({ label, voor, children }: { label: string; voor: string; children: ReactNode }) {
+export function Invoerrij({ label, voor, children }: { label: ReactNode; voor: string; children: ReactNode }) {
   return (
     <label className="gegevenrij invoerrij" htmlFor={voor}>
       <span className="gegevenrij__label">{label}</span>

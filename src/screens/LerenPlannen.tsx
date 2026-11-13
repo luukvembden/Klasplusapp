@@ -188,7 +188,14 @@ export function LerenPlannen() {
                 ))}
               </select>
             </Invoerrij>
-            <Invoerrij label="Tijd" voor="leren-alle">
+            <Invoerrij
+              label={
+                <>
+                  Tijd <span className="leren__hint">ook per dag aan te passen</span>
+                </>
+              }
+              voor="leren-alle"
+            >
               <input
                 id="leren-alle"
                 type="time"
@@ -253,7 +260,7 @@ export function LerenPlannen() {
                         type="text"
                         className="leren__notitie"
                         aria-label={`Notitie voor ${dagTitel(d)}`}
-                        placeholder="Notitie (optioneel)"
+                        placeholder={maken ? 'Wat ga je maken? (optioneel)' : 'Wat ga je leren? (optioneel)'}
                         value={m.notitie ?? ''}
                         onChange={(e) => zet(datum, { notitie: e.target.value })}
                       />
