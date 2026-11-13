@@ -14,7 +14,7 @@
 /* Eén bericht in het postvak: stip voor ongelezen, afzender en datum, onderwerp. */
 .berichtrij {
   display: flex;
-  gap: 10px;
+  gap: 6px;
   padding: 12px 0;
   border-bottom: 1px solid var(--lijn-zacht);
   color: var(--tekst);
@@ -29,11 +29,12 @@
   background: var(--vlak);
 }
 
+/* Klein bolletje voor ongelezen, in een eigen smalle kolom zodat de namen onder elkaar blijven staan. */
 .berichtrij__stip {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   flex: 0 0 auto;
-  margin-top: 6px;
+  margin-top: 7px;
   border-radius: 50%;
   background: var(--groen-tekst);
 }
