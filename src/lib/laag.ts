@@ -2,8 +2,11 @@ import { createContext, useContext } from 'react';
 
 // Gedeeld tussen AppLayout (die de pagina's in lagen toont) en de schermen, zonder dat die AppLayout importeren.
 
-/** Voor de terugknop: schuift de pagina weg en gaat terug. False als er geen pagina onder ligt. */
-export const LagenContext = createContext<{ terug: () => boolean } | null>(null);
+/**
+ * Voor de terugknop. `terug`: schuift de pagina weg naar de vorige (false als er geen pagina onder ligt).
+ * `naar`: naar de pagina die bij de terugknop hoort, ook als je via een omweg hier kwam.
+ */
+export const LagenContext = createContext<{ terug: () => boolean; naar: (pad: string) => void } | null>(null);
 export const useLagen = () => useContext(LagenContext);
 
 /**

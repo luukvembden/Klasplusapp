@@ -108,6 +108,26 @@ export function AppLayout() {
     return true;
   };
 
+  /**
+   * Terug naar de pagina waar de terugknop naar wijst (de pagina die erbij hoort), niet per se de vorige in
+   * de geschiedenis. Ligt die pagina al onder de huidige, dan schuift alles erboven weg; anders komt hij in
+   * de plaats van de huidige pagina.
+   */
+  const naarPad = (pad: string) => {
+    const zelfde = (a: string) => {
+      try {
+        return decodeURIComponent(a) === decodeURIComponent(pad);
+      } catch {
+        return a === pad;
+      }
+    };
+    const i = lagen.slice(0, -1).map((l) => l.location.pathname).findLastIndex(zelfde);
+    if (i === lagen.length - 2) terug();
+    else if (i === 0 && naarTab(pad)) return;
+    else if (i >= 0) navigate(lagen[i].idx - lagen[lagen.length - 1].idx);
+    else navigate(pad, { replace: true });
+  };
+
   useVegenTerug({
     lagenRef,
     bovenRef,
@@ -118,7 +138,7 @@ export function AppLayout() {
   });
 
   return (
-    <LagenContext.Provider value={{ terug: () => (heeftOnder ? (terug(), true) : false) }}>
+    <LagenContext.Provider value={{ terug: () => (heeftOnder ? (terug(), true) : false), naar: naarPad }}>
       <div className="app">
         <main ref={lagenRef} className={`app__inhoud app__lagen${inschuiven ? ' app__lagen--schuift' : ''}`}>
           {lagen.map((laag, i) => {

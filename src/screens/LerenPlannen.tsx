@@ -155,7 +155,7 @@ export function LerenPlannen() {
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
-        <TerugLink naar={`/huiswerk/${encodeURIComponent(id)}`} label="Terug" />
+        <TerugLink naar={`/huiswerk/${encodeURIComponent(id)}`} label="Terug" echt />
         <PaginaKop
           sub={
             a
