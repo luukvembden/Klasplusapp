@@ -26,10 +26,10 @@ export function Gemiddeldes() {
         <TerugLink naar="/cijfers" label="Cijfers" />
         {/* Rechtsboven, in dezelfde knop als "Gemiddeldes" bij Cijfers. */}
         <Link
-          to={examen ? '/cijfers/slaag-ik' : '/cijfers/overgang'}
+          to={examen ? '/cijfers/examen' : '/cijfers/overgang'}
           className="agendakop__vandaag agendakop__knoplink gemiddeldes__knop"
         >
-          {examen ? 'Slaag ik?' : 'Overgang'}
+          {examen ? 'Examen' : 'Overgang'}
         </Link>
         <PaginaKop sub={sub} titel="Gemiddeldes" />
         <OfflineRegel resultaat={resultaat} />

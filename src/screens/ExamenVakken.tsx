@@ -11,7 +11,7 @@ import '../components/ui/ui.css';
 import '../components/instellingen/instellingen.css';
 
 /**
- * Bij Slaag ik? (tandwieltje): per vak aan- of uitzetten of het een centraal examen heeft. Uit betekent dat
+ * Bij de Examencheck (tandwieltje): per vak aan- of uitzetten of het een centraal examen heeft. Uit betekent dat
  * het in het combinatiecijfer telt. Klas+ vult het zelf in; jij kijkt het na. Vakken die nooit meetellen
  * (lichamelijke opvoeding, mentoruur) staan er niet bij.
  */
@@ -32,7 +32,7 @@ export function ExamenVakken() {
   return (
     <div className="pagina pagina--met-terug">
       <VasteKop>
-        <TerugLink naar="/cijfers/slaag-ik" label="Slaag ik?" />
+        <TerugLink naar="/cijfers/examen" label="Examencheck" />
         <PaginaKop sub="Hoe elk vak meetelt" titel="Mijn vakken" />
       </VasteKop>
       {!cijfers && <LaadKaart rijen={6} />}

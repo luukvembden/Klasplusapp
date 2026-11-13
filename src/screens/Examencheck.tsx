@@ -15,10 +15,10 @@ import '../components/cijfers/cijfers.css';
 import '../components/ui/ui.css';
 
 /**
- * Slaag ik? In het examenjaar op de plek van de overgangscheck: per vak je SE en wat je op het centraal
+ * Examencheck: in het examenjaar op de plek van de overgangscheck: per vak je SE en wat je op het centraal
  * examen nodig hebt, en of je met deze cijfers slaagt volgens de slaag-zakregeling.
  */
-export function SlaagIk() {
+export function Examencheck() {
   const { cijfers, profiel, resultaat, fout } = useCijfers();
   const uitslag = useMemo(() => (cijfers ? berekenSlagen(perVak(cijfers), leesKeuzes()) : null), [cijfers]);
 
@@ -31,10 +31,10 @@ export function SlaagIk() {
     <div className="pagina pagina--met-terug">
       <VasteKop>
         <TerugLink naar="/cijfers/gemiddeldes" label="Gemiddeldes" />
-        <Link to="/cijfers/slaag-ik/vakken" className="agendakop__vandaag gemiddeldes__knop tandwielknop" aria-label="Mijn vakken">
+        <Link to="/cijfers/examen/vakken" className="agendakop__vandaag gemiddeldes__knop tandwielknop" aria-label="Mijn vakken">
           <Settings size={20} strokeWidth={2.2} aria-hidden="true" />
         </Link>
-        <PaginaKop sub="Met je SE-cijfers van nu" titel="Slaag ik?" />
+        <PaginaKop sub="Met je SE-cijfers van nu" titel="Examencheck" />
       </VasteKop>
       <OfflineRegel resultaat={resultaat} />
       {fout && <p className="melding">{fout}</p>}

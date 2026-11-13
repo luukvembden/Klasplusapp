@@ -29,8 +29,8 @@ export function Overgang() {
 
   const uitslag = cijfers ? bereken(vakken, normen) : null;
 
-  // In het examenjaar is er geen overgang: dan Slaag ik?
-  if (examen) return <Navigate to="/cijfers/slaag-ik" replace />;
+  // In het examenjaar is er geen overgang: dan de Examencheck
+  if (examen) return <Navigate to="/cijfers/examen" replace />;
 
   return (
     <div className="pagina pagina--met-terug">

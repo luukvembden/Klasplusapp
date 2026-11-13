@@ -1,7 +1,7 @@
 import type { VakOverzicht } from './cijfers';
 import { lees, schrijf } from './opslag';
 
-// "Slaag ik?" in het examenjaar (5 havo, 6 vwo): met je SE-cijfers van nu, wat moet je op het centraal
+// de Examencheck in het examenjaar (5 havo, 6 vwo): met je SE-cijfers van nu, wat moet je op het centraal
 // examen halen, en slaag je volgens de landelijke slaag-zakregeling? Een schatting: Klas+ rekent met de
 // cijfers van dit schooljaar, en het examenreglement van de school is leidend. vmbo komt later (de regels
 // verschillen per leerweg).

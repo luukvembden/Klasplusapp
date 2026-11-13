@@ -287,7 +287,7 @@
   color: var(--groen-tekst);
 }
 
-/* Rond knopje met een tandwiel rechtsboven (normen bij Overgang, vakken bij Slaag ik?). */
+/* Rond knopje met een tandwiel rechtsboven (normen bij Overgang, vakken bij de Examencheck). */
 .tandwielknop {
   width: 40px;
   padding: 0;
@@ -296,13 +296,13 @@
   justify-content: center;
 }
 
-/* Overgang en Slaag ik?: "let op" in een warme kleur. */
+/* Overgang en Examencheck: "let op" in een warme kleur. */
 .overgang__uitslag--letop {
   background: color-mix(in srgb, #d9a01e 18%, var(--kaart));
   color: color-mix(in srgb, #b07d00 75%, var(--tekst));
 }
 
-/* Slaag ik? */
+/* Examencheck */
 .slaag__ce {
   padding: 12px 16px;
   gap: 6px;
