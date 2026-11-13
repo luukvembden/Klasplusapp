@@ -41,7 +41,7 @@ function UitkomstRij({ uitkomst }: { uitkomst: Uitkomst }) {
               uitkomst.waarde !== null && isOnvoldoende(uitkomst.waarde) ? ' calc-uitkomst__getal--laag' : ''
             }`}
           >
-            {uitkomst.waarde === null ? '—' : formatCijfer(uitkomst.waarde)}
+            {uitkomst.waarde === null ? '-' : formatCijfer(uitkomst.waarde)}
           </span>
         </div>
       )}
