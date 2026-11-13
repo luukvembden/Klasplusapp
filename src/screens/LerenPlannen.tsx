@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api';
 import { vergeetGeladen } from '../hooks/useLaden';
 import { haalVanSchool, zetOpSchool } from '../lib/leerplanSchool';
-import { Getalwiel } from '../components/leren/Getalwiel';
 import { Invoerrij } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
@@ -46,7 +45,7 @@ function datumsVoor(toetsDag: Date, dagen: number): string[] {
 }
 
 /**
- * Leren plannen voor een toets: hoeveel dagen van tevoren je begint (snelknoppen of het getalwiel),
+ * Leren plannen voor een toets: hoeveel dagen van tevoren je begint (snelknoppen of de keuzelijst),
  * en per dag hoe laat. De leermomenten komen in je Agenda, met een melding als je dat wilt.
  */
 export function LerenPlannen() {
@@ -195,15 +194,23 @@ export function LerenPlannen() {
                 </button>
               ))}
             </div>
-            <Getalwiel
-              id="leren-dagen"
-              label="Aantal dagen van tevoren"
-              waarde={Math.min(gekozenDagen, max)}
-              van={1}
-              tot={max}
-              eenheid={(n) => (n === 1 ? 'dag' : 'dagen')}
-              onKies={kiesDagen}
-            />
+            {/* Eén brede rij; tik op het getal en de telefoon toont zijn eigen keuzewiel of lijst. */}
+            <section className="kaart leren__aantal">
+              <Invoerrij label="Aantal dagen" voor="leren-dagen">
+                <select
+                  id="leren-dagen"
+                  className="invoerrij__veld invoerrij__keuze"
+                  value={Math.min(gekozenDagen, max)}
+                  onChange={(e) => kiesDagen(Number(e.target.value))}
+                >
+                  {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </Invoerrij>
+            </section>
           </Sectie>
 
           <Sectie
