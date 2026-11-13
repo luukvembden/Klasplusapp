@@ -3,6 +3,7 @@ import { CalendarArrowDown, CalendarX, Library, PartyPopper, Signpost, ChevronRi
 import { api } from '../api';
 import { ProfielKaart } from '../components/instellingen/ProfielKaart';
 import { PaginaKop } from '../components/ui/PaginaKop';
+import { VasteKop } from '../components/ui/VasteKop';
 import { useLaden, vergeetGeladen } from '../hooks/useLaden';
 import { useInstellingen } from '../lib/instellingen';
 import { useOngelezen } from '../lib/ongelezen';
@@ -36,7 +37,9 @@ export function Meer() {
 
   return (
     <div className="pagina pagina--instellingen">
-      <PaginaKop titel="Meer" />
+      <VasteKop tab>
+        <PaginaKop titel="Meer" />
+      </VasteKop>
       <ProfielKaart
         profiel={profiel.data?.data}
         onKiesKind={async (id) => {

@@ -3,6 +3,7 @@ import { Invoerrij } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { useCijfers } from '../hooks/useCijfers';
 import { formatCijfer, isOnvoldoende, perVak, somEnWeging } from '../lib/cijfers';
 import { metHoofdletter } from '../lib/tekst';
@@ -66,10 +67,10 @@ export function CijferCalculator() {
   const [doelWeging, setDoelWeging] = useState('');
 
   const kop = (
-    <>
+    <VasteKop>
       <TerugLink naar="/cijfers" label="Cijfers" />
       <PaginaKop titel="Cijfercalculator" sub={sub} />
-    </>
+    </VasteKop>
   );
 
   if (!cijfers) {

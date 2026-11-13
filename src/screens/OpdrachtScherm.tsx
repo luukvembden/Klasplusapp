@@ -9,6 +9,7 @@ import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { useLaden } from '../hooks/useLaden';
 import { datumEnTijd } from '../lib/datum';
 import { htmlNaarTekst, metHoofdletter, openExtern } from '../lib/tekst';
@@ -27,8 +28,10 @@ export function OpdrachtScherm() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/opdrachten" label="Opdrachten" />
-      <PaginaKop sub={o?.vak ? metHoofdletter(o.vak) : ' '} titel={o?.titel ?? ' '} />
+      <VasteKop>
+        <TerugLink naar="/meer/opdrachten" label="Opdrachten" />
+        <PaginaKop sub={o?.vak ? metHoofdletter(o.vak) : ' '} titel={o?.titel ?? ' '} />
+      </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       {geladen.fout && <p className="melding">{geladen.fout}</p>}
 

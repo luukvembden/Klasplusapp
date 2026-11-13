@@ -4,6 +4,7 @@ import { api, type Leermiddel } from '../api';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import '../components/ui/ui.css';
@@ -36,8 +37,10 @@ export function Leermiddelen() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer" label="Meer" />
-      <PaginaKop sub="Digitale methodes van je school" titel="Leermiddelen" />
+      <VasteKop>
+        <TerugLink naar="/meer" label="Meer" />
+        <PaginaKop sub="Digitale methodes van je school" titel="Leermiddelen" />
+      </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
         {geladen.fout && <p className="melding">{geladen.fout}</p>}

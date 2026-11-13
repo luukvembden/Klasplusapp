@@ -95,9 +95,6 @@
 }
 
 /* Afwezigheid: ruimte onderin, zodat de plusknop de laatste rij niet bedekt. */
-.huiswerk__lijst--met-plus .pagina {
-  padding-bottom: 88px;
-}
 
 /* Simpele weekwisselaar naast de titel Huiswerk: pil in de stijl van de "Vandaag"-knop. */
 .weekknop {

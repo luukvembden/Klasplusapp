@@ -7,6 +7,7 @@ import { AgendaWeergaveKiezer, RegioKiezer, KleurKiezer, ThemaKiezer } from '../
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { vergeetGeladen } from '../hooks/useLaden';
 import { wisEigenAfspraken } from '../lib/eigenAfspraken';
 import { wisLeerplannen } from '../lib/leerplan';
@@ -39,8 +40,10 @@ export function Instellingen() {
 
   return (
     <div className="pagina pagina--met-terug pagina--instellingen">
-      <TerugLink naar="/meer" label="Meer" />
-      <PaginaKop titel="Instellingen" />
+      <VasteKop>
+        <TerugLink naar="/meer" label="Meer" />
+        <PaginaKop titel="Instellingen" />
+      </VasteKop>
 
       <Sectie titel="Weergave">
         <ThemaKiezer />

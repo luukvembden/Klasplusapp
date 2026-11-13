@@ -5,6 +5,7 @@ import { Invoerrij } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { beginVanDag, maandagVan, naarInvoer, plusDagen, vanInvoer } from '../lib/datum';
 import { bestandsnaam, maakIcs, openIcs } from '../lib/ics';
 import { useInstellingen } from '../lib/instellingen';
@@ -86,8 +87,10 @@ export function AgendaExport() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer" label="Meer" />
-      <PaginaKop sub="Naar Apple Agenda of een andere agenda-app" titel="Rooster exporteren" />
+      <VasteKop>
+        <TerugLink naar="/meer" label="Meer" />
+        <PaginaKop sub="Naar Apple Agenda of een andere agenda-app" titel="Rooster exporteren" />
+      </VasteKop>
 
       <div className="export__snel" role="group" aria-label="Snel kiezen">
         {SNEL.map((s) => (

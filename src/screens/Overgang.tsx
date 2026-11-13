@@ -5,6 +5,7 @@ import { OfflineRegel } from "../components/ui/OfflineRegel";
 import { PaginaKop } from "../components/ui/PaginaKop";
 import { Sectie } from "../components/ui/Sectie";
 import { TerugLink } from "../components/ui/TerugLink";
+import { VasteKop } from "../components/ui/VasteKop";
 import { useCijfers } from "../hooks/useCijfers";
 import { formatCijfer, perVak } from "../lib/cijfers";
 import {
@@ -74,8 +75,10 @@ export function Overgang() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/cijfers/gemiddeldes" label="Gemiddeldes" />
-      <PaginaKop sub="Met je gemiddeldes van nu" titel="Overgangscheck" />
+      <VasteKop>
+        <TerugLink naar="/cijfers/gemiddeldes" label="Gemiddeldes" />
+        <PaginaKop sub="Met je gemiddeldes van nu" titel="Overgangscheck" />
+      </VasteKop>
       <OfflineRegel resultaat={resultaat} />
       {fout && <p className="melding">{fout}</p>}
 

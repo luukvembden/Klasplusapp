@@ -5,6 +5,7 @@ import { opMoment } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { dagTitel, tijd } from '../lib/datum';
 import { isMaken, lerenTitel, notitieVan, useLeerplannen } from '../lib/leerplan';
 import '../components/les/les.css';
@@ -32,8 +33,10 @@ export function LeermomentScherm() {
   if (!plan || !moment) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar="/" label="Agenda" />
-        <PaginaKop sub=" " titel="Niet gevonden" />
+        <VasteKop>
+          <TerugLink naar="/" label="Agenda" />
+          <PaginaKop sub=" " titel="Niet gevonden" />
+        </VasteKop>
         <p className="melding">Dit moment staat niet (meer) in je planning.</p>
       </div>
     );
@@ -50,8 +53,10 @@ export function LeermomentScherm() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/" label="Agenda" />
-      <PaginaKop sub={`${dagTitel(start)} · ${tijd(start)} – ${tijd(einde)}`} titel={lerenTitel(plan)} />
+      <VasteKop>
+        <TerugLink naar="/" label="Agenda" />
+        <PaginaKop sub={`${dagTitel(start)} · ${tijd(start)} – ${tijd(einde)}`} titel={lerenTitel(plan)} />
+      </VasteKop>
       <div className="les__labels">
         <LesLabel label={maken ? 'eigen' : 'leren'} />
       </div>

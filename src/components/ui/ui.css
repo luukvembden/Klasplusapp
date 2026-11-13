@@ -246,3 +246,36 @@
   vertical-align: -1px;
   color: var(--tekst-secundair);
 }
+
+/*
+ * Vaste kop op een pagina die in zijn geheel scrolt: plakt bovenaan (ook over de statusbalk heen), de
+ * inhoud schuift eronder door. Trekt de bovenrand en zijmarges van .pagina--met-terug weg en zet ze er
+ * zelf weer in, zodat hij van rand tot rand dekt.
+ */
+.vastekop {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: calc(-1 * (var(--veilig-boven) + 4px)) -20px 0;
+  padding: calc(var(--veilig-boven) + 4px) 20px 8px;
+  background: var(--achtergrond);
+}
+
+/* Op een hoofdpagina zonder terug-link begint de pagina iets lager. */
+.vastekop--tab {
+  margin-top: calc(-1 * (var(--veilig-boven) + 16px));
+  padding-top: calc(var(--veilig-boven) + 16px);
+}
+
+/* Onderaan elke pagina wat lucht, zodat het laatste blok niet tegen de tabbalk plakt. */
+.pagina--met-terug {
+  padding-bottom: 32px;
+}
+
+/* Lijst met een ronde knop rechtsonder (plusje, rekenmachine): genoeg ruimte zodat die niets bedekt. */
+.agenda__midden:has(> .plusknop) .scherm__lijst .pagina {
+  padding-bottom: 88px;
+}

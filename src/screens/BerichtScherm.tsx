@@ -7,6 +7,7 @@ import { TekstMetLinks } from "../components/les/TekstMetLinks";
 import { OfflineRegel } from "../components/ui/OfflineRegel";
 import { Sectie } from "../components/ui/Sectie";
 import { TerugLink } from "../components/ui/TerugLink";
+import { VasteKop } from "../components/ui/VasteKop";
 import { useLaden } from "../hooks/useLaden";
 import { datumEnTijd } from "../lib/datum";
 import { antwoordConcept, doorstuurConcept } from "../lib/berichten";
@@ -42,7 +43,9 @@ export function BerichtScherm() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/berichten" label="Berichten" />
+      <VasteKop>
+        <TerugLink naar="/meer/berichten" label="Berichten" />
+      </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       {geladen.fout && <p className="melding">{geladen.fout}</p>}
 

@@ -50,7 +50,7 @@ export function Afwezigheid() {
       </div>
 
       <div className="agenda__midden">
-        <div className={`scherm__lijst${magMelden ? ' huiswerk__lijst--met-plus' : ''}`} aria-busy={geladen.laden}>
+        <div className="scherm__lijst" aria-busy={geladen.laden}>
           <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
             <div className="pagina pagina--onder-kop">
               {geladen.fout && <p className="melding">{geladen.fout}</p>}

@@ -5,6 +5,7 @@ import { BijlagenLijst } from '../components/meer/BijlagenLijst';
 import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { VegenOmTeVernieuwen } from '../components/ui/VegenOmTeVernieuwen';
 import { useLaden } from '../hooks/useLaden';
 import { beginVanDag, plusDagen } from '../lib/datum';
@@ -29,8 +30,10 @@ export function StudiewijzerScherm() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/studiewijzers" label="Studiewijzers" />
-      <PaginaKop sub={sw ? periode(sw.van, sw.tot) || ' ' : ' '} titel={sw?.titel ?? 'Studiewijzer'} />
+      <VasteKop>
+        <TerugLink naar="/meer/studiewijzers" label="Studiewijzers" />
+        <PaginaKop sub={sw ? periode(sw.van, sw.tot) || ' ' : ' '} titel={sw?.titel ?? 'Studiewijzer'} />
+      </VasteKop>
       <OfflineRegel resultaat={geladen.data} />
       <VegenOmTeVernieuwen onVernieuw={geladen.vernieuw}>
         {geladen.fout && <p className="melding">{geladen.fout}</p>}

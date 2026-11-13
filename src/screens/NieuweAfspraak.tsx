@@ -4,6 +4,7 @@ import { Invoerrij, opMoment } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { beginVanDag, naarInvoer, plusDagen, tijd, vanInvoer } from '../lib/datum';
 import { api, isDemo, type AfspraakInvoer } from '../api';
 import { useAfspraak } from '../hooks/useAfspraak';
@@ -151,12 +152,14 @@ function AfspraakFormulier({ bestaand, startdag }: { bestaand?: Bestaand; startd
 
   return (
     <div className="pagina pagina--met-terug">
-      {bestaand ? (
-        <TerugLink naar={`/agenda/${encodeURIComponent(bestaand.id)}`} label="Afspraak" />
-      ) : (
-        <TerugLink naar="/" label="Agenda" />
-      )}
-      <PaginaKop titel={bestaand ? 'Afspraak bewerken' : 'Nieuwe afspraak'} />
+      <VasteKop>
+        {bestaand ? (
+          <TerugLink naar={`/agenda/${encodeURIComponent(bestaand.id)}`} label="Afspraak" />
+        ) : (
+          <TerugLink naar="/" label="Agenda" />
+        )}
+        <PaginaKop titel={bestaand ? 'Afspraak bewerken' : 'Nieuwe afspraak'} />
+      </VasteKop>
 
       <section className="kaart">
         <Invoerrij label="Titel" voor="titel">

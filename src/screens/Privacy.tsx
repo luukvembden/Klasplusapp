@@ -1,13 +1,16 @@
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import '../components/instellingen/instellingen.css';
 
 /** Privacy is te openen vanuit Meer en vanuit Instellingen; de terugknop gaat naar waar je vandaan kwam. */
 export function Privacy({ van = 'instellingen' }: { van?: 'meer' | 'instellingen' }) {
   return (
     <div className="pagina pagina--met-terug">
-      {van === 'meer' ? <TerugLink naar="/meer" label="Meer" /> : <TerugLink naar="/instellingen" label="Instellingen" />}
-      <PaginaKop titel="Privacy" />
+      <VasteKop>
+        {van === 'meer' ? <TerugLink naar="/meer" label="Meer" /> : <TerugLink naar="/instellingen" label="Instellingen" />}
+        <PaginaKop titel="Privacy" />
+      </VasteKop>
 
       <section className="kaart privacy">
         <h2>Wat is Klas+?</h2>

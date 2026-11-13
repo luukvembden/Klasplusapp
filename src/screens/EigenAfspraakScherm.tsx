@@ -8,6 +8,7 @@ import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { dagTitel, datumEnTijd, plusDagen, tijdvak, zelfdeDag } from '../lib/datum';
 import '../components/les/les.css';
 
@@ -45,11 +46,13 @@ export function EigenAfspraakScherm({ afspraak: a, tekst, resultaat }: Props) {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/" label="Agenda" />
-      <PaginaKop
-        sub={`${dagTitel(start)}${a.heleDag ? ' · Hele dag' : ` · ${tijdvak(a.start, a.einde)}`}`}
-        titel={a.omschrijving}
-      />
+      <VasteKop>
+        <TerugLink naar="/" label="Agenda" />
+        <PaginaKop
+          sub={`${dagTitel(start)}${a.heleDag ? ' · Hele dag' : ` · ${tijdvak(a.start, a.einde)}`}`}
+          titel={a.omschrijving}
+        />
+      </VasteKop>
       <OfflineRegel resultaat={resultaat} />
       <div className="les__labels">
         <LesLabel label="eigen" />

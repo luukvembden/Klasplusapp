@@ -6,6 +6,7 @@ import { Invoerrij } from "../components/les/Invoerrij";
 import { PaginaKop } from "../components/ui/PaginaKop";
 import { Sectie } from "../components/ui/Sectie";
 import { TerugLink } from "../components/ui/TerugLink";
+import { VasteKop } from "../components/ui/VasteKop";
 import type { Concept } from "../lib/berichten";
 import "../components/les/les.css";
 import "../components/meer/meer.css";
@@ -94,19 +95,21 @@ export function NieuwBericht() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink
-        naar="/meer/berichten"
-        label={concept ? "Bericht" : "Berichten"}
-      />
-      <PaginaKop
-        titel={
-          concept?.soort === "antwoord"
-            ? "Beantwoorden"
-            : concept?.soort === "doorsturen"
-            ? "Doorsturen"
-            : "Nieuw bericht"
-        }
-      />
+      <VasteKop>
+        <TerugLink
+          naar="/meer/berichten"
+          label={concept ? "Bericht" : "Berichten"}
+        />
+        <PaginaKop
+          titel={
+            concept?.soort === "antwoord"
+              ? "Beantwoorden"
+              : concept?.soort === "doorsturen"
+              ? "Doorsturen"
+              : "Nieuw bericht"
+          }
+        />
+      </VasteKop>
 
       <Sectie titel="Aan">
         <section className="kaart ontvangers">

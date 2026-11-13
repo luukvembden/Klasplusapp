@@ -7,6 +7,7 @@ import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { soortVan, useAfspraak } from '../hooks/useAfspraak';
 import { dagTitel, korteDatumTijd, tijdvak } from '../lib/datum';
 import { metHoofdletter } from '../lib/tekst';
@@ -25,11 +26,13 @@ export function Les() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/" label="Agenda" />
-      <PaginaKop
-        sub={a ? `${dagTitel(new Date(a.start))} · ${tijdvak(a.start, a.einde)}` : ' '}
-        titel={a ? metHoofdletter(a.vak ?? a.omschrijving) : 'Lesinformatie'}
-      />
+      <VasteKop>
+        <TerugLink naar="/" label="Agenda" />
+        <PaginaKop
+          sub={a ? `${dagTitel(new Date(a.start))} · ${tijdvak(a.start, a.einde)}` : ' '}
+          titel={a ? metHoofdletter(a.vak ?? a.omschrijving) : 'Lesinformatie'}
+        />
+      </VasteKop>
       <OfflineRegel resultaat={data} />
       {fout && <p className="melding">{fout}</p>}
 

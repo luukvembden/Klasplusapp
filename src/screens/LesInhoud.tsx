@@ -9,6 +9,7 @@ import { OfflineRegel } from '../components/ui/OfflineRegel';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { soortVan, useAfspraak } from '../hooks/useAfspraak';
 import { dagTitel, datumEnTijd, tijdvak } from '../lib/datum';
 import { metHoofdletter } from '../lib/tekst';
@@ -39,19 +40,21 @@ export function LesInhoud({ van }: { van: keyof typeof terugNaar }) {
 
   return (
     <div className="pagina pagina--met-terug lesinhoud--met-knop">
-      <TerugLink naar={terug.naar} label={terug.label} />
-      {(isToets || isHuiswerk) && a && (
-        <Link
-          to={`/leren/${encodeURIComponent(a.id)}`}
-          className="agendakop__vandaag agendakop__knoplink lesinhoud__knop"
-        >
-          {isToets ? (leerplanVoor(a.id) ? 'Leerplan' : 'Plan leren') : leerplanVoor(a.id) ? 'Planning' : 'Inplannen'}
-        </Link>
-      )}
-      <PaginaKop
-        sub={a ? `${metHoofdletter(a.vak ?? a.omschrijving)} · ${dagTitel(new Date(a.start))}` : ' '}
-        titel={a ? soortVan(a) : ' '}
-      />
+      <VasteKop>
+        <TerugLink naar={terug.naar} label={terug.label} />
+        {(isToets || isHuiswerk) && a && (
+          <Link
+            to={`/leren/${encodeURIComponent(a.id)}`}
+            className="agendakop__vandaag agendakop__knoplink lesinhoud__knop"
+          >
+            {isToets ? (leerplanVoor(a.id) ? 'Leerplan' : 'Plan leren') : leerplanVoor(a.id) ? 'Planning' : 'Inplannen'}
+          </Link>
+        )}
+        <PaginaKop
+          sub={a ? `${metHoofdletter(a.vak ?? a.omschrijving)} · ${dagTitel(new Date(a.start))}` : ' '}
+          titel={a ? soortVan(a) : ' '}
+        />
+      </VasteKop>
       <OfflineRegel resultaat={data} />
       {fout && <p className="melding">{fout}</p>}
 

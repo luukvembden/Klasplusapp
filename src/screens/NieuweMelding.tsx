@@ -5,6 +5,7 @@ import { Invoerrij, opMoment } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { useLaden } from '../hooks/useLaden';
 import { beginVanDag, naarInvoer, plusDagen, vanInvoer } from '../lib/datum';
 import { meldbareDagen } from '../lib/meldingen';
@@ -20,7 +21,9 @@ export function NieuweMelding() {
   if (!opties.data?.kanMelden) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
+        <VasteKop>
+          <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
+        </VasteKop>
         <p className="melding">{opties.fout ?? (opties.laden && !opties.data ? 'Bezig met laden…' : 'Afwezig melden kan niet voor dit account.')}</p>
       </div>
     );
@@ -104,8 +107,10 @@ function MeldFormulier({ opties }: { opties: MeldOpties }) {
   if (dagen && dagen.length === 0) {
     return (
       <div className="pagina pagina--met-terug">
-        <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
-        <PaginaKop titel="Afwezigheid melden" />
+        <VasteKop>
+          <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
+          <PaginaKop titel="Afwezigheid melden" />
+        </VasteKop>
         <p className="melding">In het weekend kun je niet afwezig melden. Vanaf zondag kan het weer voor maandag.</p>
       </div>
     );
@@ -113,8 +118,10 @@ function MeldFormulier({ opties }: { opties: MeldOpties }) {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
-      <PaginaKop titel="Afwezigheid melden" />
+      <VasteKop>
+        <TerugLink naar="/meer/afwezigheid/melden" label="Meldingen" />
+        <PaginaKop titel="Afwezigheid melden" />
+      </VasteKop>
 
       {opties.redenen.length > 0 && (
         <section className="kaart">

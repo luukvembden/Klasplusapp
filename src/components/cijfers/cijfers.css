@@ -286,8 +286,3 @@
 .overgang__punten--plus {
   color: var(--groen-tekst);
 }
-
-/* Cijfers: onderaan ruimte voor de ronde rekenmachine-knop, zodat die niet over het laatste cijfer valt. */
-.cijfers__lijst .pagina {
-  padding-bottom: 88px;
-}

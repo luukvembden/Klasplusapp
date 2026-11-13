@@ -7,6 +7,7 @@ import { Invoerrij } from '../components/les/Invoerrij';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { soortVan, useAfspraak } from '../hooks/useAfspraak';
 import { beginVanDag, dagKort, dagTitel, korteDatum, naarInvoer, plusDagen, vanInvoer } from '../lib/datum';
 import { useLagen } from '../lib/laag';
@@ -153,15 +154,17 @@ export function LerenPlannen() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar={`/huiswerk/${encodeURIComponent(id)}`} label="Terug" />
-      <PaginaKop
-        sub={
-          a
-            ? `${soortVan(a)} · ${metHoofdletter(a.vak ?? a.omschrijving)} · ${dagKort(new Date(a.start))} ${korteDatum(a.start)}`
-            : ' '
-        }
-        titel={maken ? 'Huiswerk inplannen' : 'Leren plannen'}
-      />
+      <VasteKop>
+        <TerugLink naar={`/huiswerk/${encodeURIComponent(id)}`} label="Terug" />
+        <PaginaKop
+          sub={
+            a
+              ? `${soortVan(a)} · ${metHoofdletter(a.vak ?? a.omschrijving)} · ${dagKort(new Date(a.start))} ${korteDatum(a.start)}`
+              : ' '
+          }
+          titel={maken ? 'Huiswerk inplannen' : 'Leren plannen'}
+        />
+      </VasteKop>
       {fout && <p className="melding">{fout}</p>}
 
       {a && max < 1 && (

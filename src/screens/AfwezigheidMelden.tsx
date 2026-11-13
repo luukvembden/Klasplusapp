@@ -4,6 +4,7 @@ import { api, type Melding } from '../api';
 import { PaginaKop } from '../components/ui/PaginaKop';
 import { Sectie } from '../components/ui/Sectie';
 import { TerugLink } from '../components/ui/TerugLink';
+import { VasteKop } from '../components/ui/VasteKop';
 import { useLaden } from '../hooks/useLaden';
 import { dagTitel, korteDatumTijd, plusDagen, tijd, tijdvak, zelfdeDag } from '../lib/datum';
 import '../components/huiswerk/huiswerk.css';
@@ -53,8 +54,10 @@ export function AfwezigheidMelden() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/afwezigheid" label="Afwezigheid" />
-      <PaginaKop titel="Meldingen" />
+      <VasteKop>
+        <TerugLink naar="/meer/afwezigheid" label="Afwezigheid" />
+        <PaginaKop titel="Meldingen" />
+      </VasteKop>
 
       {state?.gelukt && (
         <p className="melding melding--gelukt" role="status">

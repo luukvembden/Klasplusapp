@@ -49,8 +49,7 @@ export function Cijfers() {
       </header>
 
       <div className="agenda__midden">
-        {/* Ruimte onderaan, zodat de rekenmachine-knop niet over het laatste cijfer valt. */}
-        <div className="scherm__lijst cijfers__lijst">
+        <div className="scherm__lijst">
           <VegenOmTeVernieuwen onVernieuw={vernieuw}>
             <div className="pagina pagina--onder-kop">
               <Sectie titel="Recent">

@@ -8,6 +8,7 @@ import { OfflineRegel } from "../components/ui/OfflineRegel";
 import { PaginaKop } from "../components/ui/PaginaKop";
 import { Sectie } from "../components/ui/Sectie";
 import { TerugLink } from "../components/ui/TerugLink";
+import { VasteKop } from "../components/ui/VasteKop";
 import { useLaden } from "../hooks/useLaden";
 import {
   aantalOnderdelen,
@@ -201,8 +202,10 @@ export function ActiviteitScherm() {
 
   return (
     <div className="pagina pagina--met-terug">
-      <TerugLink naar="/meer/activiteiten" label="Activiteiten" />
-      <PaginaKop sub={stand?.tekst ?? " "} titel={a?.titel ?? " "} />
+      <VasteKop>
+        <TerugLink naar="/meer/activiteiten" label="Activiteiten" />
+        <PaginaKop sub={stand?.tekst ?? " "} titel={a?.titel ?? " "} />
+      </VasteKop>
       <OfflineRegel resultaat={onderdelen.data} />
       {(lijst.fout || onderdelen.fout) && (
         <p className="melding">{lijst.fout ?? onderdelen.fout}</p>
