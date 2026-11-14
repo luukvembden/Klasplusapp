@@ -27,6 +27,14 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Ochtendmelding: haalt op het tijdstip eerst het rooster op (OchtendWekker.java). -->
+        <receiver android:name=".OchtendWekker" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <!-- Permissions -->
@@ -34,4 +42,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Achtergrondcontrole voor meldingen: alleen draaien als er internet is. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Vragen of Klas+ bij de batterij op "Onbeperkt" mag: dan heeft de ochtendmelding 's ochtends internet. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest>

@@ -147,3 +147,36 @@ a {
     font-size: max(16px, 1em) !important;
   }
 }
+
+/*
+ * Datum- en tijdvelden: de waarde altijd strak rechts, net als de andere waarden in een rij.
+ * iOS zet hem standaard in het midden (::-webkit-date-and-time-value), Android links met een pijltje
+ * ernaast. Het pijltje mag weg: tikken op het veld opent de kiezer toch.
+ */
+input[type='date'],
+input[type='time'] {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+}
+
+input[type='date']::-webkit-date-and-time-value,
+input[type='time']::-webkit-date-and-time-value {
+  margin: 0;
+  text-align: right;
+}
+
+input[type='date']::-webkit-datetime-edit,
+input[type='time']::-webkit-datetime-edit {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  display: none;
+}

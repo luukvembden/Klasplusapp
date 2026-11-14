@@ -115,12 +115,6 @@
   font-weight: 500;
 }
 
-/* Datum- en tijdkiezers rechts uitlijnen zoals de andere waarden. */
-.invoerrij__veld::-webkit-datetime-edit {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .invoer-beschrijving {
   width: 100%;
   min-height: 110px;

@@ -10,6 +10,7 @@ import { leesInstellingen } from './instellingen';
 import { lees, schrijf, verwijder } from './opslag';
 import { ochtendMelding } from './ochtendmelding';
 import { metHoofdletter } from './tekst';
+import { isAndroid, Ochtend, type OchtendPlan } from './ochtendNative';
 
 /** Alleen in de telefoon-app; in de browser (demo) kan het niet. */
 export const kanNotificaties = Capacitor.isNativePlatform();
@@ -178,12 +179,25 @@ async function planHuiswerk(aan: boolean, tijdstip: string) {
 
 // ---- Ochtendmelding ----
 
-const wisOchtend = () =>
-  LocalNotifications.cancel({ notifications: Array.from({ length: OCHTEND_DAGEN }, (_, i) => ({ id: OCHTEND_EERSTE + i })) });
+const wisOchtend = async () => {
+  if (isAndroid) await Ochtend.wis().catch(() => undefined);
+  await LocalNotifications.cancel({
+    notifications: Array.from({ length: OCHTEND_DAGEN }, (_, i) => ({ id: OCHTEND_EERSTE + i })),
+  });
+};
+
+/** Wat Android nodig heeft om zelf het rooster op te halen; null in de demo. */
+function achtergrondSessie(): Pick<OchtendPlan, 'schoolUrl' | 'leerlingId' | 'ouder'> | null {
+  const s = lees<{ schoolUrl: string; persoonId: number; kindId?: number }>('live.sessie');
+  if (!s?.schoolUrl || !s.persoonId) return null;
+  return { schoolUrl: s.schoolUrl, leerlingId: s.kindId ?? s.persoonId, ouder: s.kindId !== undefined };
+}
 
 /**
  * Plant voor elke dag met lessen een melding op het gekozen tijdstip, met de stand van nu. Elke keer
  * dat Klas+ kijkt (openen, achtergrond) worden ze vervangen, zodat een latere wijziging erin komt.
+ * Op Android haalt de telefoon op het tijdstip zelf nog het rooster op (OchtendWekker.java); de tekst
+ * van nu is dan alleen voor als dat niet lukt.
  */
 async function planOchtend(aan: boolean, tijdstip: string) {
   if (!aan) return wisOchtend();
@@ -208,6 +222,14 @@ async function planOchtend(aan: boolean, tijdstip: string) {
       channelId: KANAAL,
       extra: { pad: '/' },
     });
+  }
+  const sessie = isAndroid ? achtergrondSessie() : null;
+  if (sessie) {
+    await Ochtend.plan({
+      ...sessie,
+      dagen: meldingen.map((m) => ({ op: m.schedule.at.getTime(), titel: m.title, tekst: m.body })),
+    });
+    return;
   }
   if (meldingen.length) await LocalNotifications.schedule({ notifications: meldingen });
 }
@@ -327,11 +349,13 @@ export interface MeldingStatus {
   preciezeTijd: boolean | null;
   /** Wanneer Klas+ voor het laatst keek, en of dat op de achtergrond was. */
   laatste: { op: string; achtergrond: boolean } | null;
+  /** Android: staat Klas+ bij de batterij op "Onbeperkt"? null op iPhone. */
+  batterijOnbeperkt: boolean | null;
 }
 
 export async function meldingStatus(): Promise<MeldingStatus> {
   const laatste = lees<{ op: string; achtergrond: boolean }>(LAATSTE);
-  if (!kanNotificaties) return { toestemming: false, preciezeTijd: null, laatste };
+  if (!kanNotificaties) return { toestemming: false, preciezeTijd: null, laatste, batterijOnbeperkt: null };
   const toestemming = (await LocalNotifications.checkPermissions()).display === 'granted';
   let preciezeTijd: boolean | null = null;
   if (Capacitor.getPlatform() === 'android') {
@@ -339,7 +363,17 @@ export async function meldingStatus(): Promise<MeldingStatus> {
       .then((s) => s.exact_alarm === 'granted')
       .catch(() => null);
   }
-  return { toestemming, preciezeTijd, laatste };
+  const batterijOnbeperkt = isAndroid
+    ? await Ochtend.batterij()
+        .then((b) => b.onbeperkt)
+        .catch(() => null)
+    : null;
+  return { toestemming, preciezeTijd, laatste, batterijOnbeperkt };
+}
+
+/** Android: vraagt of Klas+ op de achtergrond mag draaien (batterij "Onbeperkt"). */
+export async function vraagBatterij(): Promise<void> {
+  if (isAndroid) await Ochtend.vraagBatterij();
 }
 
 /**

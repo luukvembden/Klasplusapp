@@ -1,7 +1,7 @@
 // Verzoeken aan de schoolserver: token meesturen, op tijd vernieuwen en de limiet respecteren.
 // In de telefoon-app gaat fetch via de native HTTP (CapacitorHttp), dus zonder CORS.
 import { SESSIE_VERLOPEN } from '../SchoolApi';
-import { bewaarTokens, TokenFout, vernieuwTokens, wisTokens, type Tokens } from './auth';
+import { bewaarTokens, leesTokens, TokenFout, vernieuwTokens, wisTokens, type Tokens } from './auth';
 
 export interface Sessie {
   tokens: Tokens;
@@ -28,6 +28,13 @@ async function vernieuw(): Promise<void> {
   vernieuwen ??= (async () => {
     const s = sessie;
     if (!s) throw new Error('Geen sessie');
+    // Op Android kan de ochtendmelding (OchtendMelding.java) de sleutels al vernieuwd hebben terwijl de app
+    // op de achtergrond stond. Dan is onze oude sleutel niet meer geldig: eerst de bewaarde nemen.
+    const bewaard = await leesTokens();
+    if (bewaard && bewaard.refreshToken !== s.tokens.refreshToken) {
+      s.tokens = bewaard;
+      if (Date.now() < bewaard.verlooptOp) return;
+    }
     try {
       s.tokens = await vernieuwTokens(s.tokens);
       await bewaar(s);

@@ -5,6 +5,7 @@ import {
   kanNotificaties,
   meldingStatus,
   stuurTestmelding,
+  vraagBatterij,
   vraagPreciezeTijd,
   vraagToestemming,
   type MeldingStatus,
@@ -115,6 +116,24 @@ export function MeldingenKiezer() {
                 </span>
               </span>
               <span className="instelrij__waarde">{status.preciezeTijd ? 'Aan' : 'Zet aan'}</span>
+            </button>
+          )}
+          {status.batterijOnbeperkt !== null && n.ochtend && (
+            <button
+              type="button"
+              className="instelrij"
+              onClick={() => void vraagBatterij().then(ververs)}
+              disabled={status.batterijOnbeperkt}
+            >
+              <span className="meldingrij__tekst">
+                <span>Batterij onbeperkt</span>
+                <span className="meldingrij__uitleg">
+                  {status.batterijOnbeperkt
+                    ? 'De ochtendmelding haalt eerst je rooster van dat moment op'
+                    : 'Dan kan de ochtendmelding ’s ochtends eerst je rooster ophalen. Tik om toe te staan.'}
+                </span>
+              </span>
+              <span className="instelrij__waarde">{status.batterijOnbeperkt ? 'Aan' : 'Zet aan'}</span>
             </button>
           )}
           {iets && (
