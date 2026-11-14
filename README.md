@@ -2,7 +2,7 @@
 
 **Je schooldag, alles op een rij.**
 
-Klas+ is een app voor leerlingen (en ouders) met je rooster, huiswerk, cijfers, berichten en meer. Je logt in via je eigen school, en alles blijft op je telefoon. Er is geen server van Klas+ die meekijkt.
+Klas+ is een app voor leerlingen (en ouders) met je rooster, huiswerk, cijfers, berichten en meer. **Werkt met Magister:** je logt in met je Magister-account van school, en alles blijft op je telefoon. Er is geen server van Klas+ die meekijkt.
 
 <p>
   <img src="screenshots/02-agenda-dag.png" width="200" alt="Agenda, dag">
@@ -90,6 +90,6 @@ Ergens onderin de app telt Klas+ af naar de volgende vakantie. Zoek maar.
 - Er is geen server van Klas+: je gegevens gaan alleen tussen je telefoon en je school.
 - Uitloggen wist alles van je telefoon.
 
-*Klas+ is een onofficiële app en heeft geen band met je school of de leverancier van het schoolsysteem.*
+*Klas+ is een onofficiële app. Hij werkt met Magister, maar is niet gemaakt door of verbonden aan Magister, Iddink of je school. Magister is een merk van zijn eigenaar.*
 
 © 2026 Luuk van Embden
